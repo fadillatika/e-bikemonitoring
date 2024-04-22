@@ -1,0 +1,780 @@
+:root {
+    --primary: #fff;
+    --bg: #0c0e4f;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+    border: none;
+    text-decoration: none;
+}
+
+body {
+    font-family: "Roboto", sans-serif;
+    background-color: var(--primary);
+    color: #ffffff;
+    min-height: 147vh;
+}
+
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 200px; /* Lebar sidebar */
+    background-color: var(--bg);
+    color: #ffffff;
+    padding-top: 20px; /* Sesuaikan dengan kebutuhan */
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+}
+
+.sidebar .sidebar-logo {
+    width: 100%;
+    height: auto;
+    overflow: hidden;
+    text-align: center;
+}
+
+.sidebar .sidebar-logo img {
+    max-height: 100px; /* Atur sesuai kebutuhan */
+    max-width: 100%;
+}
+
+.sidebar-menu {
+    flex-grow: 1; 
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+    margin-top: 20px; /* Margin atas untuk memberikan ruang antara logo dan menu */
+}
+
+.sidebar ul li {
+    padding: 10px;
+}
+
+.menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.sidebar ul li a {
+    display: block;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 10px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.sidebar ul li a:hover {
+    background-color: #5256b9;
+    color: #fff;
+}
+
+.sidebar-extra {
+    margin-top: auto; /* Menempatkan sidebar-extra di bagian bawah */
+    text-align: center; /* Mengatur posisi horizontal ke tengah */
+    display: none;
+}
+
+.search-bar form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg);
+    padding: 5px;
+    border-radius: 5px;
+    margin-top: 30px;
+    margin-left: 15px;
+}
+
+.search-bar input[type="text"] {
+    height: 35px;
+    width: 90%;
+    padding: 5px;
+    border: none;
+    background-color: rgb(255, 255, 255, 0.7);
+    border-radius: 30px;
+    margin-right: 5px;
+}
+
+.search-bar button {
+    padding: 2px;
+    border: none;
+    background-color: rgba(255, 255, 255, 0);
+    cursor: pointer;
+    border-radius: 100%;
+}
+
+.search-bar input::placeholder {
+    font-family: "Roboto", sans-serif;
+    font-size: 11pt;
+    color: var(--bg);
+}
+
+.search-bar button i {
+    stroke: #ffffff;
+}
+
+/* CONTENT SEARCH*/
+
+.new-flex-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    margin-left: -10px;
+    margin-top: -15px;
+    margin-bottom: 10px;
+    width: 100%;
+}
+
+.main-content2 {
+    margin-left: 220px;
+    padding: 25px;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 20px;
+}
+
+.card2 {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 20px;
+    color: white;
+}
+
+.card2 h2 {
+    font-size: 1.4rem;
+    color: #fff;
+    text-align: center;
+}
+
+.card2 h3 {
+    font-size: 1rem;
+    color: #ffffff;
+    text-align: center;
+    font-weight: normal;
+}
+
+.card3 {
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 20px;
+    color: white;
+}
+
+.card3 h2 {
+    font-size: 1.4rem;
+    color: #fff;
+    text-align: center;
+}
+
+.card3 h3 {
+    font-size: 1rem;
+    color: #ffffff;
+    text-align: center;
+    font-weight: normal;
+}
+
+.card2, .card3{
+    width: 100%;
+}
+
+.card2{
+    min-width: 150px;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    color: var(--bg);
+    font-weight: bold;
+}
+
+#date-box {
+    margin-top: 20px;
+    margin-bottom: 20px; /* Menambahkan jarak antara kotak waktu dan kotak tanggal */
+}
+
+.time {
+    font-size: 1em; /* Ukuran font waktu */
+    margin-bottom: 0em; /* Jarak antara waktu dan "WIB" */
+}
+
+.wib {
+    font-size: 1em; /* Ukuran font "WIB" */
+    margin-bottom: 0em; /* Jarak antara "WIB" dan kotak tanggal jika perlu */
+}
+
+.date {
+    font-size: 1em; /* Ukuran font tanggal */
+}
+
+.battery-status {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: var(--bg);
+    border-radius: 8px;
+    color: #fff;
+    padding: 15px;
+    /* box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); */
+}
+
+.battery-title {
+    font-size: 1.4rem;
+    color: #fff;
+    text-align: center;
+    font-weight: bold;
+    padding: 10px;
+}
+
+.battery-display {
+    display: flex;
+    flex-direction: row; /* Menempatkan anak-anaknya secara horizontal */
+    align-items: center; /* Memusatkan anak-anaknya secara vertikal */
+    width: 100%; /* Membuat kontainer flex mengambil lebar penuh */
+    margin-left: 55px;
+    margin-top: 10px;
+}
+
+.battery-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: transparent;
+    color: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    margin-top: -100px;
+}
+
+.battery-info {
+    display: flex;
+    flex-direction: column; /* Menempatkan anak-anaknya secara vertikal */
+    justify-content: center;
+    flex-grow: 1;
+    padding-left: 10px;
+}
+
+.battery-kilometers {
+    font-size: 1.3em;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-left: 50px;
+}
+
+.battery-stats {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+}
+
+.battery-separator {
+    height: 2px;
+    width: 120px;
+    background-color: var(--primary);
+    opacity: 0.5;
+    margin-top: -10px;
+    margin-left: 25px;
+}
+
+.battery-percentage {
+    font-size: 1.3em;
+    margin-left: 16px;
+    margin-right: -5px;
+}
+
+.battery-power {
+    font-size: 1.1em;
+    margin-right: -10px;
+}
+
+.battery-container {
+    position: relative;
+    width: 50px; /* Atur lebar total baterai */
+    height: 100px; /* Atur tinggi total baterai */
+    background-color: #3d3d3d;
+    border-radius: 10px;
+    padding: 3px; /* Jarak antara tepi dan indikator */
+    margin-right: 20px;
+}
+
+.battery-head {
+    position: absolute;
+    top: -5px; /* Sama dengan ketebalan border */
+    left: 15px; /* Posisi horizontal kepala baterai */
+    width: 20px; /* Lebar kepala baterai */
+    height: 10px; /* Tinggi kepala baterai */
+    background-color: #3d3d3d;
+    border-radius: 5px; /* Melengkungkan sudut kepala baterai */
+}
+
+.battery-body {
+    width: 100%;
+    height: 100%;
+    background-color: #555; /* Warna latar belakang baterai */
+    border-radius: 8px; /* Melengkungkan sudut baterai */
+    overflow: hidden; /* Pastikan indikator baterai tidak melebihi batas */
+    position: relative;
+}
+
+.battery-indicator {
+    position: absolute;
+    bottom: 0; /* Mulai dari bawah baterai */
+    left: 0;
+    width: 100%; /* Penuh lebar dalam baterai */
+    border-radius: 8px; /* Melengkungkan sudut indikator baterai */
+}
+
+.card2.speedometer {
+    /* Card styling */
+    background: var(--bg); /* Example background color */
+    color: #fff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+}
+
+.top-section {
+    display: flex; /* Mengaktifkan Flexbox */
+    justify-content: space-between; /* Mengatur jarak antar item */
+    align-items: center; /* Menyelaraskan item secara vertikal */
+}
+.speed-display {
+    flex: 1;
+    margin-left: -40px;
+}
+
+.circle-container {
+    position: relative;
+    width: max-content;
+    height: max-content;
+    margin-top: 18px;
+    margin-left: 35px;
+}
+
+.main-circle {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 85px;
+    height: 85px;
+    border-radius: 50%;
+    background-color: #4ecca3;
+}
+
+.circle {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: var(--bg);
+}
+
+.speed-value {
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #fff;
+    margin-top: 20px;
+    transition: all 0.3s ease-in-out;
+}
+
+.speed-unit {
+    font-size: 0.5em;
+    margin: auto;
+}
+
+.side-section {
+    flex: 1;
+}
+
+.progress-bar {
+    /* Style the progress bar container */
+    background: #0c0c1c;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-top: 15px;
+    margin-bottom: 10px;
+}
+
+.progress {
+    /* Style the progress bar */
+    height: 10px;
+    background: #4ecca3; /* Example progress color */
+    transition: width 0.3s ease;
+}
+
+.detail-item {
+    /* Style the detail items */
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+}
+
+.detail-title {
+    /* Style the detail title */
+    font-size: 0.8em;
+    opacity: 0.7;
+}
+
+.detail-value {
+    /* Style the detail value */
+    font-weight: bold;
+}
+
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 70px;
+    height: 40px;
+    margin-left: 30px;
+    margin-top: 30px;
+}
+
+.switch .slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+}
+
+.switch .slider.round {
+    border-radius: 34px;
+}
+
+.switch .slider:before {
+    position: absolute;
+    content: "";
+    height: 30px;
+    width: 30px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    -webkit-transition: 0.4s;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+input:checked + .slider {
+    background-color: #4ecca3;
+}
+
+input:checked + .slider:before {
+    -webkit-transform: translateX(30px);
+    -ms-transform: translateX(30px);
+    transform: translateX(30px);
+}
+
+input:focus + .slider {
+    box-shadow: 0 0 1px #4ecca247;
+}
+
+.switch-container {
+    display: flex;
+    align-items: center;
+    margin-top: 60px;
+}
+
+.lock-icon {
+    position: relative;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 5px;
+    margin-left: 10px;
+    margin-top: 15px;
+    vertical-align: middle;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: red;
+}
+
+.lock-icon i {
+    position: absolute;
+}
+
+/* Map & Track Styles */
+.map-track-section2 {
+    display: flex;
+    width: 1270px;
+    margin-left: 225px;
+    justify-content: space-between;
+    padding: 20px;
+    gap: 20px;
+}
+
+.map-container2 {
+    width: 48%;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+}
+
+#myMap2 {
+    width: 50%;
+    height: 350px;
+    border-radius: 8px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.track-information2 {
+    width: 50%;
+    background: var(--primary);
+    color: var(--bg);
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.track-information2 h2 {
+    color: var(--bg);
+    margin-bottom: 10px;
+}
+
+.track-details2 p {
+    margin-bottom: 5px;
+}
+
+/* History Table Styles */
+.history-table2 {
+    width: 1270px;
+    margin-top: 20px;
+    margin-left: 225px;
+    background: var(--bg); /* Warna sesuai desain */
+    color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    overflow: hidden; /* Menambahkan ini untuk mencegah scroll horizontal pada card */
+}
+
+.table-responsive {
+    overflow-y: auto;
+    height: 400px; /* Atur ini sesuai kebutuhan */
+}
+
+.history-data-table2 {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-data-table2 th,
+.history-data-table2 td {
+    border: 2px solid #fff; /* Border semi-transparent */
+    padding: 10px;
+    text-align: left;
+}
+
+.history-data-table2 th {
+    background: #2554c7; /* Warna sesuai desain */
+    position: sticky;
+    top: 0;
+}
+
+.history-data-table2 tr:nth-child(even) {
+    background: #2b6edc; /* Warna sesuai desain */
+}
+
+@media (max-width: 1600px){
+    .card2{
+        width: 303px;
+    }
+}
+
+@media (max-width: 1500px) {
+    .sidebar {
+        width: 65px;
+        overflow: hidden;
+        z-index: 1000;
+    }
+
+    .sidebar-open .sidebar {
+        width: 200px;
+    }
+
+    .sidebar > * {
+        display: none;
+    }
+
+    .sidebar-open .sidebar > * {
+        display: block;
+    }
+
+    body.sidebar-open::before {
+        content: "";
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+    }
+
+    .hamburger {
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        cursor: pointer;
+        background-color: var(--bg);
+        z-index: 1001;
+    }
+
+    .new-flex-container {
+        padding-right: 150px;
+    }
+    
+    .battery-info {
+        margin-bottom: 10px;
+        justify-content: center;
+        flex-grow: 1;
+        padding-left: 5px;
+        margin-bottom: 30px;
+    }
+
+    .battery-kilometers {
+        text-align: center;
+        font-size: 1em;
+        margin-left: 10px;
+        margin-top: -30px;
+    }
+
+    .battery-stats {
+        align-items: center;
+        gap: 5px; 
+        justify-content: center;
+    }
+
+    .battery-separator {
+        width: 100px; 
+        margin-top: -5px; 
+        margin-left: 5px; 
+    }
+
+    .battery-percentage {
+        font-size: 1em; 
+        margin-left: 5px; 
+        margin-right: 0;
+    }
+
+    .battery-status {
+        padding: 10px;
+    }
+    .battery-display {
+        margin-left: 30px;
+    }
+    .battery-content {
+        margin-top: -60px;
+    }
+    .battery-container {
+        width: 50px;
+        height: 100px;
+    }
+    .battery-head {
+        left: 15px;
+        width: 20px;
+        height: 10px;
+    }
+    .card2 {
+        width: 320px;
+    }
+    .card3 {
+        width: 1340px;
+    }
+}
+
+@media (max-width: 1414px){
+    .card2{
+        width: 300px;
+    }
+    .card3{
+        width: 1260px;
+    }
+}
+
+@media (max-width: 1311px){
+    .main-content2 {
+        width: 100%;
+        grid-template-columns: repeat(4, 1fr);
+        padding-left: 2px;
+        padding-right: 1px;
+    }
+    .card2, .card3{
+        width: 100%;
+    }
+}
+
+@media (max-width: 1200px){
+    .main-content2 {
+        width: 100%;
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 650px){
+    .main-content2 {
+        width: 100%;
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .battery-separator {
+        width: 60px; 
+        margin-top: -5px; 
+        margin-left: 5px; 
+    }
+
+    .map-track-section2 {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .map-container2, .track-information2 {
+        width: 100%;
+    }
+
+    #myMap2 {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 480px) {
+    .main-content2 {
+        width: 100%;
+        grid-template-columns: 1fr;
+    }
+}

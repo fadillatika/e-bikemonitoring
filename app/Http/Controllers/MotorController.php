@@ -1,0 +1,41 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Motor;
+use Illuminate\Support\Facades\Http;
+
+class MotorController extends Controller
+{
+    public function index()
+    {
+        $motor = Motor::with(['batteries'=> function($query){
+            $query->orderBy('last_charged_at', 'desc');
+        }, 'locks'=>function($query){
+            $query->orderBy('created_at', 'desc');
+        }, 'trackings'=>function($query){
+            $query->orderBy('created_at', 'desc');
+        }])->get();
+        
+        // konversi
+        $motor->each(function ($motorItem) {
+            $motorItem->trackings->each(function ($tracking) {
+                $tracking->location_name = $this->getLocationName($tracking->latitude, $tracking->longitude);
+            });
+        });
+
+        return view('dashboard', compact('motor'));
+    }
+
+    protected function getLocationName($latitude, $longitude)
+    {
+        $response = Http::get("https://nominatim.openstreetmap.org/reverse", [
+            'format' => 'json',
+            'lat' => $latitude,
+            'lon' => $longitude,
+        ]);
+
+        $data = $response->json();
+        return $data['display_name'] ?? 'Lokasi tidak ditemukan';
+    }
+}
