@@ -27,8 +27,6 @@ class SearchController extends Controller
             if ($motors->isEmpty()) {
                 $dataNotFound = true;
             } else {
-                // Mengambil data battery terbaru dari motor pertama (jika ada beberapa motor yang cocok)
-                // Ini hanya contoh, Anda mungkin perlu menyesuaikannya sesuai dengan kebutuhan aplikasi Anda
                 $latestBatteryData = $motors->first()->batteries->first();
                 $latestLock = $motors->first()->locks->first();
                 $motors = $this->location($motors); //geocode
