@@ -475,7 +475,7 @@ body {
         position: fixed;
         top: 0;
         left: 0;
-        width: 100%; /* Lebar full screen */
+        width: 100%;
         transform: translateX(-100%);
         transition: transform 0.3s ease;
     }
@@ -485,7 +485,7 @@ body {
     }
 
     .navbar .navbar-nav a {
-        text-align: center; /* Teks menu di tengah */
-        font-size: 1.6rem; /* Ukuran font */
+        text-align: center;
+        font-size: 1.6rem;
     }
 }
