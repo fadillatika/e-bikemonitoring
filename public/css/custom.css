@@ -430,6 +430,7 @@ body {
         /* margin-top: 20px; */
         flex-direction: column;
         align-items: center; /* Menengahkan item secara vertikal */
+        position: fixed;
     }
 
     .hero .content h1 {
