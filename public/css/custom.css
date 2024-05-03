@@ -33,7 +33,7 @@
 
 html {
     height: auto;
-  }
+}
 
 body {
     height: auto;
@@ -294,15 +294,15 @@ body {
     color: var(--bg);
     margin-bottom: -30px;
 }
-  
-  .site-footer {
+
+.site-footer {
     position: fixed;
     width: 180vw;
     left: 50%;
     right: 50%;
     margin-left: -90vw;
     margin-right: -90vw;
-    height: 40px; 
+    height: 40px;
     text-align: center;
     padding: 10px 0;
     background-color: var(--bg);
@@ -311,33 +311,32 @@ body {
     z-index: 1000;
     bottom: -0.1cm;
     /* transform: translateX(-50px); */
-  }
-  
-  .container {
+}
+
+.container {
     width: 100%;
     margin: 0 auto;
     max-width: 2000px;
-  }
-  
+}
 
 /* media queries */
 
 /* laptop */
 @media (max-width: 1440px) {
     .navbar .navbar-logo img {
-        height: 120px; 
+        height: 120px;
     }
-  
+
     .hero .content h1 {
-        font-size: 3.5em; 
+        font-size: 3.5em;
     }
-  
+
     .hero .content .motor-icon {
-        width: 400px; 
+        width: 400px;
     }
-  
+
     .custom-search-bar form {
-        width: 400px; 
+        width: 400px;
     }
 }
 
@@ -390,8 +389,8 @@ body {
     }
 
     .custom-search-bar form {
-        width: 300px; 
-        margin-left: auto; 
+        width: 300px;
+        margin-left: auto;
         margin-right: auto;
         z-index: 2;
     }
@@ -406,58 +405,87 @@ body {
         margin-left: auto;
         margin-right: 100px;
         margin-bottom: -100px;
-        z-index: 1; 
+        z-index: 1;
     }
 }
 
 /* mobile */
+/* Mobile Phones */
 @media (max-width: 480px) {
+    html {
+        font-size: 50%; /* Menyesuaikan ukuran font */
+    }
+
     .navbar .navbar-logo img {
-        height: 90px;
-    }
-
-    .hero .content h1 {
-        font-size: 2em;
-    }
-
-    .hero .content .motor-icon {
-        width: 300px;
-    }
-
-    .custom-search-bar form {
-        width: 100%;
-        padding: 0 10px;
-    }
-
-    #hamburger-menu {
-        display: block;
+        height: 80px; /* Ukuran logo lebih kecil */
+        width: 80px;
     }
 
     .navbar .navbar-nav {
-        width: 100%;
-        top: 70px;
-    }
-
-    .navbar .navbar-nav a {
-        font-size: 1.5rem;
+        width: 100%; /* Navbar mengambil seluruh lebar */
     }
 
     .hero .content {
+        padding: 40px; /* Menambah padding pada konten hero */
+        /* margin-top: 20px; */
         flex-direction: column;
-        margin-top: 0;
+        align-items: center; /* Menengahkan item secara vertikal */
+    }
+
+    .hero .content h1 {
+        font-size: 3.5em; /* Ukuran font lebih kecil */
+    }
+
+    .hero .content .motor-icon {
+        margin-top: -20px;
+        width: 250px; /* Ukuran ikon motor lebih kecil */
     }
 
     .hero .content .hero-side p {
-        font-size: 1.2rem;
+        font-size: 1em;
     }
 
-    .container {
-        padding: 0 5px;
+    .custom-search-bar form {
+        width: 250px; /* Lebar form pencarian menyesuaikan */
+        padding: 10px;
     }
 
     .collaboration-logo {
-        width: 100%;
-        margin-right: auto;
-        margin-bottom: 10px;
+        position: fixed; /* Menggunakan fixed untuk mengisolasi lebih lanjut dari struktur DOM */
+        top: 78%; /* Atur posisi vertikal yang sesuai kebutuhan */
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+    }
+
+    .collaboration-logo img {
+        width: auto; /* Atau sesuaikan lebar seperti yang diinginkan */
+        max-width: 100%; /* Batas maksimum lebar gambar */
+        height: auto;
+    }
+
+    .container,
+    .hero .content {
+        overflow: hidden; /* Menghindari overflow horizontal */
+    }
+
+    .navbar .navbar-nav {
+        background-color: var(--bg); /* Menambah background warna */
+        height: 100vh;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%; /* Lebar full screen */
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .navbar .navbar-nav.active {
+        transform: translateX(0);
+    }
+
+    .navbar .navbar-nav a {
+        text-align: center; /* Teks menu di tengah */
+        font-size: 1.6rem; /* Ukuran font */
     }
 }
