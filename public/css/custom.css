@@ -416,6 +416,10 @@ body {
         font-size: 50%; /* Menyesuaikan ukuran font */
     }
 
+    #hamburger-menu {
+        display: inline-block;
+    }
+
     .navbar .navbar-logo img {
         height: 80px; /* Ukuran logo lebih kecil */
         width: 80px;
