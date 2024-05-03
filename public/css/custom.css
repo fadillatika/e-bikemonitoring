@@ -410,7 +410,6 @@ body {
 }
 
 /* mobile */
-/* Mobile Phones */
 @media (max-width: 480px) {
     html {
         font-size: 50%; /* Menyesuaikan ukuran font */
