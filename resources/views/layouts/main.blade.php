@@ -29,7 +29,11 @@
     <!-- Navbar start -->
     @include('partials.navbar')
     <!-- Hero Section -->
-    <section class="hero" id="home">
+    <section class="hero" id="home" style="min-height: 100vh; 
+    display: flex; align-items: center; background-image: url('/img/bg1.png'); 
+    background-repeat: no-repeat; background-size: cover; 
+    background-position: center; position: relative; 
+    text-align: center; overflow: hidden;">
         @yield('container')
     </section>
 

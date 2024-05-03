@@ -412,37 +412,52 @@ body {
 
 /* mobile */
 @media (max-width: 480px) {
-    html {
-        font-size: 55%;
+    .navbar .navbar-logo img {
+        height: 90px;
     }
 
-    .navbar .navbar-logo img {
-        height: 80px; /* Logo lebih kecil */
-    }
-  
     .hero .content h1 {
-        font-size: 2em; /* Ukuran teks lebih kecil */
-        margin-top: 20px;
+        font-size: 2em;
     }
-  
+
     .hero .content .motor-icon {
-        width: 80%; /* Gambar ikon motor menyesuaikan lebar */
+        width: 300px;
     }
-  
+
     .custom-search-bar form {
-        width: 100%; /* Search bar menggunakan 100% lebar */
-        padding: 2px; /* Penyesuaian padding */
+        width: 100%;
+        padding: 0 10px;
     }
-  
-    .custom-search-bar input[type="text"], .custom-search-bar button {
-        width: auto; /* Input dan button search bar menyesuaikan */
+
+    #hamburger-menu {
+        display: block;
     }
-  
-    .site-footer {
-        width: 100vw; /* Footer menyesuaikan lebar viewport */
-        margin-left: -50vw;
-        margin-right: -50vw;
-        left: 50%;
-        transform: translateX(-50%);
+
+    .navbar .navbar-nav {
+        width: 100%;
+        top: 70px;
+    }
+
+    .navbar .navbar-nav a {
+        font-size: 1.5rem;
+    }
+
+    .hero .content {
+        flex-direction: column;
+        margin-top: 0;
+    }
+
+    .hero .content .hero-side p {
+        font-size: 1.2rem;
+    }
+
+    .container {
+        padding: 0 5px;
+    }
+
+    .collaboration-logo {
+        width: 100%;
+        margin-right: auto;
+        margin-bottom: 10px;
     }
 }
