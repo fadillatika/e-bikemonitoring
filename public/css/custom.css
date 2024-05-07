@@ -378,9 +378,9 @@ body {
     }
 
     .hero .content {
-        flex-direction: column; /* Konten hero menjadi vertikal */
+        flex-direction: column;
         margin-top: -70px;
-        margin-left: auto; /* Tengahkan konten secara horizontal */
+        margin-left: auto;
         margin-right: auto;
     }
 
@@ -407,6 +407,7 @@ body {
         margin-bottom: -100px;
         z-index: 1;
     }
+    
 }
 
 /* mobile */
@@ -429,11 +430,9 @@ body {
     }
 
     .hero .content {
-        padding: 40px; /* Menambah padding pada konten hero */
-        /* margin-top: 20px; */
-        flex-direction: column;
-        align-items: center; /* Menengahkan item secara vertikal */
-        position: fixed;
+        margin-top: -70px;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     .hero .content h1 {
@@ -455,41 +454,49 @@ body {
     }
 
     .collaboration-logo {
-        position: fixed; /* Menggunakan fixed untuk mengisolasi lebih lanjut dari struktur DOM */
-        top: 78%; /* Atur posisi vertikal yang sesuai kebutuhan */
-        left: 50%;
+        position: fixed; 
+        top: 78%; 
+        bottom: -11%;
+        left: 45%;
         transform: translateX(-50%);
         z-index: 1000;
     }
 
     .collaboration-logo img {
-        width: auto; /* Atau sesuaikan lebar seperti yang diinginkan */
-        max-width: 100%; /* Batas maksimum lebar gambar */
+        position: fixed;
+        top: 4%;
+        width: auto; 
+        max-width: 100%;
         height: auto;
     }
 
-    .container,
+    /* .container,
     .hero .content {
-        overflow: hidden; /* Menghindari overflow horizontal */
+        overflow: hidden;
+    } */
+
+    .custom-search-bar input::placeholder {
+        font-size: 8.5pt;
     }
 
     .navbar .navbar-nav {
-        background-color: var(--bg); /* Menambah background warna */
+        position: absolute;
+        top: 100%;
+        right: -100%;
+        background-color: var(--bg);
+        width: 20rem;
         height: 100vh;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        transform: translateX(-100%);
-        transition: transform 0.3s ease;
+        transition: 0.3s;
     }
-
     .navbar .navbar-nav.active {
-        transform: translateX(0);
+        right: 0;
     }
 
     .navbar .navbar-nav a {
-        text-align: center;
-        font-size: 1.6rem;
+        color: #fff;
+        display: block;
+        margin: 1.5rem;
+        padding: 0.5rem;
+        font-size: 1.5rem;
     }
 }

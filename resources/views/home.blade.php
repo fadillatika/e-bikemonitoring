@@ -12,7 +12,7 @@
              </p>
              <div class="menu-item custom-search-bar">
                 <form action="{{ route('search') }}" method="get">
-                    <input type="text" name="q" placeholder="Search Your ID Here..." />
+                    <input type="text" name="q" placeholder="Search Your Motor ID Here..." />
                     <button type="submit">
                         <i data-feather="search"></i>
                     </button>
@@ -27,6 +27,6 @@
             <div class="footer-container">
               <p>&copy; 2024 Telkom University.</p>
             </div>
-          </footer>          
+        </footer>          
      </main>
      @endsection

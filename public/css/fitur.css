@@ -214,7 +214,17 @@ body {
 
 #date-box {
     margin-top: 20px;
-    margin-bottom: 20px; /* Menambahkan jarak antara kotak waktu dan kotak tanggal */
+    margin-bottom: 20px;
+}
+
+#boxID {
+    margin-top: 35px;
+    margin-bottom: 20px;
+}
+
+#boxID h2 {
+    color: var(--bg); 
+    font-size: 18px;
 }
 
 .time {
@@ -273,7 +283,7 @@ body {
 
 .battery-info {
     display: flex;
-    flex-direction: column; /* Menempatkan anak-anaknya secara vertikal */
+    flex-direction: column;
     justify-content: center;
     flex-grow: 1;
     padding-left: 10px;

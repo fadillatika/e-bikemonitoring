@@ -8,7 +8,7 @@
         <a href="/dashboard">Dashboard</a>
     </div>
     <div class="navbar-extra">
-        <a href="#" id="bell"><i data-feather="bell"></i></a>
+        <a href="#" id="info"><i data-feather="info"></i></a>
         <a href="#" id="hamburger-menu"><i data-feather="menu"></i></a>
     </div>
 </nav>
