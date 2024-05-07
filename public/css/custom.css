@@ -413,7 +413,7 @@ body {
 /* mobile */
 @media (max-width: 480px) {
     html {
-        font-size: 50%; /* Menyesuaikan ukuran font */
+        font-size: 50%; 
     }
 
     #hamburger-menu {
@@ -421,12 +421,12 @@ body {
     }
 
     .navbar .navbar-logo img {
-        height: 80px; /* Ukuran logo lebih kecil */
+        height: 80px; 
         width: 80px;
     }
 
     .navbar .navbar-nav {
-        width: 100%; /* Navbar mengambil seluruh lebar */
+        width: 100%; 
     }
 
     .hero .content {
@@ -436,22 +436,22 @@ body {
     }
 
     .hero .content h1 {
-        font-size: 3.5em; /* Ukuran font lebih kecil */
+        font-size: 3.5em; 
     }
 
     .hero .content .motor-icon {
         margin-top: -20px;
-        width: 250px; /* Ukuran ikon motor lebih kecil */
+        width: 250px; 
     }
 
     .hero .content .hero-side p {
         font-size: 1em;
     }
 
-    .custom-search-bar form {
-        width: 250px; /* Lebar form pencarian menyesuaikan */
+    /* .custom-search-bar form {
+        width: 250px;
         padding: 10px;
-    }
+    } */
 
     .collaboration-logo {
         position: fixed; 

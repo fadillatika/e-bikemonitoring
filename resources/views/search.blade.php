@@ -47,118 +47,135 @@
             <i data-feather="menu"></i>
         </div>
     <!-- Sidebar start -->
-    @extends('layouts.spesific')
+    <aside class="sidebar">
+        <a class="sidebar-logo" href="/home">
+            <img src="/img/logo.png" alt="Logo" />
+        </a>
+        <div class="sidebar-menu">
+            <ul>
+                <li>
+                    <a href="/about" id="about">
+                        <div class="menu-item">
+                            <i data-feather="users"></i>
+                            <span style="font-weight: bold">About</span>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="/" id="home">
+                        <div class="menu-item">
+                            <i data-feather="home"></i>
+                            <span style="font-weight: bold">Home Page</span>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="/dashboard" id="grid">
+                        <div class="menu-item">
+                            <i data-feather="grid"></i>
+                            <span style="font-weight: bold">Dashboard</span>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <div class="menu-item search-bar">
+                        <form action="{{ route('search') }}" method="get">
+                            <input
+                                type="text"
+                                name="q"
+                                placeholder="Search ID"
+                            />
+                            <button type="submit">
+                                <i data-feather="search"></i>
+                            </button>
+                        </form>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </aside>
     <!-- Main content area -->
     <div class="new-flex-container">
         <div id="halamanDenganScroll" class="main-content2">
-            <!-- Motor ID -->
-            <div class="card2">
+            <!-- Speedometer -->
+            <div class="card2 speedometer">
                 <h2>Motor ID</h2>
                 <div id="boxID" class="box">
                     @foreach ($motors as $motor)
                     <h2>{{ $motor->motors_id }}</h2>
                     @endforeach
                 </div>
-                <!-- <div class="top-section">
-                    <div class="speed-display">
-                        <div class="circle-container">
-                            <div class="main-circle">
-                                <div class="circle">
-                                    <span class="speed-value"></span>
-                                    <span class="speed-unit">Km/h</span>
+            </div>
+                <!-- Battery Status -->
+                <div class="card2 battery-status">
+                    <div class="battery-title">Battery</div>
+                    @if(isset($dataNotFound) && $dataNotFound)
+                        <div class="battery-error" style="display: block; margin-top: 25px;">Tidak ditemukan data</div>
+                    @else
+                        <div class="battery-display" style="display: none;">
+                            <div class="battery-container">
+                                <div class="battery-head"></div>
+                                <div class="battery-body">
+                                    <div class="battery-indicator"></div>
+                                    <!-- Tinggi diatur sesuai persentase -->
+                                </div>
+                            </div>
+                            <div class="battery-content">
+                                <div class="battery-info">
+                                    <span class="battery-kilometers">@if($latestBatteryData){{ $latestBatteryData->kilometers }}km @else - @endif</span>
+                                    <div class="battery-separator"></div>
+                                    <div class="battery-stats">
+                                        <span class="battery-percentage">@if($latestBatteryData){{ $latestBatteryData->percentage }}% @else - @endif</span>
+                                        <span class="battery-power">@if($latestBatteryData){{ $latestBatteryData->kW }}kW @else - @endif</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="side-section">
-                        <h2>Speedometer</h2> 
-                        <div class="progress-bar">
-                            <div class="progress" style="width: 52%"></div>
-                        </div>
-                        <div class="details">
-                            <div class="detail-item">
-                                <span class="detail-title">Distance</span>
-                                <span class="detail-value">2.5</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-title">Range</span>
-                                <span class="detail-value">52</span>
-                            </div>
-                            <div class="detail-item">
-                                <span class="detail-title">Speed Limit</span>
-                                <span class="detail-value">24</span>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
-            </div> 
-            <!-- Battery Status -->
-            <div class="card2 battery-status">
-                <div class="battery-title">Battery</div>
-                @if(isset($dataNotFound) && $dataNotFound)
-                    <div class="battery-error" style="display: block; margin-top: 25px;">Tidak ditemukan data</div>
-                @else
-                    <div class="battery-display" style="display: none;">
-                        <div class="battery-container">
-                            <div class="battery-head"></div>
-                            <div class="battery-body">
-                                <div class="battery-indicator"></div>
-                            </div>
-                        </div>
-                        <div class="battery-content">
-                            <div class="battery-info">
-                                <span class="battery-kilometers">@if($latestBatteryData){{ $latestBatteryData->kilometers }}km @else - @endif</span>
-                                <div class="battery-separator"></div>
-                                <div class="battery-stats">
-                                    <span class="battery-percentage">@if($latestBatteryData){{ $latestBatteryData->percentage }}% @else - @endif</span>
-                                    <span class="battery-power">@if($latestBatteryData){{ $latestBatteryData->kW }}kW @else - @endif</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="battery-error" style="display: none; margin-top: 40px;">Tidak ditemukan data</div>
-                @endif
-            </div>    
-            <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                const rawBatteryPercentage = "@if($latestBatteryData){{ $latestBatteryData->percentage }}@else{{ 'N/A' }}@endif";
-                const batteryDisplays = document.querySelectorAll(".battery-display");
-                const batteryErrors = document.querySelectorAll(".battery-error");
-
-                function updateBatteryDisplay(batteryDisplay, percentage) {
-                    const batteryIndicator = batteryDisplay.querySelector(".battery-indicator");
-                    if (!isNaN(percentage) && percentage !== 'N/A') {
-                        batteryIndicator.style.height = percentage + "%";
-                        if (percentage <= 20) {
-                            batteryIndicator.style.background = "linear-gradient(to right, red, orange)";
-                        } else if (percentage <= 49) {
-                            batteryIndicator.style.background = "linear-gradient(to right, orange, yellow)";
-                        } else {
-                            batteryIndicator.style.background = "linear-gradient(to right, green, lime)";
+                        <div class="battery-error" style="display: none; margin-top: 40px;">Tidak ditemukan data</div>
+                    @endif
+                </div>
+                
+                <script>
+                document.addEventListener("DOMContentLoaded", function () {
+                    const rawBatteryPercentage = "@if($latestBatteryData){{ $latestBatteryData->percentage }}@else{{ 'N/A' }}@endif";
+                    const batteryDisplays = document.querySelectorAll(".battery-display");
+                    const batteryErrors = document.querySelectorAll(".battery-error");
+                
+                    function updateBatteryDisplay(batteryDisplay, percentage) {
+                        const batteryIndicator = batteryDisplay.querySelector(".battery-indicator");
+                        if (!isNaN(percentage) && percentage !== 'N/A') {
+                            batteryIndicator.style.height = percentage + "%";
+                            if (percentage <= 20) {
+                                batteryIndicator.style.background = "linear-gradient(to right, red, orange)";
+                            } else if (percentage <= 49) {
+                                batteryIndicator.style.background = "linear-gradient(to right, orange, yellow)";
+                            } else {
+                                batteryIndicator.style.background = "linear-gradient(to right, green, lime)";
+                            }
                         }
                     }
-                }
                 
-                function toggleBatteryData(isAvailable) {
-                    batteryDisplays.forEach((display, index) => {
-                        if (isAvailable && rawBatteryPercentage !== 'N/A') {
-                            display.style.display = "block";
-                            updateBatteryDisplay(display, parseFloat(rawBatteryPercentage));
-                            if (batteryErrors[index]) batteryErrors[index].style.display = "none";
-                        } else {
-                            display.style.display = "none";
-                            if (batteryErrors[index]) batteryErrors[index].style.display = "block";
-                        }
-                    });
-                }
+                    function toggleBatteryData(isAvailable) {
+                        batteryDisplays.forEach((display, index) => {
+                            if (isAvailable && rawBatteryPercentage !== 'N/A') {
+                                display.style.display = "block";
+                                updateBatteryDisplay(display, parseFloat(rawBatteryPercentage));
+                                if (batteryErrors[index]) batteryErrors[index].style.display = "none";
+                            } else {
+                                display.style.display = "none";
+                                if (batteryErrors[index]) batteryErrors[index].style.display = "block";
+                            }
+                        });
+                    }
                 
-                if(rawBatteryPercentage !== 'N/A' && !isNaN(parseFloat(rawBatteryPercentage))) {
-                    toggleBatteryData(true);
-                } else {
-                    toggleBatteryData(false);
-                }
-            });
-            </script>
+                    if(rawBatteryPercentage !== 'N/A' && !isNaN(parseFloat(rawBatteryPercentage))) {
+                        toggleBatteryData(true);
+                    } else {
+                        toggleBatteryData(false);
+                    }
+                });
+                </script> 
+
             <!-- Wheel Lock -->
             <div class="card2">
                 @if($latestLock)
