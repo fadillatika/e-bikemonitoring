@@ -1,30 +1,41 @@
-let map; // Deklarasi variabel map di luar agar dapat diakses oleh GetMap dan fungsi lainnya
-
-function GetMap() {
-    map = new Microsoft.Maps.Map('#myMap', {
-        credentials: 'Your_Bing_Maps_API_Key', // Ganti dengan API key Anda
-        center: new Microsoft.Maps.Location(47.606209, -122.332071), // Ganti dengan koordinat default atau dinamis
-        zoom: 10
-    });
-
-    addPinsToMap();
-}
-
-function addPinsToMap() {
-    // Tambahkan pin untuk setiap lokasi
-    locationsForMap.forEach(function(location) {
-        if(location && location.latitude && location.longitude) { // Memastikan data lokasi valid
-            var loc = new Microsoft.Maps.Location(location.latitude, location.longitude);
-            var pin = new Microsoft.Maps.Pushpin(loc, {
-                title: "Motor ID: " + location.motor_id, // Menandai pin dengan Motor ID
-                icon: '/path/to/motor-icon.png', // Sesuaikan atau hapus jika tidak menggunakan ikon khusus
-            });
-            map.entities.push(pin);
-        }
-    });
-}
-
 document.addEventListener('DOMContentLoaded', function() {
-    GetMap(); // Pastikan fungsi ini dipanggil setelah DOM sepenuhnya dimuat
-});
+    var map = L.map('myMap');
 
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    function loadTrackings() {
+        fetch('/api/trackings')
+            .then(response => response.json())
+            .then(trackings => {
+                let bounds = [];
+
+                trackings.forEach(tracking => {
+                    var motorIcon = L.icon({
+                        iconUrl: 'img/motor-icon.png',
+                        iconSize: [50, 40],
+                        iconAnchor: [25, 40],
+                        popupAnchor: [0, -40]
+                    });
+
+                    var marker = L.marker([tracking.latitude, tracking.longitude], {icon: motorIcon}).addTo(map);
+                    bounds.push(marker.getLatLng());
+
+                    fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${tracking.latitude}&lon=${tracking.longitude}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            marker.bindPopup(`<b>Motor ID:</b> ${tracking.motors_id}<br><b>Location:</b> ${data.display_name}`);
+                        })
+                        .catch(error => console.error('Error fetching location name:', error));
+                });
+
+                if (bounds.length > 0) {
+                    map.fitBounds(bounds);
+                }
+            })
+            .catch(error => console.error('Error loading the trackings:', error));
+    }
+
+    loadTrackings();
+});

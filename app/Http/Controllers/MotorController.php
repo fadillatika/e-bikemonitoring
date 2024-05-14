@@ -10,7 +10,7 @@ class MotorController extends Controller
     public function index()
     {
         $motor = Motor::with(['batteries'=> function($query){
-            $query->orderBy('last_charged_at', 'desc');
+            $query->orderBy('created_at', 'desc');
         }, 'locks'=>function($query){
             $query->orderBy('created_at', 'desc');
         }, 'trackings'=>function($query){

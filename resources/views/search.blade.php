@@ -34,12 +34,9 @@
         <link rel="stylesheet" href="css/fitur.css" />
         
         <title>E-bike Monitoring!</title>
-        <script
-            type="text/javascript"
-            src="https://www.bing.com/api/maps/mapcontrol?key=Ao8xqO0T79i47wspdw8nKPcCymMd68PFqI9PuUS2Oeo5djho34g_m1tYelh4r9xE&callback=GetMap"
-            async
-            defer
-        ></script>
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
     </head>
 
     <body>
@@ -245,7 +242,34 @@
         <div class="card3 map-track-section2">
             <!-- Placeholder for Map -->
             <div class="map-container2" id="myMap2"></div>
-
+            <script>
+                var map = L.map('myMap2');
+                
+                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                    attribution: '© OpenStreetMap contributors'
+                }).addTo(map);
+                
+                var locations = @json($locationsForMap);
+                var bounds = [];
+                
+                var customIcon = L.icon({
+                    iconUrl: 'img/motor-icon.png',
+                    iconSize: [50, 40],
+                    iconAnchor: [25, 40],
+                    popupAnchor: [0, -40]
+                });
+                
+                locations.forEach(function(location) {
+                    var popupContent ="<br><b>Motor ID:</b> " + location.motorName + "<br><b>Location:</b> " + location.name;
+                    var marker = L.marker([location.lat, location.lng], {icon: customIcon}).addTo(map)
+                        .bindPopup(popupContent);
+                    bounds.push([location.lat, location.lng]);
+                });
+                
+                if (bounds.length > 0) {
+                    map.fitBounds(bounds);
+                }
+            </script>                
             <!-- Track Information -->
             @php
             if ($motors->isNotEmpty()) {
@@ -307,10 +331,11 @@
                                 @php
                                     $tracking = $trackings[$index] ?? null;
                                     $lock = $locks[$index] ?? null;
+                                    $dateToShow = $tracking ? $tracking->updated_at : 'Data tidak ditemukan';
                                 @endphp
                                 <tr>
                                     <td>{{ $motor->motors_id }}</td>
-                                    <td>{{ $battery->last_charged_at }}</td>
+                                    <td>{{ $dateToShow }}</td>
                                     <td>{{ $battery->percentage }}%</td>
                                     <td>{{ $battery->kilometers }} km</td>
                                     <td>{{ $battery->kW }} kW</td>
@@ -337,56 +362,36 @@
         };
         </script>
 
-    <script>
-        function GetMap() {
-            var map = new Microsoft.Maps.Map(
-                document.getElementById("myMap2"),
-                {
-                    credentials: "Ao8xqO0T79i47wspdw8nKPcCymMd68PFqI9PuUS2Oeo5djho34g_m1tYelh4r9xE&callback", // Use your Bing Maps Key
-                    center: new Microsoft.Maps.Location(
-                        47.606209,
-                        -122.332071
-                    ), // Example coordinates
-                    zoom: 10,
-                }
-            );
-        }
-    </script>
         <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const sidebar = document.querySelector('.sidebar');
                 const sidebarToggle = document.querySelector('.hamburger');
                 const body = document.body;
 
-                // Fungsi untuk toggle class 'sidebar-open' dan 'sidebar-closed'
                 function toggleSidebar() {
                     body.classList.toggle('sidebar-open');
                     body.classList.toggle('sidebar-closed');
                     console.log('Sidebar toggled');
                 }
 
-                // Event listener untuk hamburger menu
                 sidebarToggle.addEventListener('click', function(e) {
-                    e.stopPropagation(); // Menghentikan event klik dari "bubbling up"
+                    e.stopPropagation(); 
                     toggleSidebar();
                 });
 
-                // Event listener untuk menutup sidebar jika klik diluar sidebar
                 document.addEventListener('click', function(e) {
                     if (body.classList.contains('sidebar-open') && !sidebar.contains(e.target)) {
                         toggleSidebar();
                     }
                 });
 
-                // Menghentikan event klik dari sidebar agar tidak menutup sidebar
                 sidebar.addEventListener('click', function(e) {
                     e.stopPropagation();
                 });
 
-                // Menggantikan icon feather (jika Anda menggunakan feather icons)
                 feather.replace();
             });
-        </script>        
+        </script>            
             
     <script>
         feather.replace();

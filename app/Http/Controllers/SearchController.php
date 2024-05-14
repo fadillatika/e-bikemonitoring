@@ -15,34 +15,40 @@ class SearchController extends Controller
         $latestBatteryData = null;
         $latestLock = null;
         if (!empty($query)) {
-            // Mencari data motor berdasarkan ID
             $motors = Motor::where('motors_id', 'like', "%{$query}%")
                 ->with(['batteries' => function($q) {
-                    $q->orderBy('last_charged_at', 'desc');
+                    $q->orderBy('created_at', 'desc');
                 }, 'locks'=>function($q){
                     $q->orderBy('created_at', 'desc');
                 }, 'trackings'=>function($q){
                     $q->orderBy('created_at', 'desc');
                 }])->get();
+    
             if ($motors->isEmpty()) {
                 $dataNotFound = true;
             } else {
                 $latestBatteryData = $motors->first()->batteries->first();
                 $latestLock = $motors->first()->locks->first();
-                $motors = $this->location($motors); //geocode
+                $motors = $this->location($motors);
             }
-
+    
             $locationsForMap = $motors->map(function ($motor) {
-                if ($motor->trackings->isNotEmpty()) {
-                }
+                $tracking = $motor->trackings->first();
+                return $tracking ? [
+                    'lat' => $tracking->latitude, 
+                    'lng' => $tracking->longitude, 
+                    'name' => $tracking->location_name,
+                    'motorName' => $motor->motors_id
+                    ] : null;
             })->filter()->values();
         } else {
             $dataNotFound = true;
             $motors = collect();
             $locationsForMap = collect();
         }
+    
         return view('search', compact('motors', 'locationsForMap', 'latestBatteryData', 'dataNotFound', 'latestLock'));
-    }
+    }    
 
     // Fungsi location dan getLocationName tetap seperti sebelumnya
     public function location($motors)

@@ -48,8 +48,7 @@ class ApiController extends Controller
             'motor_id' => 'required|exists:motors,id',
             'percentage' => 'required|integer|between:0,100',
             'kilometers' => 'required|integer|min:0',
-            'kW' => 'required|integer|min:0',
-            'last_charged_at' => 'required|date',
+            'kW' => 'required|integer|min:0'
         ]);
 
         $battery = new Battery;
@@ -57,7 +56,6 @@ class ApiController extends Controller
         $battery->percentage = $request->percentage;
         $battery->kilometers = $request->kilometers;
         $battery->kW = $request->kW;
-        $battery->last_charged_at = $request->last_charged_at;
         $battery->save();
 
         return response()->json($battery, 201);
@@ -77,14 +75,12 @@ class ApiController extends Controller
 
         return response()->json($lock, 201);
     }
-    // public function getMotorData($id)
-    // {
-    //     $motor = Motor::with(['batteries', 'trackings', 'locks'])->find($id);
 
-    //     if (!$motor) {
-    //         return response()->json(['message' => 'Motor not found'], 404);
-    //     }
-
-    //     return response()->json($motor);
-    // }
+    public function getTrackings(){
+        $trackings = Tracking::select('trackings.latitude', 'trackings.longitude', 'motors.motors_id', 'trackings.created_at')
+            ->join('motors', 'trackings.motor_id', '=', 'motors.id')
+            ->whereRaw('trackings.created_at IN (SELECT MAX(created_at) FROM trackings GROUP BY motor_id)')
+            ->get();
+        return response()->json($trackings);
+    }    
 }

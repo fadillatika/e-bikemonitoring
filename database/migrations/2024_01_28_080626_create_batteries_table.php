@@ -15,7 +15,6 @@ return new class extends Migration
             $table->unsignedTinyInteger('percentage');
             $table->unsignedSmallInteger('kilometers');
             $table->unsignedSmallInteger('kW');
-            $table->dateTime('last_charged_at');
             $table->timestamps();
         });
     }

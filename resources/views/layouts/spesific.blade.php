@@ -34,12 +34,14 @@
         <link rel="stylesheet" href="css/dashboard.css" />
         
         <title>E-bike Monitoring!</title>
-        <script
+        <!-- <script
             type="text/javascript"
             src="https://www.bing.com/api/maps/mapcontrol?key=Ao8xqO0T79i47wspdw8nKPcCymMd68PFqI9PuUS2Oeo5djho34g_m1tYelh4r9xE&callback=GetMap"
             async
             defer
-        ></script>
+        ></script> -->
+        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     </head>
 
     <body>
@@ -84,10 +86,7 @@
                 // Menggantikan icon feather (jika Anda menggunakan feather icons)
                 feather.replace();
             });
-        </script>        
-        
-        <!-- Java script -->
-        <script src="{{ asset('js/firebase.js') }}"></script>
+        </script>
         <script src="js/dashboard.js"></script>
     </body>
 </html>

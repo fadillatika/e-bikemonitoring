@@ -19,14 +19,15 @@
                 </form>
             </div>            
          </div>
-         <div class="collaboration-logo">
+         <!-- <div class="collaboration-logo">
             <p>In Collaboration With:</p>
             <img src="/img/ptleniot.png" alt="Collaboration Logo">
-        </div>
+        </div> 
+        -->
         <footer class="site-footer">
             <div class="footer-container">
               <p>&copy; 2024 Telkom University.</p>
             </div>
-        </footer>          
+        </footer>
      </main>
      @endsection

@@ -33,10 +33,11 @@
                                     @php
                                         $tracking = $trackings[$index] ?? null;
                                         $lock = $locks[$index] ?? null;
+                                        $dateToShow = $tracking ? $tracking->created_at : 'Data tidak ditemukan';
                                     @endphp
                                     <tr>
                                         <td>{{ $motors->motors_id }}</td>
-                                        <td>{{ $battery->last_charged_at }}</td>
+                                        <td>{{ $dateToShow }}</td>
                                         <td>{{ $battery->percentage }}%</td>
                                         <td>{{ $battery->kilometers }} km</td>
                                         <td>{{ $battery->kW }} kW</td>
@@ -51,18 +52,3 @@
             </div>
     </div>
 </div>
-<script>
-    function GetMap() {
-        var map = new Microsoft.Maps.Map(
-            document.getElementById("myMap"),
-            {
-                credentials: "Ao8xqO0T79i47wspdw8nKPcCymMd68PFqI9PuUS2Oeo5djho34g_m1tYelh4r9xE&callback", // Use your Bing Maps Key
-                center: new Microsoft.Maps.Location(
-                    47.606209,
-                    -122.332071
-                ), // Example coordinates
-                zoom: 10,
-            }
-        );
-    }
-</script>
