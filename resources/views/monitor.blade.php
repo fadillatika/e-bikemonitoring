@@ -1,11 +1,9 @@
 @extends('layouts.spesific')
 <div class="main-content">
     <div class="flex-container">
-            <!-- Map & Track Section -->
             <div class="map-track-section">
                 <div class="map-container" id="myMap"></div>
             </div>
-            <!-- History Table Section -->
             <div class="history-table">
                 <h2>History Table</h2>
                 <div class="table-container">

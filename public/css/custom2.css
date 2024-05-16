@@ -32,11 +32,15 @@
 }
 
 html {
-    height: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto; 
 }
 
 body {
-    height: auto;
+    min-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
     font-family: "Roboto", sans-serif;
     background-color: var(--primary);
     color: #ffffff;
@@ -55,6 +59,7 @@ body {
     right: 0;
     z-index: 9999;
     width: 100%;
+    overflow: visible;
 }
 
 .navbar .navbar-logo {
@@ -119,7 +124,7 @@ body {
     background-position: center;
     position: relative;
     text-align: center;
-    overflow: hidden;
+    overflow: visible;
 }
 
 .hero::after {
@@ -128,12 +133,11 @@ body {
     position: absolute;
     width: 100%;
     height: 35%;
-    bottom: 0;
-    background: linear-gradient(
+    /* background: linear-gradient(
         0deg,
         rgba(118, 201, 219) 0%,
-        rgba(255, 255, 255, 0) 0%
-    );
+        rgba(255, 255, 255, 0)
+    ); */
 }
 
 .hero .content {
@@ -153,7 +157,7 @@ body {
     font-size: 4em;
     color: #0c0e4f;
     text-shadow: 1px 1px 3px rgba(1, 1, 3, 0.5);
-    margin-top: 80px;
+    margin-top: 70px;
     line-height: 1;
 }
 
@@ -181,24 +185,11 @@ body {
     text-shadow: 1px 1px 3px rgba(1, 1, 3, 0.5);
 }
 
-.hero .content .hero-side .search {
-    display: flex;
-    align-items: center;
-    margin-top: 1rem;
-}
-
-.hero .content .hero-side .search input {
-    padding: 0.5rem;
-}
-
-.hero .content .hero-side .search .search-btn {
-    padding: 0.5rem 1rem;
-    background-color: var(--bg);
-    color: #fff;
-    border: none;
-    border-radius: 0.5rem;
-    cursor: pointer;
-    margin-left: 1rem;
+.hero-side h2{
+    color: #283848; 
+    font-size: 12px;
+    margin-bottom: 10px;
+    margin-left: 240px;
 }
 
 .menu-item {
@@ -228,70 +219,70 @@ body {
     display: none;
 }
 
-.custom-search-bar form {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.login-container {
     background-color: var(--bg);
-    padding: 5px;
-    border-radius: 30px;
-    margin-top: 10px;
-    width: 500px;
-    height: 50px;
-}
-
-.custom-search-bar input[type="text"] {
-    width: 70%;
-    padding: 15px;
-    border: none;
-    border-radius: 30px;
-    width: 480px;
-    height: 40px;
-    margin-right: 5px;
-    background-color: rgba(118, 201, 219, 0.65);
-}
-
-.custom-search-bar button {
-    padding: 5px;
-    border: none;
-    background-color: rgba(118, 201, 219, 0.65);
-    cursor: pointer;
-    width: 40px;
-    height: 40px;
-    border-radius: 100%;
-}
-
-.custom-search-bar button i {
-    stroke: #ffffff;
-}
-
-.custom-search-bar input::placeholder {
-    font-family: "Roboto", sans-serif;
-    font-size: 12pt;
-    color: var(--bg);
-}
-
-.site-footer {
-    position: fixed;
-    width: 180vw;
-    left: 50%;
-    right: 50%;
-    margin-left: -90vw;
-    margin-right: -90vw;
-    height: 40px;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
     text-align: center;
-    padding: 10px 0;
-    background-color: var(--bg);
-    color: #666;
-    border-top: 1px solid var(--bg);
-    z-index: 1000;
-    bottom: -0.1cm;
-} 
+    width: 300px;
+    margin-bottom: -90px;
+    margin-left: 250px;
+    z-index: 100;
+    position: relative;
+}
 
-.container {
+.login-container h2 {
+    color: #ffffff;
+    margin-bottom: 30px;
+}
+
+.login-container .input-group {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.login-container .input-group input {
     width: 100%;
-    margin: 0 auto;
-    max-width: 2000px;
+    padding: 10px 50px 10px 20px;
+    border: none;
+    border-radius: 30px;
+    background-color: #283848;
+    color: #ecf0f1;
+    font-size: 16px;
+    z-index: 200;
+    position: relative;
+}
+
+.login-container .input-group input:focus {
+    outline: none;
+    background-color: #3c566d;
+}
+
+.login-container .input-group i {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #ecf0f1;
+    z-index: 200;
+}
+
+.login-container button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 30px;
+    background-color: #ecf0f1;
+    color: #2c3e50;
+    font-size: 16px;
+    cursor: pointer;
+    z-index: 200;
+    position: relative;
+}
+
+.login-container button:hover {
+    background-color: #bdc3c7;
 }
 
 /* media queries */
@@ -309,10 +300,6 @@ body {
     .hero .content .motor-icon {
         width: 400px;
     }
-
-    .custom-search-bar form {
-        width: 400px;
-    }
 }
 
 /* tablet */
@@ -320,18 +307,26 @@ body {
     html {
         font-size: 62.5%;
     }
+
+    body {
+        overflow-y: auto; 
+    }
+
     #hamburger-menu {
         display: inline-block;
     }
+
     .navbar .navbar-nav {
         position: absolute;
         top: 100%;
         right: -100%;
         background-color: var(--bg);
         width: 30rem;
-        height: 100vh;
+        height: 100vh; 
         transition: 0.3s;
+        overflow-y: auto;
     }
+
     .navbar .navbar-nav.active {
         right: 0;
     }
@@ -354,28 +349,26 @@ body {
 
     .hero .content {
         flex-direction: column;
-        margin-top: -70px;
-        margin-left: auto;
-        margin-right: auto;
+        padding: 1rem; 
     }
 
     .hero .content .hero-side p {
-        margin-top: -30px;
+        font-size: 1.6rem; 
     }
 
-    .hero-side h2{
+    .hero-side h2 {
+        margin-top: -40px;
         margin-left: 40px;
     }
 
-    .custom-search-bar form {
-        width: 300px;
-        margin-left: auto;
-        margin-right: auto;
-        z-index: 2;
+    .login-container {
+        margin-left: 50px;
+        width: 70%;
     }
-
-    .container {
-        overflow-y: auto;
+    .login-container .input-group input, 
+    .login-container button,
+     .login-container .input-group i{
+        z-index: 200;
     }
 }
 
@@ -417,37 +410,6 @@ body {
         font-size: 1em;
     }
 
-    /* .custom-search-bar form {
-        width: 250px;
-        padding: 10px;
-    } */
-
-    /* .collaboration-logo {
-        position: fixed; 
-        top: 78%; 
-        bottom: -11%;
-        left: 45%;
-        transform: translateX(-50%);
-        z-index: 1000;
-    }
-
-    .collaboration-logo img {
-        position: fixed;
-        top: 4%;
-        width: auto; 
-        max-width: 100%;
-        height: auto;
-    } */
-
-    /* .container,
-    .hero .content {
-        overflow: hidden;
-    } */
-
-    .custom-search-bar input::placeholder {
-        font-size: 8.5pt;
-    }
-
     .navbar .navbar-nav {
         position: absolute;
         top: 100%;
@@ -456,6 +418,7 @@ body {
         width: 20rem;
         height: 100vh;
         transition: 0.3s;
+        overflow-y: auto;
     }
     .navbar .navbar-nav.active {
         right: 0;

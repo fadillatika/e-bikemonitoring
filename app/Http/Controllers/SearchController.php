@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Motor;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
 
 class SearchController extends Controller
 {
@@ -50,7 +51,6 @@ class SearchController extends Controller
         return view('search', compact('motors', 'locationsForMap', 'latestBatteryData', 'dataNotFound', 'latestLock'));
     }    
 
-    // Fungsi location dan getLocationName tetap seperti sebelumnya
     public function location($motors)
     {
         $motors->each(function ($motorItem) {
@@ -64,13 +64,16 @@ class SearchController extends Controller
 
     protected function getLocationName($latitude, $longitude)
     {
-        $response = Http::get("https://nominatim.openstreetmap.org/reverse", [
-            'format' => 'json',
-            'lat' => $latitude,
-            'lon' => $longitude,
-        ]);
+        $cacheKey = "location_{$latitude}_{$longitude}";
+        return Cache::remember($cacheKey, 86400, function () use ($latitude, $longitude) {
+            $response = Http::get("https://nominatim.openstreetmap.org/reverse", [
+                'format' => 'json',
+                'lat' => $latitude,
+                'lon' => $longitude,
+            ]);
 
-        $data = $response->json();
-        return $data['display_name'] ?? 'Lokasi tidak ditemukan';
+            $data = $response->json();
+            return $data['display_name'] ?? 'Lokasi tidak ditemukan';
+        });
     }
 }

@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MotorController;
 use App\Http\Controllers\SearchController;
 
-// Menggabungkan home dan /home ke satu rute
+
 Route::redirect('/home', '/');
 
 Route::get('/', function () {
@@ -26,6 +26,12 @@ Route::get('/about', function () {
     ]);
 })->name('about');
 
-Route::get('/dashboard', [MotorController::class, 'index'])->name('dashboard');
+Route::get('/login', function () {
+    return view('login', [
+        "title" => "Login",
+    ]);
+})->name('login');
+
+Route::get('/monitor', [MotorController::class, 'index'])->name('monitor');
 
 Route::get('/search', [SearchController::class, 'search'])->name('search');

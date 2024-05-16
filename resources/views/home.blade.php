@@ -11,19 +11,9 @@
                 <br>Real-time Monitoring and Tracking for Optimal Performance!</br>
              </p>
              <div class="menu-item custom-search-bar">
-                <form action="{{ route('search') }}" method="get">
-                    <input type="text" name="q" placeholder="Search Your Motor ID Here..." />
-                    <button type="submit">
-                        <i data-feather="search"></i>
-                    </button>
-                </form>
+                        <a href="/monitor">Monitoring & Tracking</a>
             </div>            
          </div>
-         <!-- <div class="collaboration-logo">
-            <p>In Collaboration With:</p>
-            <img src="/img/ptleniot.png" alt="Collaboration Logo">
-        </div> 
-        -->
         <footer class="site-footer">
             <div class="footer-container">
               <p>&copy; 2024 Telkom University.</p>

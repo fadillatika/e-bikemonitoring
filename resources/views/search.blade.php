@@ -51,26 +51,42 @@
         <div class="sidebar-menu">
             <ul>
                 <li>
-                    <a href="/about" id="about">
+                    <a href="/account" id="user">
                         <div class="menu-item">
-                            <i data-feather="users"></i>
-                            <span style="font-weight: bold">About</span>
+                            <i data-feather="user"></i>
+                            <span style="font-weight: bold">Account</span>
                         </div>
                     </a>
                 </li>
                 <li>
-                    <a href="/" id="home">
+                    <a href="/settings" id="settings">
                         <div class="menu-item">
-                            <i data-feather="home"></i>
-                            <span style="font-weight: bold">Home Page</span>
+                            <i data-feather="settings"></i>
+                            <span style="font-weight: bold">Settings</span>
                         </div>
                     </a>
                 </li>
                 <li>
-                    <a href="/dashboard" id="grid">
+                    <a href="/monitor" id="monitor">
                         <div class="menu-item">
-                            <i data-feather="grid"></i>
-                            <span style="font-weight: bold">Dashboard</span>
+                            <i data-feather="monitor"></i>
+                            <span style="font-weight: bold">Monitoring <br>& Tracking</br></span>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="/data" id="data">
+                        <div class="menu-item">
+                            <i data-feather="folder"></i>
+                            <span style="font-weight: bold">Data</span>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="/logout" id="logout">
+                        <div class="menu-item">
+                            <i data-feather="log-out"></i>
+                            <span style="font-weight: bold">Logout</span>
                         </div>
                     </a>
                 </li>

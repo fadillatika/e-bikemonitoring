@@ -24,18 +24,22 @@ class MotorController extends Controller
             });
         });
 
-        return view('dashboard', compact('motor'));
+        return view('monitor', compact('motor'));
     }
 
     protected function getLocationName($latitude, $longitude)
     {
-        $response = Http::get("https://nominatim.openstreetmap.org/reverse", [
-            'format' => 'json',
-            'lat' => $latitude,
-            'lon' => $longitude,
-        ]);
+        $cacheKey = "location_{$latitude}_{$longitude}";
+        return cache()->remember($cacheKey, 3600, function () use ($latitude, $longitude) {
+            $response = Http::get("https://nominatim.openstreetmap.org/reverse", [
+                'format' => 'json',
+                'lat' => $latitude,
+                'lon' => $longitude,
+            ]);
 
-        $data = $response->json();
-        return $data['display_name'] ?? 'Lokasi tidak ditemukan';
+            $data = $response->json();
+            return $data['display_name'] ?? 'Lokasi tidak ditemukan';
+        });
     }
+
 }

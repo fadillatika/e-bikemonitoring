@@ -6,6 +6,22 @@
             <div class="sidebar-menu">
                 <ul>
                     <li>
+                        <a href="/login" id="login">
+                            <div class="menu-item">
+                                <i data-feather="log-in"></i>
+                                <span style="font-weight: bold">Login</span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="/monitor" id="grid">
+                            <div class="menu-item">
+                                <i data-feather="map-pin"></i>
+                                <span style="font-weight: bold">Monitoring <br>& Tracking</br></span>
+                            </div>
+                        </a>
+                    </li>
+                    <li>
                         <a href="/about" id="about">
                             <div class="menu-item">
                                 <i data-feather="users"></i>
@@ -14,18 +30,10 @@
                         </a>
                     </li>
                     <li>
-                        <a href="/" id="home">
+                        <a href="/info" id="info">
                             <div class="menu-item">
-                                <i data-feather="home"></i>
-                                <span style="font-weight: bold">Home Page</span>
-                            </div>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="/dashboard" id="grid">
-                            <div class="menu-item">
-                                <i data-feather="grid"></i>
-                                <span style="font-weight: bold">Dashboard</span>
+                                <i data-feather="info"></i>
+                                <span style="font-weight: bold">Info</br></span>
                             </div>
                         </a>
                     </li>
