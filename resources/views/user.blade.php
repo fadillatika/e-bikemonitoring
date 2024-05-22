@@ -28,9 +28,6 @@
             href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         />
 
-        <!-- Turf -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
-
         <!-- Feather Icons -->
         <script src="https://unpkg.com/feather-icons"></script>
 
@@ -54,15 +51,15 @@
         <div class="sidebar-menu">
             <ul>
                 <li>
-                    <a href="/login" id="login">
+                    <a href="/account" id="account">
                         <div class="menu-item">
-                            <i data-feather="log-in"></i>
-                            <span style="font-weight: bold">Login</span>
+                            <i data-feather="user"></i>
+                            <span style="font-weight: bold">Account</span>
                         </div>
                     </a>
                 </li>
                 <li>
-                    <a href="/monitor" id="monitor">
+                    <a href="/monitoruser" id="monitor">
                         <div class="menu-item">
                             <i data-feather="monitor"></i>
                             <span style="font-weight: bold">Monitoring <br>& Tracking</br></span>
@@ -77,17 +74,20 @@
                         </div>
                     </a>
                 </li>
-                <li>
-                    <a href="/info" id="info">
-                        <div class="menu-item">
-                            <i data-feather="info"></i>
-                            <span style="font-weight: bold">Information</span>
-                        </div>
-                    </a>
+                <li style="text-align: center;">
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline-block;">
+                        @csrf
+                        <button type="submit" style="background: none; border: none; padding: 0; color: inherit; text-decoration: inherit; cursor: pointer;">
+                            <a class="menu-item" style="display: flex; flex-direction: column; align-items: center; text-align: center;">
+                                <i data-feather="log-out"></i>
+                                <span style="font-weight: bold;">Logout</span>
+                            </a>
+                        </button>
+                    </form>
                 </li>
                 <li>
                     <div class="menu-item search-bar">
-                        <form action="{{ route('search') }}" method="get">
+                        <form action="{{ route('user.search') }}" method="get">
                             <input
                                 type="text"
                                 name="q"
@@ -125,7 +125,6 @@
                                 <div class="battery-head"></div>
                                 <div class="battery-body">
                                     <div class="battery-indicator"></div>
-                                    <!-- Tinggi diatur sesuai persentase -->
                                 </div>
                             </div>
                             <div class="battery-content">
@@ -205,7 +204,7 @@
                 @endif
             </div> 
             
-            <!-- Distance -->
+            <!-- Date & Time Info -->
             <div class="card2 Time">
                 <h2>Distance Estimate</h2>
                 <img src="img/distance.png" alt="distance" style="width: 80px; height: auto; margin-top: 10px; margin-left: 25px;">
@@ -228,43 +227,43 @@
                 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                     attribution: '© OpenStreetMap contributors'
                 }).addTo(map);
-            
+                
                 var locations = @json($locationsForMap);
                 var bounds = [];
                 var routePoints = [];
-            
+                
                 var customIcon = L.icon({
                     iconUrl: 'img/electric-motorcycle.png',
                     iconSize: [50, 50],
                     iconAnchor: [25, 50],
                     popupAnchor: [0, -40]
                 });
-            
+                
                 if (locations.length >= 2) {
                     locations.forEach(function(location) {
                         routePoints.push([location.lat, location.lng]);
                     });
-            
+                
                     var totalDistanceKilometers = calculateTotalDistance(routePoints);
-            
+                
                     var firstLocation = locations[0];
                     var lastLocation = locations[locations.length - 1];
-            
+                
                     var popupContentFirst = "<br><b>Motor ID:</b> " + firstLocation.motorName + "<br><b>Location:</b> " + firstLocation.name + "<br><b>Total Distance:</b> " + totalDistanceKilometers.toFixed(2) + " km";
                     var markerFirst = L.marker([firstLocation.lat, firstLocation.lng], {icon: customIcon}).addTo(map)
                         .bindPopup(popupContentFirst);
                     bounds.push([firstLocation.lat, firstLocation.lng]);
-            
+                
                     var popupContentLast = "<br><b>Motor ID:</b> " + lastLocation.motorName + "<br><b>Location:</b> " + lastLocation.name;
                     var markerLast = L.marker([lastLocation.lat, lastLocation.lng], {icon: customIcon}).addTo(map)
                         .bindPopup(popupContentLast);
                     bounds.push([lastLocation.lat, lastLocation.lng]);
                 }
-            
+                
                 if (bounds.length > 0) {
                     map.fitBounds(bounds);
                 }
-            
+                
                 if (routePoints.length > 1) {
                     getRoute(routePoints, function(geometry) {
                         var route = L.geoJSON(geometry, {
@@ -273,7 +272,7 @@
                         map.fitBounds(route.getBounds());
                     });
                 }
-            
+                
                 function getRoute(points, callback) {
                     const coordinates = points.map(p => `${p[1]},${p[0]}`).join(';');
                     fetch(`https://router.project-osrm.org/route/v1/driving/${coordinates}?overview=full&geometries=geojson`)
@@ -287,7 +286,7 @@
                         })
                         .catch(error => console.error('Error fetching route:', error));
                 }
-            
+                
                 function calculateTotalDistance(points) {
                     let totalDistance = 0;
                     for (let i = 0; i < points.length - 1; i++) {
@@ -297,27 +296,36 @@
                     }
                     return totalDistance;
                 }
-            
+                
                 function calculateDistance(pointA, pointB) {
                     const R = 6371; 
                     const lat1 = pointA[0] * Math.PI / 180;
                     const lat2 = pointB[0] * Math.PI / 180;
                     const deltaLat = (pointB[0] - pointA[0]) * Math.PI / 180;
                     const deltaLon = (pointB[1] - pointA[1]) * Math.PI / 180;
-            
+                
                     const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-                              Math.cos(lat1) * Math.cos(lat2) *
-                              Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
+                            Math.cos(lat1) * Math.cos(lat2) *
+                            Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
                     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            
+                
                     return R * c;
                 }
-            </script>                                                                                         
+            </script>                       
         </div>
 
         <!-- History Table Section -->
         <div class="card3 history-table2">
             <h2 style="text-align: justify;">History Table</h2>
+            <form class="download-form" action="{{ route('downloadData') }}" method="GET">
+                <label class="download-label" for="start_date">Select Date:</label>
+                <input class="download-input" type="date" id="start_date" name="start_date">
+            
+                <label class="download-label" for="end_date">to</label>
+                <input class="download-input" type="date" id="end_date" name="end_date">
+            
+                <button class="download-button" type="submit">Download</button>
+            </form>
             @if($motors->isEmpty())
                 <div class="table-responsive">
                     <p style="text-align: center; color: #fff; padding: 20px;">Tidak ada data yang tersedia.</p>
@@ -331,6 +339,7 @@
                             <th>Date</th>
                             <th>Percentage</th>
                             <th>Battery-Kilometers</th>
+                            <th>kiloWatt</th>
                             <th>Location</th>
                             <th>Status</th>
                         </tr>
@@ -340,28 +349,23 @@
                             @php
                                 $batteries = $motor->batteries;
                                 $locks = $motor->locks;
-                                $trackings = $motor->trackings;
-                                $lastLockStatus = 'Off';
+                                $trackings = $motor->trackings->take($batteries->count());
                             @endphp
                                                 
-                            @foreach ($trackings as $index => $tracking)
+                            @foreach ($batteries as $index => $battery)
                                 @php
-                                    $battery = $batteries[$index] ?? null;
+                                    $tracking = $trackings[$index] ?? null;
                                     $lock = $locks[$index] ?? null;
-                                    
-                                    if ($lock) {
-                                        $lastLockStatus = $lock->status ? 'On' : 'Off';
-                                    }
-                                    
-                                    $dateToShow = $tracking ? $tracking->created_at : 'Data tidak ditemukan';
+                                    $dateToShow = $tracking ? $tracking->updated_at : 'Data tidak ditemukan';
                                 @endphp
                                 <tr>
                                     <td>{{ $motor->motors_id }}</td>
                                     <td>{{ $dateToShow }}</td>
-                                    <td>{{ $battery ? $battery->percentage . '%' : 'Data tidak ditemukan' }}</td>
-                                    <td>{{ $battery ? $battery->kilometers . ' km' : 'Data tidak ditemukan' }}</td>
+                                    <td>{{ $battery->percentage }}%</td>
+                                    <td>{{ $battery->kilometers }} km</td>
+                                    <td>{{ $battery->kW }} kW</td>
                                     <td>{{ $tracking ? $tracking->location_name : 'Lokasi tidak ditemukan' }}</td>
-                                    <td>{{ $lastLockStatus }}</td>
+                                    <td>{{ $lock ? ($lock->status ? 'On' : 'Off') : 'Status lock tidak ditemukan' }}</td>
                                 </tr>
                             @endforeach
                         @endforeach                

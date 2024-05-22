@@ -33,7 +33,7 @@
                         <a href="/info" id="info">
                             <div class="menu-item">
                                 <i data-feather="info"></i>
-                                <span style="font-weight: bold">Info</br></span>
+                                <span style="font-weight: bold">Information</br></span>
                             </div>
                         </a>
                     </li>

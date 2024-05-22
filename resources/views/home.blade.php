@@ -11,7 +11,12 @@
                 <br>Real-time Monitoring and Tracking for Optimal Performance!</br>
              </p>
              <div class="menu-item custom-search-bar">
-                        <a href="/monitor">Monitoring & Tracking</a>
+                <form action="{{ route('search') }}" method="get">
+                    <input type="text" name="q" placeholder="Search Your Motor ID Here..." />
+                    <button type="submit">
+                        <i data-feather="search"></i>
+                    </button>
+                </form>
             </div>            
          </div>
         <footer class="site-footer">

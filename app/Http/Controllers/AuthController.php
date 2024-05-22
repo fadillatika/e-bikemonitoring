@@ -2,45 +2,48 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use App\Models\Admin;
+use App\Models\Motor;
 
 class AuthController extends Controller
 {
-    public function generateToken(Request $request)
+    public function showLoginForm()
     {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
-    
-        $user = User::where('email', $request->email)->first();
-        if (!$user || !Hash::check($request->password, $user->password)) {
-            return response()->json(['message' => 'Unauthorized'], 401);
-        }
-    
-        $tokenResult = $user->createToken('Personal Access Token');
-        $token = $tokenResult->token;
-        $token->expires_at = now()->addWeeks(1); // Set expire time if needed
-        $token->save();
-
-        $this->sendTokenViaEmail($user->email, $tokenResult->plainTextToken);
-
-        return response()->json([
-            'access_token' => $tokenResult->plainTextToken,
-            'token_type' => 'Bearer',
-            'expires_at' => $token->expires_at
-        ]);
+        return view('login');
     }
 
-    protected function sendTokenViaEmail($email, $token)
+    public function login(Request $request)
     {
-        Mail::raw("Your API token is: {$token}", function ($message) use ($email) {
-            $message->from('no-reply@example.com', 'Example App');
-            $message->to($email);
-            $message->subject('Your API Token');
-        });
+        $credentials = $request->only('username', 'password');
+    
+        if (Auth::guard('admin')->attempt($credentials)) {
+            Log::info('Login successful for username: ' . $credentials['username']);
+            
+            $admin = Auth::guard('admin')->user();
+            
+            $motorId = $admin->motor_id;
+
+            $request->session()->put('motor_id', $motorId);
+            
+            if ($motorId) {
+                return redirect()->route('user.search', ['q' => $motorId]);
+            } else {
+                return redirect()->intended('user');
+            }
+        } else {
+            Log::warning('Login failed for username: ' . $credentials['username']);
+            return back()->withErrors(['message' => 'Invalid username or password.']);
+        }
+    }
+
+    public function logout(Request $request){
+        Auth::guard('admin')->logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
     }
 }

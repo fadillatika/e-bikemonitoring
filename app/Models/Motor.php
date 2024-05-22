@@ -27,4 +27,9 @@ class Motor extends Model
     {
         return $this->hasMany(Lock::class, 'motor_id');
     }
+
+    public function admins()
+    {
+        return $this->hasOne(Admin::class, 'motor_id');
+    }
 }

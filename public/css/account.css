@@ -1,0 +1,84 @@
+:root {
+    --primary: #fff;
+    --bg: #0c0e4f;
+}
+
+body {
+    font-family: "Roboto", sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+  
+.account-container {
+    max-width: 600px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: var(--bg);
+    border-radius: 5px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    margin-right: 370px;
+}
+  
+h1 {
+    text-align: center;
+}
+
+p{
+    text-align: center;
+}
+  
+.account-info {
+    margin-top: 20px;
+}
+  
+.form-group {
+    margin-bottom: 15px;
+}
+  
+label {
+    font-weight: bold;
+}
+  
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    box-sizing: border-box;
+}
+  
+button.save-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #5256b9;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+  
+button.reset-btn {
+    width: 100%;
+    padding: 10px;
+    background-color: #b95252;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+}
+  
+button:hover {
+    opacity: 0.8;
+}
+@media (max-width: 1054px) {
+    .account-container {
+      max-width: 90%;
+      margin: 20px auto;
+      margin-left: 74px;
+      margin-right: 10px;
+      padding: 20px;
+    }
+}

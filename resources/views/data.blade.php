@@ -28,26 +28,59 @@
             href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
         />
 
-        <!-- Turf -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
-        
         <!-- Feather Icons -->
         <script src="https://unpkg.com/feather-icons"></script>
 
-        <link rel="stylesheet" href="css/dashboard.css" />
+        <link rel="stylesheet" href="css/fitur.css" />
+        <link rel="stylesheet" href="css/data.css" />
         
         <title>E-bike Monitoring!</title>
         <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
         <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
     </head>
 
     <body>
         <div class="hamburger" onclick="toggleSidebar()">
             <i data-feather="menu"></i>
         </div>
-        
-        @include ('partials.fitur2')
-        <script src="js/dash.js"></script>
-        <script src="js/dashboard.js"></script>
-    </body>
+    <!-- Sidebar start -->
+    @include('partials.userside')
+      <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const sidebar = document.querySelector('.sidebar');
+            const sidebarToggle = document.querySelector('.hamburger');
+            const body = document.body;
+
+            function toggleSidebar() {
+                body.classList.toggle('sidebar-open');
+                body.classList.toggle('sidebar-closed');
+                console.log('Sidebar toggled');
+            }
+
+            sidebarToggle.addEventListener('click', function(e) {
+                e.stopPropagation(); 
+                toggleSidebar();
+            });
+
+            document.addEventListener('click', function(e) {
+                if (body.classList.contains('sidebar-open') && !sidebar.contains(e.target)) {
+                    toggleSidebar();
+                }
+            });
+
+            sidebar.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+
+            feather.replace();
+        });
+    </script>
+    <script>
+        feather.replace();
+    </script>
+
+    <!-- Java script -->
+    <script src="js/fiturjs.js"></script>
+</body>
 </html>

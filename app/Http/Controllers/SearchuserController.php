@@ -7,7 +7,7 @@ use App\Models\Motor;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
 
-class SearchController extends Controller
+class SearchuserController extends Controller
 {
     public function search(Request $request)
     {
@@ -49,7 +49,7 @@ class SearchController extends Controller
             $locationsForMap = collect();
         }
     
-        return view('search', compact('motors', 'locationsForMap', 'latestBatteryData', 'dataNotFound', 'latestLock'));
+        return view('user', compact('motors', 'locationsForMap', 'latestBatteryData', 'dataNotFound', 'latestLock'));
     }    
 
     public function location($motors)

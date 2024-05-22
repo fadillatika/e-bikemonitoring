@@ -29,14 +29,12 @@ class ApiController extends Controller
             'motor_id' => 'required|exists:motors,id',
             'latitude' => 'required',
             'longitude' => 'required',
-            'recorded_at' => 'required|date',
         ]);
 
         $tracking = new Tracking;
         $tracking->motor_id = $request->motor_id;
         $tracking->latitude = $request->latitude;
         $tracking->longitude = $request->longitude;
-        $tracking->recorded_at = $request->recorded_at;
         $tracking->save();
 
         return response()->json($tracking, 201);
@@ -48,14 +46,12 @@ class ApiController extends Controller
             'motor_id' => 'required|exists:motors,id',
             'percentage' => 'required|integer|between:0,100',
             'kilometers' => 'required|integer|min:0',
-            'kW' => 'required|integer|min:0'
         ]);
 
         $battery = new Battery;
         $battery->motor_id = $request->motor_id;
         $battery->percentage = $request->percentage;
         $battery->kilometers = $request->kilometers;
-        $battery->kW = $request->kW;
         $battery->save();
 
         return response()->json($battery, 201);
@@ -74,13 +70,5 @@ class ApiController extends Controller
         $lock->save();
 
         return response()->json($lock, 201);
-    }
-
-    public function getTrackings(){
-        $trackings = Tracking::select('trackings.latitude', 'trackings.longitude', 'motors.motors_id', 'trackings.created_at')
-            ->join('motors', 'trackings.motor_id', '=', 'motors.id')
-            ->whereRaw('trackings.created_at IN (SELECT MAX(created_at) FROM trackings GROUP BY motor_id)')
-            ->get();
-        return response()->json($trackings);
     }    
 }

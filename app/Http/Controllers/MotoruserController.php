@@ -5,9 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Motor;
 use App\Models\Tracking;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Http\Request;
 
-class MotorController extends Controller
+class MotoruserController extends Controller
 {
     public function index()
     {
@@ -26,12 +25,7 @@ class MotorController extends Controller
             });
         });
 
-        return response()->json($motor); //ubah jadi API endpoint
-    }
-
-    public function showView(){
-        
-        return view('monitor');
+        return view('monitoruser', compact('motor'));
     }
 
     protected function getLocationName($latitude, $longitude)
@@ -49,26 +43,22 @@ class MotorController extends Controller
         });
     }
 
-    public function getTrackings()
-    {
-        $trackings = Tracking::select('trackings.latitude', 'trackings.longitude', 'motors.motors_id', 'trackings.created_at')
-            ->join('motors', 'trackings.motor_id', '=', 'motors.id')
-            // ->join('locks', 'trackings.motor_id', '=', 'locks.motor_id')
-            // ->whereIn('locks.status', [1, 0])
-            ->orderBy('trackings.created_at')
-            ->get();
+    // public function getTrackings()
+    // {
+    //     $trackings = Tracking::select('trackings.latitude', 'trackings.longitude', 'motors.motors_id', 'trackings.created_at')
+    //         ->join('motors', 'trackings.motor_id', '=', 'motors.id')
+    //         ->join('locks', 'trackings.motor_id', '=', 'locks.motor_id')
+    //         ->whereIn('locks.status', [1, 0])
+    //         ->orderBy('trackings.created_at')
+    //         ->get();
 
-        $countTrackings = $trackings->groupBy('motors_id')->map(function ($item) {
-            return $item->map(function($tracking){
-                return [
-                    'latitude' => $tracking->latitude,
-                    'longitude' => $tracking->longitude,
-                    'created_at' => $tracking->created_at
-                ];
-            });
-        });
-        return response()->json($countTrackings);
-    }
-
+    //     $filteredTrackings = $trackings->groupBy('motors_id')->map(function ($item) {
+    //         return [
+    //             'start' => $item->first(),
+    //             'end' => $item->last()
+    //         ];
+    //     });
+    //     return response()->json($filteredTrackings);
+    // }
 
 }
