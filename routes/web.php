@@ -19,11 +19,11 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-// Route::get('/account', function () {
-//     return view('account', [
-//         "title" => "Account"
-//     ]);
-// })->name('account')->middleware('auth.admin');
+Route::get('/forgot-password', function () {
+    return view('forgot-password', [
+        "title" => "Account"
+    ]);
+})->name('forgot-password')->middleware('auth.admin');
 
 Route::get('/data', function () {
     return view('data', [
@@ -37,7 +37,9 @@ Route::get('/about', function () {
     ]);
 })->name('about');
 
-Route::get('/monitor', [MotorController::class, 'showView'])->name('monitor');
+Route::get('/monitor', [MotorController::class, 'index'])->name('monitor');
+
+Route::get('/stream', [MotorController::class, 'stream']);
 
 Route::get('/monitoruser', [MotoruserController::class, 'index'])->name('monitoruser')->middleware('auth.admin');
 

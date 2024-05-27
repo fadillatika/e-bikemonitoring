@@ -7,9 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lock extends Model
 {
-    public function motors()
+    public function motor()
     {
-        return $this->belongsTo(Motor::class, 'motors_id');
+        return $this->belongsTo(Motor::class, 'motor_id');
     }
     use HasFactory;
+
+    protected $fillable = [
+        'motor_id', 'status'
+    ];
 }

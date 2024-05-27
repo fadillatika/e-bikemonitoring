@@ -14,6 +14,6 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 Route::get('/countTrackings', [MotorController::class, 'getTrackings']);
-Route::get('/motors', [MotorController::class, 'index']);
+// Route::get('/monitor', [MotorController::class, 'show']);
 // Route::get('/search', [SearchController::class, 'search'])->name('search');
 // Route::post('/auth/token', [AuthController::class, 'generateToken'])->middleware('throttle:5,1');

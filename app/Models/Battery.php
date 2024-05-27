@@ -8,9 +8,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class Battery extends Model
 {
-    public function motors()
-    {
-        return $this->belongsTo(Motor::class, 'motors_id');
-    }
     use HasFactory;
+    protected $fillable = [
+        'motor_id', 'percentage', 'kilometers'
+    ];
+
+    public function motor()
+    {
+        return $this->belongsTo(Motor::class, 'motor_id');
+    }
 }

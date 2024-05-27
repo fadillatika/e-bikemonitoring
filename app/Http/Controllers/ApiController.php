@@ -7,6 +7,9 @@ use App\Models\Motor;
 use App\Models\Tracking;
 use App\Models\Battery;
 use App\Models\Lock;
+use App\Events\MonitorUpdated;
+use App\Events\TrackingUpdated;
+
 
 class ApiController extends Controller
 {
@@ -37,6 +40,10 @@ class ApiController extends Controller
         $tracking->longitude = $request->longitude;
         $tracking->save();
 
+        $motor = Motor::with(['batteries', 'locks', 'trackings'])->find($request->motor_id);
+        event(new MonitorUpdated($motor));
+        
+
         return response()->json($tracking, 201);
     }
 
@@ -53,6 +60,9 @@ class ApiController extends Controller
         $battery->percentage = $request->percentage;
         $battery->kilometers = $request->kilometers;
         $battery->save();
+        
+        $motor = Motor::with(['batteries', 'locks', 'trackings'])->find($request->motor_id);
+        event(new MonitorUpdated($motor));
 
         return response()->json($battery, 201);
     }
@@ -68,6 +78,9 @@ class ApiController extends Controller
         $lock->motor_id = $request->motor_id;
         $lock->status = $request->status;
         $lock->save();
+
+        $motor = Motor::with(['batteries', 'locks', 'trackings'])->find($request->motor_id);
+        event(new MonitorUpdated($motor));
 
         return response()->json($lock, 201);
     }    

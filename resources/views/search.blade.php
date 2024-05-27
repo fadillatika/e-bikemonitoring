@@ -37,8 +37,8 @@
         <link rel="stylesheet" href="css/fitur.css" />
         
         <title>E-bike Monitoring!</title>
-        <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-        <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+        
+        @vite(['resources/js/mapid.js', 'resources/js/battery.js'])
 
     </head>
 
@@ -114,73 +114,33 @@
                     @endforeach
                 </div>
             </div>
-                <!-- Battery Status -->
-                <div class="card2 battery-status">
-                    <div class="battery-title">Battery</div>
-                    @if(isset($dataNotFound) && $dataNotFound)
-                        <div class="battery-error" style="display: block; margin-top: 25px;">Tidak ditemukan data</div>
-                    @else
-                        <div class="battery-display" style="display: none;">
-                            <div class="battery-container">
-                                <div class="battery-head"></div>
-                                <div class="battery-body">
-                                    <div class="battery-indicator"></div>
-                                    <!-- Tinggi diatur sesuai persentase -->
-                                </div>
+            <!-- Battery Status -->
+            <div class="card2 battery-status">
+                <div class="battery-title">Battery</div>
+                @if(isset($dataNotFound) && $dataNotFound)
+                    <div class="battery-error" style="display: block; margin-top: 25px;">Tidak ditemukan data</div>
+                @else
+                    <div class="battery-display" style="display: none;">
+                        <div class="battery-container">
+                            <div class="battery-head"></div>
+                            <div class="battery-body">
+                                <div class="battery-indicator"></div>
                             </div>
-                            <div class="battery-content">
-                                <div class="battery-info">
-                                    <div class="battery-stats">
-                                        <span class="battery-percentage">@if($latestBatteryData){{ $latestBatteryData->percentage }}% @else - @endif</span>
-                                    </div>
+                        </div>
+                        <div class="battery-content">
+                            <div class="battery-info">
+                                <div class="battery-stats">
+                                    <span class="battery-percentage">@if($latestBatteryData){{ $latestBatteryData->percentage }}% @else - @endif</span>
                                 </div>
                             </div>
                         </div>
-                        <div class="battery-error" style="display: none; margin-top: 40px;">Tidak ditemukan data</div>
-                    @endif
-                </div>
-                
-                <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    const rawBatteryPercentage = "@if($latestBatteryData){{ $latestBatteryData->percentage }}@else{{ 'N/A' }}@endif";
-                    const batteryDisplays = document.querySelectorAll(".battery-display");
-                    const batteryErrors = document.querySelectorAll(".battery-error");
-                
-                    function updateBatteryDisplay(batteryDisplay, percentage) {
-                        const batteryIndicator = batteryDisplay.querySelector(".battery-indicator");
-                        if (!isNaN(percentage) && percentage !== 'N/A') {
-                            batteryIndicator.style.height = percentage + "%";
-                            if (percentage <= 20) {
-                                batteryIndicator.style.background = "linear-gradient(to right, red, orange)";
-                            } else if (percentage <= 49) {
-                                batteryIndicator.style.background = "linear-gradient(to right, orange, yellow)";
-                            } else {
-                                batteryIndicator.style.background = "linear-gradient(to right, green, lime)";
-                            }
-                        }
-                    }
-                
-                    function toggleBatteryData(isAvailable) {
-                        batteryDisplays.forEach((display, index) => {
-                            if (isAvailable && rawBatteryPercentage !== 'N/A') {
-                                display.style.display = "block";
-                                updateBatteryDisplay(display, parseFloat(rawBatteryPercentage));
-                                if (batteryErrors[index]) batteryErrors[index].style.display = "none";
-                            } else {
-                                display.style.display = "none";
-                                if (batteryErrors[index]) batteryErrors[index].style.display = "block";
-                            }
-                        });
-                    }
-                
-                    if(rawBatteryPercentage !== 'N/A' && !isNaN(parseFloat(rawBatteryPercentage))) {
-                        toggleBatteryData(true);
-                    } else {
-                        toggleBatteryData(false);
-                    }
-                });
-                </script> 
-
+                    </div>
+                    <div class="battery-error" style="display: none; margin-top: 40px;">Tidak ditemukan data</div>
+                @endif
+            </div>
+            <div id="batteryPercentage" style="display: none;">
+                @if($latestBatteryData){{ $latestBatteryData->percentage }}@else{{ 'N/A' }}@endif
+            </div>
             <!-- Wheel Lock -->
             <div class="card2">
                 @if($latestLock)
@@ -222,97 +182,7 @@
         <div class="card3 map-track-section2">
             <!-- Placeholder for Map -->
             <div class="map-container2" id="myMap2"></div>
-            <script>
-                var map = L.map('myMap2');
-            
-                L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                    attribution: '© OpenStreetMap contributors'
-                }).addTo(map);
-            
-                var locations = @json($locationsForMap);
-                var bounds = [];
-                var routePoints = [];
-            
-                var customIcon = L.icon({
-                    iconUrl: 'img/electric-motorcycle.png',
-                    iconSize: [50, 50],
-                    iconAnchor: [25, 50],
-                    popupAnchor: [0, -40]
-                });
-            
-                if (locations.length >= 2) {
-                    locations.forEach(function(location) {
-                        routePoints.push([location.lat, location.lng]);
-                    });
-            
-                    var totalDistanceKilometers = calculateTotalDistance(routePoints);
-            
-                    var firstLocation = locations[0];
-                    var lastLocation = locations[locations.length - 1];
-            
-                    var popupContentFirst = "<br><b>Motor ID:</b> " + firstLocation.motorName + "<br><b>Location:</b> " + firstLocation.name + "<br><b>Total Distance:</b> " + totalDistanceKilometers.toFixed(2) + " km";
-                    var markerFirst = L.marker([firstLocation.lat, firstLocation.lng], {icon: customIcon}).addTo(map)
-                        .bindPopup(popupContentFirst);
-                    bounds.push([firstLocation.lat, firstLocation.lng]);
-            
-                    var popupContentLast = "<br><b>Motor ID:</b> " + lastLocation.motorName + "<br><b>Location:</b> " + lastLocation.name;
-                    var markerLast = L.marker([lastLocation.lat, lastLocation.lng], {icon: customIcon}).addTo(map)
-                        .bindPopup(popupContentLast);
-                    bounds.push([lastLocation.lat, lastLocation.lng]);
-                }
-            
-                if (bounds.length > 0) {
-                    map.fitBounds(bounds);
-                }
-            
-                if (routePoints.length > 1) {
-                    getRoute(routePoints, function(geometry) {
-                        var route = L.geoJSON(geometry, {
-                            style: { color: 'blue' }
-                        }).addTo(map);
-                        map.fitBounds(route.getBounds());
-                    });
-                }
-            
-                function getRoute(points, callback) {
-                    const coordinates = points.map(p => `${p[1]},${p[0]}`).join(';');
-                    fetch(`https://router.project-osrm.org/route/v1/driving/${coordinates}?overview=full&geometries=geojson`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.routes && data.routes.length > 0) {
-                                callback(data.routes[0].geometry);
-                            } else {
-                                console.error('No route found');
-                            }
-                        })
-                        .catch(error => console.error('Error fetching route:', error));
-                }
-            
-                function calculateTotalDistance(points) {
-                    let totalDistance = 0;
-                    for (let i = 0; i < points.length - 1; i++) {
-                        const pointA = points[i];
-                        const pointB = points[i + 1];
-                        totalDistance += calculateDistance(pointA, pointB);
-                    }
-                    return totalDistance;
-                }
-            
-                function calculateDistance(pointA, pointB) {
-                    const R = 6371; 
-                    const lat1 = pointA[0] * Math.PI / 180;
-                    const lat2 = pointB[0] * Math.PI / 180;
-                    const deltaLat = (pointB[0] - pointA[0]) * Math.PI / 180;
-                    const deltaLon = (pointB[1] - pointA[1]) * Math.PI / 180;
-            
-                    const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-                              Math.cos(lat1) * Math.cos(lat2) *
-                              Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
-                    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-            
-                    return R * c;
-                }
-            </script>                                                                                         
+            <script id="locationsForMap" type="application/json">@json($locationsForMap)</script>                                                                                         
         </div>
 
         <!-- History Table Section -->
@@ -335,7 +205,7 @@
                             <th>Status</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody id="historyTableBody">
                         @foreach ($motors as $motor)
                             @php
                                 $batteries = $motor->batteries;
@@ -381,38 +251,7 @@
                 table.querySelector("thead").style.paddingRight = scrollbarWidth + "px";
             }
         };
-        </script>
-
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const sidebar = document.querySelector('.sidebar');
-                const sidebarToggle = document.querySelector('.hamburger');
-                const body = document.body;
-
-                function toggleSidebar() {
-                    body.classList.toggle('sidebar-open');
-                    body.classList.toggle('sidebar-closed');
-                    console.log('Sidebar toggled');
-                }
-
-                sidebarToggle.addEventListener('click', function(e) {
-                    e.stopPropagation(); 
-                    toggleSidebar();
-                });
-
-                document.addEventListener('click', function(e) {
-                    if (body.classList.contains('sidebar-open') && !sidebar.contains(e.target)) {
-                        toggleSidebar();
-                    }
-                });
-
-                sidebar.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                });
-
-                feather.replace();
-            });
-        </script>            
+    </script>         
             
     <script>
         feather.replace();
@@ -420,5 +259,7 @@
 
     <!-- Java script -->
     <script src="js/fiturjs.js"></script>
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo/dist/echo.iife.js"></script>
 </body>
 </html>

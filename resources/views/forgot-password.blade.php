@@ -36,7 +36,7 @@
             crossorigin="anonymous"
         />
 
-        <link rel="stylesheet" href="css/login.css" />
+        <link rel="stylesheet" href="css/forgot-password.css" />
 
         <title>E-bike Monitoring!</title>
     </head>
@@ -82,24 +82,15 @@
 
                 <div class="hero-side">
                     <div class="login-container">
-                        <span class="title"> Login Form</br> </br> </span> 
-                         <span class="note"> Please login first by entering your 
-                            motorcycle ID and use the password provided by the admin.</span> </br></br>
+                        <span class="title"> Forgot Password </br> </br> </span> 
+                         <span class="note"> Enter your email address</span> </br></br>
                         <form action="{{ route('login') }}" method="post">
-                            @csrf
                             <div class="input-group">
-                                <i data-feather="user"></i>
-                                <input type="text" name="username" placeholder="username" required />
+                                <input type="text" name="Enter email address" placeholder="Enter email address" required />
                             </div>
-                            <div class="input-group">
-                                <i data-feather="lock"></i>
-                                <input type="password" name="password" placeholder="password" required />
-                            </div>
-                            <div class="forget-pass">
-                                <a href="/forgot-password">Forgot password?</a>
-                            </div>
+
                             </br>
-                            <button type="submit">LOGIN</button>
+                            <button type="submit">CONTINUE</button>
                         </form>
                     </div>            
                 </div>

@@ -7,18 +7,20 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Motor;
 
-class MonitorCreated
+class MonitorUpdated implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
-    public $motors;
+    public $motor;
 
-    public function __construct($motors)
+    public function __construct(Motor $motor)
     {
-        $this->motors = $motors;
+        $this->motor = $motor;
     }
 
     /**
@@ -26,10 +28,16 @@ class MonitorCreated
      *
      * @return array<int, \Illuminate\Broadcasting\Channel>
      */
-    public function broadcastOn(): array
+    public function broadcastOn()
+    {
+        return new Channel('motors');
+    }
+
+    public function broadcastWith()
     {
         return [
-            new Channel('motors'),
+            'motor' => $this->motor->toArray(),
+            'trackings' => $this->motor->trackings->toArray(),
         ];
     }
 }

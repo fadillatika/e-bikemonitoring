@@ -8,9 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Tracking extends Model
 {
-    public function motors()
+    public function motor()
     {
-        return $this->belongsTo(Motor::class, 'motors_id');
+        return $this->belongsTo(Motor::class, 'motor_id');
     }
     use HasFactory;
 
@@ -20,10 +20,9 @@ class Tracking extends Model
         'motor_id',
         'latitude',
         'longitude',
-        'recorded_at',
     ];
 
-    protected $casts = [
-        'recorded_at' => 'datetime',
-    ];
+    // protected $casts = [
+    //     'recorded_at' => 'datetime',
+    // ];
 }

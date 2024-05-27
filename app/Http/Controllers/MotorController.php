@@ -26,13 +26,9 @@ class MotorController extends Controller
             });
         });
 
-        return response()->json($motor); //ubah jadi API endpoint
+         return view('spesific', compact('motor'));
     }
 
-    public function showView(){
-        
-        return view('monitor');
-    }
 
     protected function getLocationName($latitude, $longitude)
     {
@@ -69,6 +65,4 @@ class MotorController extends Controller
         });
         return response()->json($countTrackings);
     }
-
-
 }

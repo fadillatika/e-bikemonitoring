@@ -1,30 +1,28 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const navbarNav = document.querySelector(".navbar-nav");
-    const hamburgerMenu = document.querySelector("#hamburger-menu");
-    const sidebar = document.querySelector(".sidebar");
+    const sidebar = document.querySelector('.sidebar');
+    const sidebarToggle = document.querySelector('.hamburger');
+    const body = document.body;
 
-    hamburgerMenu.addEventListener("click", function() {
-        navbarNav.classList.toggle("active");
-        sidebar.classList.toggle("active");
+    function toggleSidebar() {
+        body.classList.toggle('sidebar-open');
+        body.classList.toggle('sidebar-closed');
+        console.log('Sidebar toggled');
+    }
+
+    sidebarToggle.addEventListener('click', function(e) {
+        e.stopPropagation(); 
+        toggleSidebar();
     });
 
-    document.addEventListener("click", function(e) {
-        if (!hamburgerMenu.contains(e.target) && !navbarNav.contains(e.target)) {
-            navbarNav.classList.remove("active");
+    document.addEventListener('click', function(e) {
+        if (body.classList.contains('sidebar-open') && !sidebar.contains(e.target)) {
+            toggleSidebar();
         }
     });
 
+    sidebar.addEventListener('click', function(e) {
+        e.stopPropagation();
+    });
+
     feather.replace();
-
-    function updateDateTime() {
-        const now = new Date();
-        document.getElementById("time").textContent = now.toLocaleTimeString();
-        document.getElementById("date").textContent = now.toLocaleDateString();
-    }
-    setInterval(updateDateTime, 1000);
-
-    function updateStatusInfo() {
-        // Fungsi ini harus diisi sesuai dengan kebutuhan status yang ingin diperbarui
-    }
-    setInterval(updateStatusInfo, 30000);
 });

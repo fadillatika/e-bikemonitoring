@@ -16,12 +16,44 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
  */
 
 import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
 
-window.Pusher = require('pusher-js');
+Pusher.logToConsole = true;
 
 window.Echo = new Echo({
     broadcaster: 'pusher',
-    key: process.env.MIX_PUSHER_APP_KEY,
-    cluster: process.env.MIX_PUSHER_APP_CLUSTER,
-    forceTLS: true
+    key: import.meta.env.VITE_PUSHER_APP_KEY,
+    cluster: import.meta.env.VITE_PUSHER_APP_CLUSTER,
+    forceTLS: true,
+    wsHost: import.meta.env.VITE_PUSHER_HOST || `ws-${import.meta.env.VITE_PUSHER_APP_CLUSTER}.pusher.com`,
+    wsPort: import.meta.env.VITE_PUSHER_PORT || 80,
+    wssPort: import.meta.env.VITE_PUSHER_PORT || 443,
+    enabledTransports: ['ws', 'wss'],
 });
+
+window.Echo.channel('motors')
+    .listen('MonitorUpdate', (e) => {
+        console.log('Motor Updated:', e.motor);
+        updateMotorOnView(e.motor);
+        updateTrackingOnView(e.trackings);
+    });
+function updateMotorOnView(motor) {
+    // Logic to update view with new motor data
+    console.log(`Motor ID: ${motor.id} updated on view`);
+}
+    
+function updateTrackingOnView(trackings) {
+    // Logic to update view with new tracking data
+    trackings.forEach(tracking => {
+        let newPoint = [tracking.latitude, tracking.longitude];
+        let newMarker = L.marker(newPoint, {
+            icon: L.icon({
+                iconUrl: 'img/electric-motorcycle.png',
+                iconSize: [50, 50],
+                iconAnchor: [25, 50],
+                popupAnchor: [0, -50]
+            })
+        }).addTo(map);
+        newMarker.bindPopup(`<b>Motor ID:</b> ${tracking.motor_id}<br><b>Location:</b> ${tracking.location_name}<br><b>Time:</b> ${tracking.created_at}`).openOn(map);
+    });
+}

@@ -36,7 +36,7 @@
             crossorigin="anonymous"
         />
 
-        <link rel="stylesheet" href="css/login.css" />
+        <link rel="stylesheet" href="login.css" />
 
         <title>E-bike Monitoring!</title>
     </head>
@@ -82,24 +82,19 @@
 
                 <div class="hero-side">
                     <div class="login-container">
-                        <span class="title"> Login Form</br> </br> </span> 
-                         <span class="note"> Please login first by entering your 
-                            motorcycle ID and use the password provided by the admin.</span> </br></br>
+                        <span class="title"> New Password</br> </br> </span> 
+                        
                         <form action="{{ route('login') }}" method="post">
-                            @csrf
                             <div class="input-group">
-                                <i data-feather="user"></i>
-                                <input type="text" name="username" placeholder="username" required />
+                                <input type="text" name="Create new password" placeholder="Create new password" required />
                             </div>
+                            
                             <div class="input-group">
-                                <i data-feather="lock"></i>
-                                <input type="password" name="password" placeholder="password" required />
+                                <input type="password" name="Confirm your password" placeholder="Confirm your password" required />
                             </div>
-                            <div class="forget-pass">
-                                <a href="/forgot-password">Forgot password?</a>
-                            </div>
+
                             </br>
-                            <button type="submit">LOGIN</button>
+                            <button type="submit">CHANGED</button>
                         </form>
                     </div>            
                 </div>
@@ -119,6 +114,6 @@
         </script>
 
         <!-- Java script -->
-        <script src="js/script.js"></script>
+        <script src="login.js"></script>
     </body>
 </html>
