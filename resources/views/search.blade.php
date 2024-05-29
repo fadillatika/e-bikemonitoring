@@ -62,14 +62,6 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/monitor" id="monitor">
-                        <div class="menu-item">
-                            <i data-feather="monitor"></i>
-                            <span style="font-weight: bold">Monitoring <br>& Tracking</br></span>
-                        </div>
-                    </a>
-                </li>
-                <li>
                     <a href="/about" id="about">
                         <div class="menu-item">
                             <i data-feather="users"></i>

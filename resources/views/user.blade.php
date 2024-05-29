@@ -387,7 +387,7 @@
         };
         </script>
 
-        <script>
+        <!-- <script>
             document.addEventListener("DOMContentLoaded", function() {
                 const sidebar = document.querySelector('.sidebar');
                 const sidebarToggle = document.querySelector('.hamburger');
@@ -416,7 +416,7 @@
 
                 feather.replace();
             });
-        </script>            
+        </script>             -->
             
     <script>
         feather.replace();
