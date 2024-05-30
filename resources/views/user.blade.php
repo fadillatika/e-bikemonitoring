@@ -179,7 +179,18 @@
                     }
                 });
                 </script> 
-
+            <!-- Date & Time Info -->
+            <div class="card2 Time">
+                <h2>Distance Estimate</h2>
+                <img src="img/distance.png" alt="distance" style="width: 80px; height: auto; margin-top: 10px; margin-left: 25px;">
+                <div class="battery-content">
+                    <div class="battery-info">
+                        <div class="battery-stats">
+                            <span class="battery-kilometers">@if($latestBatteryData){{ $latestBatteryData->kilometers }}km @else - @endif</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <!-- Wheel Lock -->
             <div class="card2">
                 @if($latestLock)
@@ -193,29 +204,15 @@
                                 <i data-feather="lock"></i>
                             @endif
                         </span>
-                        <label class="switch">
-                            <input type="checkbox" {{ $latestLock->status ? 'checked' : '' }} onclick="return false;">
-                            <span class="slider round"></span>
-                        </label>
+                        <button id="lockButton" class="lock-button {{ $latestLock->status ? 'on' : 'off' }}" onclick="toggleLockStatus()" {{ $latestLock->status ? 'data-status="on"' : 'data-status="off"' }}>
+                            {{ $latestLock->status ? 'ON' : 'OFF' }}
+                        </button>
                     </div>
                 @else
                     <h2>Wheel Lock Status</h2>
                     <h3 style="margin-top: 40px;">Data wheel lock tidak ditemukan.</h3>
                 @endif
             </div> 
-            
-            <!-- Date & Time Info -->
-            <div class="card2 Time">
-                <h2>Distance Estimate</h2>
-                <img src="img/distance.png" alt="distance" style="width: 80px; height: auto; margin-top: 10px; margin-left: 25px;">
-                <div class="battery-content">
-                    <div class="battery-info">
-                        <div class="battery-stats">
-                            <span class="battery-kilometers">@if($latestBatteryData){{ $latestBatteryData->kilometers }}km @else - @endif</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
         <!-- Map & Track Section -->
         <div class="card3 map-track-section2">
@@ -386,37 +383,6 @@
             }
         };
         </script>
-
-        <!-- <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                const sidebar = document.querySelector('.sidebar');
-                const sidebarToggle = document.querySelector('.hamburger');
-                const body = document.body;
-
-                function toggleSidebar() {
-                    body.classList.toggle('sidebar-open');
-                    body.classList.toggle('sidebar-closed');
-                    console.log('Sidebar toggled');
-                }
-
-                sidebarToggle.addEventListener('click', function(e) {
-                    e.stopPropagation(); 
-                    toggleSidebar();
-                });
-
-                document.addEventListener('click', function(e) {
-                    if (body.classList.contains('sidebar-open') && !sidebar.contains(e.target)) {
-                        toggleSidebar();
-                    }
-                });
-
-                sidebar.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                });
-
-                feather.replace();
-            });
-        </script>             -->
             
     <script>
         feather.replace();

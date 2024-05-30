@@ -146,7 +146,7 @@
                 </div>
             </div>
             <!-- Wheel Lock -->
-            <div class="card2">
+            <div class="card2 wheel-lock">
                 @if($latestLock)
                     <div>
                         <h2>Wheel Lock Status</h2>
@@ -158,10 +158,9 @@
                                 <i data-feather="lock"></i>
                             @endif
                         </span>
-                        <label class="switch">
-                            <input type="checkbox" {{ $latestLock->status ? 'checked' : '' }} onclick="return false;">
-                            <span class="slider round"></span>
-                        </label>
+                        <button id="lockButton" class="lock-button {{ $latestLock->status ? 'on' : 'off' }}" onclick="toggleLockStatus()" {{ $latestLock->status ? 'data-status="on"' : 'data-status="off"' }}>
+                            {{ $latestLock->status ? 'ON' : 'OFF' }}
+                        </button>                        
                     </div>
                 @else
                     <h2>Wheel Lock Status</h2>
