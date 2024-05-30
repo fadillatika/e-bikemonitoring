@@ -132,7 +132,7 @@
             </div>
             <div id="batteryPercentage" style="display: none;">
                 @if($latestBatteryData){{ $latestBatteryData->percentage }}@else{{ 'N/A' }}@endif
-            </div> 
+            </div>
             <!-- Distance -->
             <div class="card2 Time">
                 <h2>Distance Estimate</h2>
@@ -145,29 +145,29 @@
                     </div>
                 </div>
             </div>
-        </div>
-        <!-- Wheel Lock -->
-        <div class="card2">
-            @if($latestLock)
-                <div>
+            <!-- Wheel Lock -->
+            <div class="card2">
+                @if($latestLock)
+                    <div>
+                        <h2>Wheel Lock Status</h2>
+                        <h3>Status : {{ $latestLock->status ? 'Unlocked' : 'Locked' }}</h3>
+                        <span class="lock-icon">
+                            @if($latestLock->status)
+                                <i data-feather="unlock"></i>
+                            @else
+                                <i data-feather="lock"></i>
+                            @endif
+                        </span>
+                        <label class="switch">
+                            <input type="checkbox" {{ $latestLock->status ? 'checked' : '' }} onclick="return false;">
+                            <span class="slider round"></span>
+                        </label>
+                    </div>
+                @else
                     <h2>Wheel Lock Status</h2>
-                    <h3>Status : {{ $latestLock->status ? 'Unlocked' : 'Locked' }}</h3>
-                    <span class="lock-icon">
-                        @if($latestLock->status)
-                            <i data-feather="unlock"></i>
-                        @else
-                            <i data-feather="lock"></i>
-                        @endif
-                    </span>
-                    <label class="switch">
-                        <input type="checkbox" {{ $latestLock->status ? 'checked' : '' }} onclick="return false;">
-                        <span class="slider round"></span>
-                    </label>
-                </div>
-            @else
-                <h2>Wheel Lock Status</h2>
-                <h3 style="margin-top: 40px;">Data wheel lock tidak ditemukan.</h3>
-            @endif
+                    <h3 style="margin-top: 40px;">Data wheel lock tidak ditemukan.</h3>
+                @endif
+            </div> 
         </div>
         <!-- Map & Track Section -->
         <div class="card3 map-track-section2">
