@@ -9,7 +9,12 @@ use Illuminate\Support\Facades\Hash;
 class UserController extends Controller
 {
     public function createUser(Request $request)
-    {
+    {   
+        $request->validate([
+            'email' => 'required|email',
+            'password' => 'required',
+        ]);
+        
         $user = User::where('email', $request->email)->first();
         if ($user && Hash::check($request->password, $user->password)) {
             $token = $user->createToken('AdminToken')->accessToken;
