@@ -7,10 +7,10 @@
              <img src="/img/motor.png" alt="icon motor" class="motor-icon">
          </div>
          <div class="hero-side">
-             <p>Explore Our Electric Motor: 
+            <p>Explore Our Electric Motor: 
                 <br>Real-time Monitoring and Tracking for Optimal Performance!</br>
-             </p>
-             <div class="menu-item custom-search-bar">
+            </p>
+            <div class="menu-item custom-search-bar">
                 <form action="{{ route('search') }}" method="get">
                     <input type="text" name="q" placeholder="Search Your Motor ID Here..." />
                     <button type="submit">

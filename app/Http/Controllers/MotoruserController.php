@@ -4,7 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Models\Motor;
 use App\Models\Tracking;
+use App\Models\Lock;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
 
 class MotoruserController extends Controller
 {
@@ -45,20 +47,32 @@ class MotoruserController extends Controller
 
     // public function getTrackings()
     // {
-    //     $trackings = Tracking::select('trackings.latitude', 'trackings.longitude', 'motors.motors_id', 'trackings.created_at')
-    //         ->join('motors', 'trackings.motor_id', '=', 'motors.id')
-    //         ->join('locks', 'trackings.motor_id', '=', 'locks.motor_id')
-    //         ->whereIn('locks.status', [1, 0])
-    //         ->orderBy('trackings.created_at')
-    //         ->get();
+    //     try {
+    //         $trackings = Tracking::select('trackings.latitude', 'trackings.longitude', 'trackings.motor_id', 'trackings.created_at', 'locks.status as lock_status')
+    //             ->join('motors', 'trackings.motor_id', '=', 'motors.id')
+    //             ->leftJoin('locks', function($join) {
+    //                 $join->on('trackings.motor_id', '=', 'locks.motor_id')
+    //                     ->whereRaw('locks.created_at = (select max(`created_at`) from `locks` where `motor_id` = `trackings`.`motor_id`)');
+    //             })
+    //             ->orderBy('trackings.created_at')
+    //             ->get();
 
-    //     $filteredTrackings = $trackings->groupBy('motors_id')->map(function ($item) {
-    //         return [
-    //             'start' => $item->first(),
-    //             'end' => $item->last()
-    //         ];
-    //     });
-    //     return response()->json($filteredTrackings);
+    //         $countTrackings = $trackings->groupBy('motor_id')->map(function ($item) {
+    //             return $item->map(function($tracking){
+    //                 return [
+    //                     'latitude' => $tracking->latitude,
+    //                     'longitude' => $tracking->longitude,
+    //                     'created_at' => $tracking->created_at,
+    //                     'lock_status' => $tracking->lock_status
+    //                 ];
+    //             });
+    //         });
+            
+    //         return response()->json($countTrackings);
+    //     } catch (\Exception $e) {
+    //         // Logging error for debugging
+    //         Log::error("Error fetching trackings: " . $e->getMessage());
+    //         return response()->json(['error' => 'Unable to fetch trackings'], 500);
+    //     }
     // }
-
 }

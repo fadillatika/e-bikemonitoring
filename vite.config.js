@@ -9,6 +9,7 @@ export default defineConfig({
                 'resources/js/dash.js', 
                 'resources/js/mapid.js',
                 'resources/js/battery.js',
+                'resources/js/lock.js',
             ],
             refresh: true,
         }),

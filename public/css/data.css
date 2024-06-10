@@ -1,0 +1,78 @@
+/* History Table */
+.history-table2 {
+    width: 1270px;
+    margin-top: 20px;
+    margin-left: 225px;
+    background: var(--bg); 
+    color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    overflow: hidden; 
+}
+
+.table-responsive {
+    overflow-y: auto;
+    height: 400px; 
+}
+
+.history-data-table2 {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-data-table2 th,
+.history-data-table2 td {
+    border: 2px solid #fff; 
+    padding: 10px;
+    text-align: left;
+}
+
+.history-data-table2 th {
+    background: #2554c7; 
+    position: sticky;
+    top: 0;
+}
+
+.history-data-table2 tr:nth-child(even) {
+    background: #2b6edc;
+}
+
+.download-form {
+    margin: 5px;
+    padding: 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    background-color: #f9f9f9;
+}
+
+.download-label {
+    font-family: "Roboto", sans-serif;
+    display: block;
+    margin-bottom: 3px;
+    color: #0c0e4f;
+    font-size: 12px;
+}
+
+.download-input {
+    padding: 6px;
+    margin-bottom: 8px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    box-sizing: border-box;
+    width: 92%;
+    font-size: 12px; 
+}
+
+.download-button {
+    padding: 8px 16px;
+    background-color: #0c0e4f;
+    color: white;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    font-size: 12px; 
+}
+
+.download-button:hover {
+    background-color: #2b6edc;
+}

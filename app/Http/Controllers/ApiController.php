@@ -8,7 +8,7 @@ use App\Models\Tracking;
 use App\Models\Battery;
 use App\Models\Lock;
 use App\Events\MonitorUpdated;
-use App\Events\TrackingUpdated;
+// use App\Events\TrackingUpdated;
 
 
 class ApiController extends Controller

@@ -14,6 +14,7 @@ return new class extends Migration
             $table->foreignId('motor_id')->constrained()->onDelete('cascade');
             $table->unsignedTinyInteger('percentage');
             $table->unsignedSmallInteger('kilometers');
+            $table->unsignedSmallInteger('voltage')->nullable();
             $table->timestamps();
         });
     }

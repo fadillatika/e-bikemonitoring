@@ -221,12 +221,12 @@ body {
 
 .login-container {
     background-color: var(--bg);
-    padding: 30px;
+    padding: 20px;
     border-radius: 10px;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
     text-align: center;
     width: 300px;
-    margin-bottom: -90px;
+    margin-bottom: -10px;
     margin-left: 250px;
     z-index: 100;
     position: relative;
@@ -234,16 +234,16 @@ body {
 
 .hero-side .login-container .title{
     color: #ffffff;
-    margin-bottom: 4px;
+    /* margin-bottom: 2px; */
     font-weight: bolder;
     font-size:30px;
 }
 
 .hero-side .login-container .note{
     color: #ffffff;
-    margin-bottom: 4px;
+    /* margin-bottom: 4px; */
     font-weight: bolder;
-    font-size:13x;
+    font-size:13px;
 }
 
 .hero-side .login-container .forget-pass a{

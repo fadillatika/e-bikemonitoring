@@ -38,6 +38,9 @@ class MonitorUpdated implements ShouldBroadcast
         return [
             'motor' => $this->motor->toArray(),
             'trackings' => $this->motor->trackings->toArray(),
+            'batteries' => $this->motor->batteries->toArray(),
+            'locks' => $this->motor->locks->toArray(),
+            'status' => $this->motor->locks->last()->status,
         ];
     }
 }

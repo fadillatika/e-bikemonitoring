@@ -73,6 +73,7 @@
     height: 2.25em;
     width: 2.25em;
 }
+
 @media screen and (max-width: 991.5px) {
     .row {
         flex-direction: column;

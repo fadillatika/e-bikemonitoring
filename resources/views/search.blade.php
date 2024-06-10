@@ -38,7 +38,7 @@
         
         <title>E-bike Monitoring!</title>
         
-        @vite(['resources/js/mapid.js', 'resources/js/battery.js'])
+        @vite(['resources/js/mapid.js', 'resources/js/battery.js', 'resources/js/lock.js'])
 
     </head>
 
@@ -110,7 +110,7 @@
             <div class="card2 battery-status">
                 <div class="battery-title">Battery</div>
                 @if(isset($dataNotFound) && $dataNotFound)
-                    <div class="battery-error" style="display: block; margin-top: 25px;">Tidak ditemukan data</div>
+                    <div class="battery-error" style="display: block; margin-top: 25px;">-</div>
                 @else
                     <div class="battery-display" style="display: none;">
                         <div class="battery-container">
@@ -127,7 +127,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="battery-error" style="display: none; margin-top: 40px;">Tidak ditemukan data</div>
+                    <div class="battery-error" style="display: none; margin-top: 20px; font-size: 2.5em; font-weight: bold;">-</div>
                 @endif
             </div>
             <div id="batteryPercentage" style="display: none;">
@@ -144,6 +144,9 @@
                         </div>
                     </div>
                 </div>
+            </div>
+            <div id="batteryKilometers" style="display: none;">
+                @if($latestBatteryData){{ $latestBatteryData->kilometers }}@else{{ 'N/A' }}@endif
             </div>
             <!-- Wheel Lock -->
             <div class="card2 wheel-lock">
@@ -164,7 +167,7 @@
                     </div>
                 @else
                     <h2>Wheel Lock Status</h2>
-                    <h3 style="margin-top: 40px;">Data wheel lock tidak ditemukan.</h3>
+                    <h3 style="margin-top: 40px; font-size: 2.5em; font-weight: bold;">-</h3>
                 @endif
             </div> 
         </div>
@@ -174,74 +177,7 @@
             <div class="map-container2" id="myMap2"></div>
             <script id="locationsForMap" type="application/json">@json($locationsForMap)</script>                                                                                         
         </div>
-
-        <!-- History Table Section -->
-        <div class="card3 history-table2">
-            <h2 style="text-align: justify;">History Table</h2>
-            @if($motors->isEmpty())
-                <div class="table-responsive">
-                    <p style="text-align: center; color: #fff; padding: 20px;">Tidak ada data yang tersedia.</p>
-                </div>
-            @else
-            <div class="table-responsive">
-                <table class="history-data-table2">
-                    <thead>
-                        <tr>
-                            <th>ID E-bike</th>
-                            <th>Date</th>
-                            <th>Percentage</th>
-                            <th>Battery-Kilometers</th>
-                            <th>Location</th>
-                            <th>Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historyTableBody">
-                        @foreach ($motors as $motor)
-                            @php
-                                $batteries = $motor->batteries;
-                                $locks = $motor->locks;
-                                $trackings = $motor->trackings;
-                                $lastLockStatus = 'Off';
-                            @endphp
-                                                
-                            @foreach ($trackings as $index => $tracking)
-                                @php
-                                    $battery = $batteries[$index] ?? null;
-                                    $lock = $locks[$index] ?? null;
-                                    
-                                    if ($lock) {
-                                        $lastLockStatus = $lock->status ? 'On' : 'Off';
-                                    }
-                                    
-                                    $dateToShow = $tracking ? $tracking->created_at : 'Data tidak ditemukan';
-                                @endphp
-                                <tr>
-                                    <td>{{ $motor->motors_id }}</td>
-                                    <td>{{ $dateToShow }}</td>
-                                    <td>{{ $battery ? $battery->percentage . '%' : 'Data tidak ditemukan' }}</td>
-                                    <td>{{ $battery ? $battery->kilometers . ' km' : 'Data tidak ditemukan' }}</td>
-                                    <td>{{ $tracking ? $tracking->location_name : 'Lokasi tidak ditemukan' }}</td>
-                                    <td>{{ $lastLockStatus }}</td>
-                                </tr>
-                            @endforeach
-                        @endforeach                
-                    </tbody>
-                </table>
-            </div>
-            @endif
-        </div>
-    </div>
-
-    <script>
-        window.onload = function() {
-            var table = document.querySelector(".history-data-table2");
-            var tbody = table.querySelector("tbody");
-            if (tbody.scrollWidth > tbody.clientWidth) {
-                var scrollbarWidth = tbody.offsetWidth - tbody.clientWidth;
-                table.querySelector("thead").style.paddingRight = scrollbarWidth + "px";
-            }
-        };
-    </script>         
+    </div>         
             
     <script>
         feather.replace();

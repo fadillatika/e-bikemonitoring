@@ -3,6 +3,20 @@
     --bg: #0c0e4f;
 }
 
+::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -19,15 +33,10 @@ body {
     overflow-x: auto;
 }
 
-::-webkit-scrollbar {
-    width: 5px;
-    height: 5px;
-}
-
 .sidebar {
     position: fixed;
     top: 0;
-    left: 0;
+    right: 0;
     bottom: 0;
     width: 200px;
     background-color: var(--bg);
@@ -107,7 +116,7 @@ body {
     border: none;
     border-radius: 5px;
     margin-right: 5px;
-}
+    }
 
 .search-bar button {
     padding: 5px;
@@ -118,138 +127,51 @@ body {
 }
 
 .main-content {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    padding: 25px;
+    margin-left: -170px;
 }
 
-.flex-container {
-    display: flex;
-    gap: 10px;
-    padding-left: 200px;
-    margin-top: 10px;
-    transition: padding-left 0.3s ease;
-}
-
-.map-track-section, .history-table {
-    flex: 1;
-    min-width: 300px;
+.map-track-section {
+    width: 1280px;
     border-radius: 5px;
     padding: 20px;
     color: #fff;
     background-color: var(--bg);
-    margin-top: 10px;
-    transform: translateY(-25px);
+    margin-left: 200px;
 }
 
-.map-container, #myMap, .table-container {
+.map-container, #myMap {
     width: 100%;
-}
-
-.history-data-table{
-    width: 100%;
-    border-collapse: collapse;
+    height: 95%;
 }
 
 #myMap {
-    height: 645px;
-    border-radius: 8px;
-}
-
-.table-container {
-    overflow-y: auto;
-    overflow-x: auto;
-    max-height: 620px;
-}
-
-.history-data-table thead {
-    position: sticky;
-    top: 0;
-    z-index: 1;
-}
-
-.history-data-table th {
-    border: 1px solid #ddd;
-    text-align: left;
-    padding: 8px;
-    background-color: #5256b9;
-    color: white;
-}
-
-.history-data-table td {
-    border: 1px solid #ddd; /* Perbaikan garis tabel */
-    text-align: left;
-    padding: 8px;
-}
-
-.history-data-table tr:nth-child(even) {
-    background-color: var(--bg);
-}
-
-.history-data-table thead th {
-    position: sticky;
-    top: 0;
-    background-color: #5256b9;
-    z-index: 2;
-}
-
-.history-data-table thead th::after {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    height: 1px;
-    background-color: #ffffff;
-}
-
-.history-data-table tr:hover {
-    background-color: #343a80;
+    height: 635px;
 }
 
 @media (max-width: 768px) {
-    .flex-container {
-        flex-direction: column;
-        padding-left: 0;
-        gap: 10px;
+    .main-content{
+        margin-left: 135;
     }
-
-    .map-track-section, .history-table {
-        justify-content: center;
-        width: 90%;
-        margin-left: auto;
-        margin-right: auto;
-        transform: translateY(0);
+    .map-track-section {
+        width: calc(100vw - 300px); 
+        /* margin-left: 0; */
     }
 }
 
 @media (max-width: 480px) {
-    .flex-container {
-        padding-left: 0;
+    .main-content{
+        margin-left: 0;
     }
-
-    .map-track-section, .history-table {
-        width: 100%;
-        min-width: 0;
-        max-width: none;
-    }
-
     .map-container, #myMap {
-        width: 100%;
-        height: 300px;
-    }
-
-    .table-container {
-        max-height: 300px;
-    }
-
-    .history-data-table {
-        font-size: 12px;
+        height: 625px;
+        width: 1250px;
     }
 }
 
 @media (max-width: 1500px) {
+    .main-content{
+        margin-left: -135px;
+    }
     .sidebar {
         width: 65px;
         overflow: hidden;
@@ -272,7 +194,7 @@ body {
         content: "";
         position: fixed;
         top: 0;
-        left: 0;
+        right: 0;
         width: 100%;
         height: 100%;
         background: rgba(0, 0, 0, 0.5);
@@ -282,13 +204,22 @@ body {
     .hamburger {
         position: fixed;
         top: 20px;
-        left: 20px;
+        right: 20px;
         cursor: pointer;
         background-color: var(--bg);
         z-index: 1001;
     }
 
-    .flex-container {
-        padding-left: 65px;
+    .map-track-section {
+        width: calc(100vw - 200px); 
+    }
+}
+
+@media (max-width: 1200px) {
+    .main-content{
+        margin-left: -135px;
+    }
+    .map-track-section {
+        width: calc(100vw - 200px);
     }
 }
