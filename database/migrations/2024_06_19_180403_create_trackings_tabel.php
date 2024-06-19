@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('trackings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('motor_id')->constrained('motors')->onDelete('cascade');
-            $table->decimal('latitude', 10, 8);
-            $table->decimal('longitude', 11, 8);
+            $table->decimal('latitude', 9, 6);
+            $table->decimal('longitude', 10, 6);
             $table->float('distance'); 
             $table->float('total_distance');
             $table->timestamps();
