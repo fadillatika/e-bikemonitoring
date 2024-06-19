@@ -31,29 +31,29 @@ window.Echo = new Echo({
     enabledTransports: ['ws', 'wss'],
 });
 
-window.Echo.channel('motors')
-    .listen('MonitorUpdate', (e) => {
-        console.log('Motor Updated:', e.motor);
-        updateMotorOnView(e.motor);
-        updateTrackingOnView(e.trackings);
-    });
-function updateMotorOnView(motor) {
-    // Logic to update view with new motor data
-    console.log(`Motor ID: ${motor.id} updated on view`);
-}
+// window.Echo.channel('motors')
+//     .listen('MonitorUpdate', (e) => {
+//         console.log('Motor Updated:', e.motor);
+//         updateMotorOnView(e.motor);
+//         updateTrackingOnView(e.trackings);
+//     });
+// function updateMotorOnView(motor) {
+//     // Logic to update view with new motor data
+//     console.log(`Motor ID: ${motor.id} updated on view`);
+// }
     
-function updateTrackingOnView(trackings) {
-    // Logic to update view with new tracking data
-    trackings.forEach(tracking => {
-        let newPoint = [tracking.latitude, tracking.longitude];
-        let newMarker = L.marker(newPoint, {
-            icon: L.icon({
-                iconUrl: 'img/electric-motorcycle.png',
-                iconSize: [50, 50],
-                iconAnchor: [25, 50],
-                popupAnchor: [0, -50]
-            })
-        }).addTo(map);
-        newMarker.bindPopup(`<b>Motor ID:</b> ${tracking.motor_id}<br><b>Location:</b> ${tracking.location_name}<br><b>Time:</b> ${tracking.created_at}`).openOn(map);
-    });
-}
+// function updateTrackingOnView(trackings) {
+//     // Logic to update view with new tracking data
+//     trackings.forEach(tracking => {
+//         let newPoint = [tracking.latitude, tracking.longitude];
+//         let newMarker = L.marker(newPoint, {
+//             icon: L.icon({
+//                 iconUrl: 'img/electric-motorcycle.png',
+//                 iconSize: [50, 50],
+//                 iconAnchor: [25, 50],
+//                 popupAnchor: [0, -50]
+//             })
+//         }).addTo(map);
+//         newMarker.bindPopup(`<b>Motor ID:</b> ${tracking.motor_id}<br><b>Location:</b> ${tracking.location_name}<br><b>Time:</b> ${tracking.created_at}`).openOn(map);
+//     });
+// }

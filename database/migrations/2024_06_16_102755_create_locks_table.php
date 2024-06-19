@@ -13,10 +13,11 @@ return new class extends Migration
     {
         Schema::create('locks', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('motor_id')->constrained()->onDelete('cascade');
-            $table->boolean('status');
+            $table->foreignId('motor_id')->constrained('motors')->onDelete('cascade');
+            $table->tinyInteger('status')->default(0);
+            $table->float('trip_distance')->default(0);
             $table->timestamps();
-        });
+        });        
     }
 
     /**

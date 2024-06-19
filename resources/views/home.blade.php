@@ -10,13 +10,12 @@
             <p>Explore Our Electric Motor: 
                 <br>Real-time Monitoring and Tracking for Optimal Performance!</br>
             </p>
-            <div class="menu-item custom-search-bar">
-                <form action="{{ route('search') }}" method="get">
-                    <input type="text" name="q" placeholder="Search Your Motor ID Here..." />
-                    <button type="submit">
-                        <i data-feather="search"></i>
-                    </button>
-                </form>
+            <div class="dropdown">
+                <button class="dropbtn">Choose Motor ID!</button>
+                <div class="dropdown-content">
+                    <a href="/search?q=eb-01">EB-01</a>
+                    <a href="/search?q=eb-01">EB-02</a>
+                </div>
             </div>            
          </div>
         <footer class="site-footer">

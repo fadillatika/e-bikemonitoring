@@ -70,10 +70,10 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/info" id="info">
+                    <a href="/list" id="info">
                         <div class="menu-item">
                             <i data-feather="info"></i>
-                            <span style="font-weight: bold">Information</span>
+                            <span style="font-weight: bold">List IDs</span>
                         </div>
                     </a>
                 </li>

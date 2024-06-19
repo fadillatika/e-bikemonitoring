@@ -15,7 +15,7 @@
 }
 
 .download-input {
-    padding: 6px;
+    padding: 4px;
     margin-bottom: 8px;
     border: 1px solid #ccc;
     border-radius: 3px;
@@ -25,7 +25,7 @@
 }
 
 .download-button {
-    padding: 8px 16px;
+    padding: 5px 10px;
     background-color: #0c0e4f;
     color: white;
     border: none;

@@ -14,6 +14,8 @@ class Lock extends Model
     use HasFactory;
 
     protected $fillable = [
-        'motor_id', 'status'
+        'motor_id',
+        'status',
+        'trip_distance'
     ];
 }

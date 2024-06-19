@@ -40,7 +40,15 @@ class MonitorUpdated implements ShouldBroadcast
             'trackings' => $this->motor->trackings->toArray(),
             'batteries' => $this->motor->batteries->toArray(),
             'locks' => $this->motor->locks->toArray(),
-            'status' => $this->motor->locks->last()->status,
         ];
+
+        if ($this->motor->locks->isNotEmpty()) {
+            $data['status'] = $this->motor->locks->last()->status;
+        } else {
+            $data['status'] = null;
+        }
+
+        return $data;
+        
     }
 }

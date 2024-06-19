@@ -214,6 +214,17 @@ body {
     font-size: 18px;
 }
 
+.motor-id {
+    cursor: pointer;
+    padding: 5px;
+    margin: 0;
+    border-bottom: 1px solid #0c0e4f;
+}
+
+.motor-id:hover {
+    background-color: #f0f0f0;
+}
+
 .battery-status {
     display: flex;
     flex-direction: column;

@@ -107,8 +107,10 @@
             </div>
         </aside>
         <div class="main-content">
-            <div class="map-track-section">
-                <div class="map-container" id="myMap"></div>
+            <div class="flex-container">
+                <div class="map-track-section">
+                    <div class="map-container" id="myMap"></div>
+                </div>
             </div>
         </div>
         <script src="js/dashboard.js"></script>

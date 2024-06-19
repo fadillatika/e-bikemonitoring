@@ -11,10 +11,11 @@ return new class extends Migration
     {
         Schema::create('batteries', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('motor_id')->constrained()->onDelete('cascade');
-            $table->unsignedTinyInteger('percentage');
-            $table->unsignedSmallInteger('kilometers');
-            $table->unsignedSmallInteger('voltage')->nullable();
+            $table->foreignId('motor_id')->constrained('motors')->onDelete('cascade');
+            $table->float('percentage');
+            $table->float('voltage');
+            $table->float('current');
+            $table->float('kilometers');
             $table->timestamps();
         });
     }

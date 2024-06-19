@@ -20,6 +20,8 @@ class Tracking extends Model
         'motor_id',
         'latitude',
         'longitude',
+        'distance',
+        'total_distance',
     ];
 
     // protected $casts = [

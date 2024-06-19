@@ -47,10 +47,12 @@ class MotorController extends Controller
 
     public function getTrackings()
     {
-        $trackings = Tracking::select('trackings.latitude', 'trackings.longitude', 'motors.motors_id', 'trackings.created_at')
+        $trackings = Tracking::select('trackings.latitude', 'trackings.longitude', 'motors.motors_id', 'trackings.created_at', 'locks.status')
             ->join('motors', 'trackings.motor_id', '=', 'motors.id')
-            // ->join('locks', 'trackings.motor_id', '=', 'locks.motor_id')
-            // ->whereIn('locks.status', [1, 0])
+            ->leftJoin('locks', function($join) {
+                $join->on('trackings.motor_id', '=', 'locks.motor_id')
+                     ->whereRaw('locks.created_at = trackings.created_at');
+            })
             ->orderBy('trackings.created_at')
             ->get();
 
@@ -59,7 +61,8 @@ class MotorController extends Controller
                 return [
                     'latitude' => $tracking->latitude,
                     'longitude' => $tracking->longitude,
-                    'created_at' => $tracking->created_at
+                    'created_at' => $tracking->created_at,
+                    'status' => $tracking->status ? 'on' : 'off'
                 ];
             });
         });

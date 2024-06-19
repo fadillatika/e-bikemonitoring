@@ -21,14 +21,14 @@
                             </div>
                         </a>
                     </li>
-                    <li>
-                        <a href="/info" id="info">
+                    <!-- <li>
+                        <a href="/list" id="info">
                             <div class="menu-item">
                                 <i data-feather="info"></i>
-                                <span style="font-weight: bold">Information</br></span>
+                                <span style="font-weight: bold">List IDs</br></span>
                             </div>
                         </a>
-                    </li>
+                    </li> -->
                     <li>
                         <div class="menu-item search-bar">
                             <form action="{{ route('search') }}" method="get">

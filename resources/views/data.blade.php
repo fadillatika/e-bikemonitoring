@@ -1,138 +1,139 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="{{ asset('css/custom.css') }}" />
-        <!-- Google Fonts -->
-        <link
-            href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap"
-            rel="stylesheet"
-        />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap"
-            rel="stylesheet"
-        />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
-            rel="stylesheet"
-        />
-        <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap"
-        />
-
-        <!-- Leaflet CSS -->
-        <link
-            rel="stylesheet"
-            href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
-        />
-
-        <!-- Turf -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
-
-        <!-- Feather Icons -->
-        <script src="https://unpkg.com/feather-icons"></script>
-
-        <link rel="stylesheet" href="css/fitur.css" />
-        
-        <title>E-bike Monitoring!</title>
-        
-        @vite(['resources/js/mapid.js', 'resources/js/battery.js', 'resources/js/lock.js'])
-
-    </head>
-
-    <body>
-        <div class="hamburger" onclick="toggleSidebar()">
-            <i data-feather="menu"></i>
-        </div>
-    <!-- Sidebar start -->
-    @include('partials.userside')
-
-    <div class="card3 history-table2">
-        <h2 style="text-align: justify;">History Table</h2>
-        <form class="download-form" action="{{ route('downloadData') }}" method="GET">
-            <label class="download-label" for="start_date">Select Date:</label>
-            <input class="download-input" type="date" id="start_date" name="start_date">
-        
-            <label class="download-label" for="end_date">to</label>
-            <input class="download-input" type="date" id="end_date" name="end_date">
-        
-            <button class="download-button" type="submit">Download</button>
-        </form>
-        @if($motors->isEmpty())
-            <div class="table-responsive">
-                <p style="text-align: center; color: #fff; padding: 20px;">Tidak ada data yang tersedia.</p>
-            </div>
-        @else
-        <div class="table-responsive">
-            <table class="history-data-table2">
-                <thead>
-                    <tr>
-                        <th>ID E-bike</th>
-                        <th>Date</th>
-                        <th>Percentage</th>
-                        <th>Battery-Kilometers</th>
-                        <th>kiloWatt</th>
-                        <th>Location</th>
-                        <th>Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($motors as $motor)
-                        @php
-                            $batteries = $motor->batteries;
-                            $locks = $motor->locks;
-                            $trackings = $motor->trackings->take($batteries->count());
-                        @endphp
-                                            
-                        @foreach ($batteries as $index => $battery)
-                            @php
-                                $tracking = $trackings[$index] ?? null;
-                                $lock = $locks[$index] ?? null;
-                                $dateToShow = $tracking ? $tracking->updated_at : 'Data tidak ditemukan';
-                            @endphp
-                            <tr>
-                                <td>{{ $motor->motors_id }}</td>
-                                <td>{{ $dateToShow }}</td>
-                                <td>{{ $battery->percentage }}%</td>
-                                <td>{{ $battery->kilometers }} km</td>
-                                <td>{{ $battery->kW }} kW</td>
-                                <td>{{ $tracking ? $tracking->location_name : 'Lokasi tidak ditemukan' }}</td>
-                                <td>{{ $lock ? ($lock->status ? 'On' : 'Off') : 'Status lock tidak ditemukan' }}</td>
-                            </tr>
-                        @endforeach
-                    @endforeach                
-                </tbody>
-            </table>
-        </div>
-        @endif
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap" rel="stylesheet">
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css">
+    <!-- Feather Icons -->
+    <script src="https://unpkg.com/feather-icons"></script>
+    <link rel="stylesheet" href="css/data.css">
+    <link rel="stylesheet" href="css/date.css">
+    <title>E-bike Monitoring!</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+</head>
+<body>
+    <div class="hamburger" onclick="toggleSidebar()">
+        <i data-feather="menu"></i>
     </div>
-        <script>
-            window.onload = function() {
-                var table = document.querySelector(".history-data-table2");
-                var tbody = table.querySelector("tbody");
-                if (tbody.scrollWidth > tbody.clientWidth) {
-                    var scrollbarWidth = tbody.offsetWidth - tbody.clientWidth;
-                    table.querySelector("thead").style.paddingRight = scrollbarWidth + "px";
-                }
-            };
-        </script>
-        <script>
-            window.onload = function() {
-                var table = document.querySelector(".history-data-table2");
-                var tbody = table.querySelector("tbody");
-                if (tbody.scrollWidth > tbody.clientWidth) {
-                    var scrollbarWidth = tbody.offsetWidth - tbody.clientWidth;
-                    table.querySelector("thead").style.paddingRight = scrollbarWidth + "px";
-                }
-            };
-        </script>
-        <script>
-            feather.replace();
-        </script>
 
-        <!-- Java script -->
-        <script src="js/fiturjs.js"></script>
+    @include ('partials.userside')
+    
+    <div class="main-content">
+        <div class="flex-container">
+            <div class="history-table">
+                <form class="download-form" action="{{ route('downloadTrackingData') }}" method="GET">
+                    
+                    <label class="download-label" for="motor_id">Motor ID:</label>
+                    <input class="download-input" type="text" id="motor_id" name="motor_id" required>
+                    
+                    <label class="download-label" for="start_date">Start Date:</label>
+                    <input class="download-input" type="date" id="start_date" name="start_date">
+                    
+                    <label class="download-label" for="end_date">End Date:</label>
+                    <input class="download-input" type="date" id="end_date" name="end_date">
+                    
+                    <input type="hidden" name="motor_id" value="{{ session('motor_id') }}">
+                    <button class="download-button" type="submit">Download Tracking Data</button>
+                </form>
+
+                <h2>Location Data Table</h2>
+                <div class="table-container">
+                    <table class="history-data-table">
+                        <thead>
+                            <tr>
+                                <th>ID E-bike</th>
+                                <th>Date</th>
+                                <th>Latitude</th>
+                                <th>Longitude</th>
+                                <th>Location</th>
+                                <th>Distance (km)</th>
+                                <th>Total Distance (km)</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($motor as $motorItem)
+                                @foreach ($motorItem->trackings as $tracking)
+                                    <tr>
+                                        <td>{{ $motorItem->motors_id }}</td>
+                                        <td>{{ $tracking->created_at }}</td>
+                                        <td>{{ $tracking->latitude }}</td>
+                                        <td>{{ $tracking->longitude }}</td>
+                                        <td>{{ $tracking->location_name }}</td>
+                                        <td>{{ $tracking->distance }}</td>
+                                        <td>{{ $tracking->total_distance }}</td>
+                                        <td>
+                                            @if ($motorItem->locks->isNotEmpty())
+                                                {{ $motorItem->locks->first()->status ? 'Locked' : 'Unlocked' }}
+                                            @else
+                                                No locks found
+                                            @endif
+                                        </td>
+
+                                    </tr>
+                                @endforeach
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <form class="download-form" action="{{ route('downloadBatteryData') }}" method="GET">
+                    
+                    <label class="download-label" for="motor_id">Motor ID:</label>
+                    <input class="download-input" type="text" id="motor_id" name="motor_id" required>
+                    
+                    <label class="download-label" for="start_date">Start Date:</label>
+                    <input class="download-input" type="date" id="start_date" name="start_date">
+                    
+                    <label class="download-label" for="end_date">End Date:</label>
+                    <input class="download-input" type="date" id="end_date" name="end_date">
+
+                    <input type="hidden" name="motor_id" value="{{ session('motor_id') }}">
+                    <button class="download-button" type="submit">Download Battery Data</button>
+                </form>
+
+                <h2>Battery Data Table</h2>
+                <div class="table-container">
+                    <table class="history-data-table">
+                        <thead>
+                            <tr>
+                                <th>ID E-bike</th>
+                                <th>Date</th>
+                                <th>Voltage</th>
+                                <th>Percentage <br>Motor Battery</th>
+                                <th>Percentage <br>Monitoring Battery</th>
+                                <th>Distance Estimate</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($motor as $motorItem)
+                                @foreach ($motorItem->batteries as $battery)
+                                    <tr>
+                                        <td>{{ $motorItem->motors_id }}</td>
+                                        <td>{{ $battery->created_at }}</td>
+                                        <td>{{ $battery->voltage }}</td>
+                                        <td>{{ $battery->percentage }}%</td>
+                                        <td>{{ $battery->percentage }}%</td>
+                                        <td>{{ $battery->voltage }} km</td>
+                                    </tr>
+                                @endforeach
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/dash.js"></script>
+    <script src="js/dashboard.js"></script>
 </body>
 </html>

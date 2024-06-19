@@ -55,21 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
             .catch(error => console.error('Error fetching route:', error));
     }
 
-    function calculateDistance(pointA, pointB) {
-        const R = 6371; // radius bumi dalam kilometer
-        const lat1 = pointA[0] * Math.PI / 180;
-        const lat2 = pointB[0] * Math.PI / 180;
-        const deltaLat = (pointB[0] - pointA[0]) * Math.PI / 180;
-        const deltaLon = (pointB[1] - pointA[1]) * Math.PI / 180;
-
-        const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-                  Math.cos(lat1) * Math.cos(lat2) *
-                  Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-        return R * c;
-    }
-
     function loadTrackings() {
         fetch('/api/countTrackings')
             .then(response => response.json())
@@ -78,15 +63,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 for (let motorId in trackings) {
                     (function(motorId) {
-                        let routePoints = trackings[motorId].map(tracking => [tracking.latitude, tracking.longitude]);
+                        let routePoints = trackings[motorId].map(tracking => [tracking.latitude, tracking.longitude, tracking.status, tracking.created_at]);
 
                         // Urutkan titik berdasarkan waktu created_at
-                        routePoints.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+                        // routePoints.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
 
-                        let totalDistanceKilometers = 0;
-                        for (let i = 1; i < routePoints.length; i++) {
-                            totalDistanceKilometers += calculateDistance(routePoints[i-1], routePoints[i]);
-                        }
+                        let totalDistanceKilometers = trackings[motorId][0]?.total_distance || 0;
 
                         console.log(`Total Distance for Motor ${motorId}:`, totalDistanceKilometers.toFixed(2), 'kilometers');
 
@@ -97,7 +79,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         }
 
                         if (routePoints.length > 1) {
-                            getRoute(routePoints, function(geometry) {
+                            getRoute(routePoints.map(p => [p[0], p[1]]), function(geometry) {
                                 var route = L.geoJSON(geometry, {
                                     style: { color: 'blue' }
                                 }).addTo(map);
@@ -105,15 +87,20 @@ document.addEventListener('DOMContentLoaded', function() {
                             });
                         }
 
-                        if (routePoints.length > 0) {
-                            let startPoint = routePoints[0];
-                            var startIcon = L.icon({
-                                iconUrl: 'img/start-point.png',
-                                iconSize: [80, 80],
-                                iconAnchor: [40, 55],
-                                popupAnchor: [0, -55]
-                            });
-                            var startMarker = L.marker(startPoint, {icon: startIcon}).addTo(map);
+                        let startPoint = null;
+                        let endPoint = null;
+                        for (let i = 0; i < routePoints.length; i++) {
+                            let point = routePoints[i];
+                            if (point[2] === 'on') {
+                                startPoint = [point[0], point[1]];
+                            }
+                            if (point[2] === 'off' || i === routePoints.length - 1) {
+                                endPoint = [point[0], point[1]];
+                            }
+                        }
+
+                        if (startPoint) {
+                            var startMarker = L.marker(startPoint).addTo(map);
                             startMarker.bindPopup("Loading...");
 
                             startMarker.on('click', function() {
@@ -121,8 +108,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                     startMarker.getPopup().setContent(`<b>Motor ID:</b> ${motorId}<br><b>Location:</b> ${data.display_name}<br>`).openPopup();
                                 });
                             });
+                        }
 
-                            let endPoint = routePoints[routePoints.length - 1];
+                        if (endPoint) {
                             var endIcon = L.icon({
                                 iconUrl: 'img/electric-motorcycle.png',
                                 iconSize: [50, 50],
@@ -151,31 +139,8 @@ document.addEventListener('DOMContentLoaded', function() {
         motor.trackings.forEach(tracking => {
             getLocation(tracking.latitude, tracking.longitude, function(data) {
                 let locationName = data.display_name || 'undefined';
-                updateHistoryTable(motor, tracking, locationName);
             });
         });
-    }
-
-    function updateHistoryTable(motor, tracking, locationName) {
-        // const tableBody = document.getElementById('historyTableBody');
-        // if (!tableBody) {
-        //     console.error('Table body not found');
-        //     return;
-        // }
-        // console.log('Updating history table with:', { motor, tracking, locationName });
-        // const newRow = document.createElement('tr');
-        // const battery = motor.batteries.find(b => b.created_at === tracking.created_at) || {};
-        // const lock = motor.locks.find(l => l.created_at === tracking.created_at) || {};
-    
-        // newRow.innerHTML = `
-        //     <td>${motor.motors_id}</td>
-        //     <td>${new Date(tracking.created_at).toLocaleString()}</td>
-        //     <td>${battery.percentage ? battery.percentage + '%' : 'Data tidak ditemukan'}</td>
-        //     <td>${battery.kilometers ? battery.kilometers + ' km' : 'Data tidak ditemukan'}</td>
-        //     <td>${locationName}</td>
-        //     <td>${lock.status !== undefined ? (lock.status ? 'On' : 'Off') : 'Off'}</td>
-        // `;
-        // tableBody.prepend(newRow);
     }    
 
     function updateTrackingOnView(trackings) {
@@ -196,11 +161,35 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
+    let currentRoute;
+
     window.Echo.channel('motors')
         .listen('MonitorUpdated', (e) => {
             console.log('Event data:', e);
             console.log('Motor Updated:', e.motor);
-            updateMotorOnView(e.motor);
+
+            if (currentRoute){
+                map.removeLayer(currentRoute);
+            }
+
+            if (e.status === 'on') {
+                startPoint = [e.motor.latitude, e.motor.longitude];
+                if (startMarker) {
+                    map.removeLayer(startMarker);
+                }
+                startMarker = L.marker(startPoint).addTo(map);
+                startMarker.bindPopup("Start Point").openPopup();
+            }
             updateTrackingOnView(e.trackings);
+
+            if (e.trackings.length > 1){
+                let routePoints = e.trackings.map(tracking=>[tracking.latitude, tracking.longitude]);
+                getRoute(routePoints, function(geometry) {
+                    currentRoute = L.geoJSON(geometry, {
+                        style:{color: 'blue'}
+                    }).addTo(map);
+                    map.fitBounds(currentRoute.getBounds());
+                });
+            }
     });
 });

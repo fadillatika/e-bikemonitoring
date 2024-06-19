@@ -32,7 +32,7 @@
     </head>
     <body>
         <!-- Navbar start -->
-        @include('partials.navbar')
+        @include('partials.navbar2')
         <section class="first">
             <div class="container">
                 <h1>About us</h1>
