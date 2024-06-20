@@ -12,7 +12,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('app:fetch-t-s-data')->everyMinute();
+        $schedule->command('fetch:tsdata')->everyMinute();
     }
 
     /**

@@ -12,7 +12,7 @@ class FetchTSData extends Command
      *
      * @var string
      */
-    protected $signature = 'app:fetch-t-s-data';
+    protected $signature = 'fetch:tsdata';
 
     /**
      * The console command description.
