@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         // $schedule->command('fetch:thingspeak')->everyTwoSeconds();
-        $schedule->job(new FetchThingSpeaksData)->everyTwoSeconds();
+        $schedule->job(new FetchThingSpeaksData)->everyMinute();
     }
 
     /**

@@ -31,21 +31,25 @@ class FetchThingSpeaksData implements ShouldQueue
 
         try {
             $apiController = new ApiController();
+            $iterations = 6;
+            $interval = 10;
+
             for ($i = 0; $i < 30; $i++) {
-                Log::info('Fetching GPS data');
+                Log::info('Mengambil data GPS');
                 $apiController->fetchTSGPS();
-                sleep(10);
+                Log::info('Mengambil data Battery');
+                $apiController->fetchTSBattery();
+                Log::info('Mengambil data Lock');
+                $apiController->fetchTSLock();
+
+                if ($i < $iterations - 1) {
+                    sleep($interval);
+                }
             }
             
-            Log::info('Fetching Battery data');
-            $apiController->fetchTSBattery();
-            
-            Log::info('Fetching Lock data');
-            $apiController->fetchTSLock();
-            
-            Log::info('FetchThingSpeaksData job completed successfully');
+            Log::info('FetchThingSpeaksData job selesai dengan sukses');
         } catch (\Exception $e) {
-            Log::error('FetchThingSpeaksData job failed: ' . $e->getMessage());
+            Log::error('FetchThingSpeaksData job gagal: ' . $e->getMessage());
         }
     }
 }
