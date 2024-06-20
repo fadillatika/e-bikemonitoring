@@ -42,6 +42,8 @@ class ApiController extends Controller
                 $data = json_decode($response->getBody(), true);
 
                 foreach ($data['feeds'] as $feed) {
+
+                    Log::info('Processing feed entry:', $feed);
                     if(isset($feed['field1'], $feed['field2'])){
                         $motor = Motor::with(['batteries', 'locks', 'trackings'])->find($channel['motor_id']);
                         $previousTracking = Tracking::where('motor_id', $motor->id)
@@ -63,6 +65,7 @@ class ApiController extends Controller
                         }
 
                         $tracking->save();
+                        Log::info('Saved tracking entry:', $tracking->toArray());
 
                         $this->updateLockTripDistance($motor, $tracking);
 
