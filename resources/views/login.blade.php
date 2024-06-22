@@ -41,7 +41,6 @@
         />
 
         <link rel="stylesheet" href="css/login.css" />
-        <link rel="stylesheet" href="css/custom.css" />
 
         <title>E-bike Monitoring!</title>
     </head>
@@ -66,7 +65,7 @@
                 overflow: hidden;
             "
         >
-            <main class="content">
+            <main class="content-row">
                 <div class="header-content">
                     <h1> Electrical Bike <span>Monitoring</span></h1>
                     <img src="img/motor.png" alt="icon motor" class="motor-icon">
@@ -95,17 +94,14 @@
                         </form>
                     </div>            
                 </div>
-
-              
+            </main>
 
             <footer class="site-footer">
                 <div class="footer-container">
                     <p>&copy; 2024 Telkom University.</p>
                 </div>
             </footer>
-            </main>
         </section>
-
         <script>
             feather.replace();
         </script>

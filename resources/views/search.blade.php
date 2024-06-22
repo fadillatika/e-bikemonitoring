@@ -70,14 +70,6 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/list" id="info">
-                        <div class="menu-item">
-                            <i data-feather="info"></i>
-                            <span style="font-weight: bold">List IDs</span>
-                        </div>
-                    </a>
-                </li>
-                <li>
                     <div class="menu-item search-bar">
                         <form action="{{ route('search') }}" method="get">
                             <input
