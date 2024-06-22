@@ -11,7 +11,7 @@
                 <br>Real-time Monitoring and Tracking for Optimal Performance!</br>
             </p>
             <div class="dropdown">
-                <button class="dropbtn">Choose Motor ID!</button>
+                <button class="dropbtn">Choose Motor ID</button>
                 <div class="dropdown-content">
                     <a href="/search?q=eb-01">EB-01</a>
                     <a href="/search?q=eb-01">EB-02</a>
