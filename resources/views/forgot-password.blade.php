@@ -22,6 +22,10 @@
             href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap"
         />
 
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
         <script src="https://unpkg.com/feather-icons"></script>
 
         <!-- More Icons -->
@@ -37,6 +41,7 @@
         />
 
         <link rel="stylesheet" href="css/forgot-password.css" />
+        <link rel="stylesheet" href="css/login.css" />
 
         <title>E-bike Monitoring!</title>
     </head>
@@ -64,7 +69,7 @@
                 min-height: 115vh;
                 display: flex;
                 align-items: center;
-                background-image: url('img/bg1.png');
+                background-image: url('img/bg.png');
                 background-repeat: no-repeat;
                 background-size: cover;
                 background-position: center;
@@ -73,7 +78,7 @@
                 overflow: hidden;
             "
         >
-            <main class="content">
+            <main class="content-row">
                 <div class="header-content">
                     <h1> Electrical Bike <span>Monitoring</span></h1>
                     <img src="img/motor.png" alt="icon motor" class="motor-icon">
@@ -82,14 +87,15 @@
                 <div class="hero-side">
                     <div class="login-container">
                         <span class="title"> Forgot Password </br> </br> </span> 
-                         <span class="note"> Enter your email address</span> </br></br>
-                        <form action="{{ route('login') }}" method="post">
+                         <span class="note"> We will send a link to your email, use that link to reset password.</span> </br></br>
+                        <form action="{{ route('forgot.passwordpost') }}" method="post">
+                            @csrf
                             <div class="input-group">
-                                <input type="text" name="Enter email address" placeholder="Enter email address" required />
+                                <input type="email" name="email" placeholder="Enter your email" required />
                             </div>
 
                             </br>
-                            <button type="submit">CONTINUE</button>
+                            <button type="submit">SUBMIT</button>
                         </form>
                     </div>            
                 </div>

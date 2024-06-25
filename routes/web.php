@@ -9,6 +9,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MotorController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SearchuserController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ForgetPassController;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 
 // Menggabungkan home dan /home ke satu rute
@@ -19,12 +21,6 @@ Route::get('/', function () {
         "title" => "Home"
     ]);
 })->name('home');
-
-Route::get('/forgot-password', function () {
-    return view('forgot-password', [
-        "title" => "Account"
-    ]);
-})->name('forgot-password')->middleware('auth.admin');
 
 Route::get('/data', function () {
     return view('data', [
@@ -72,4 +68,14 @@ Route::get('/user',  [SearchuserController::class, 'search'])->name('user.search
 
 Route::get('/account',  [AccountController::class, 'account'])->name('account')->middleware('auth.admin');
 
+Route::post('/admin/update-email', [AdminController::class, 'updateEmail'])->name('admin.updateEmail');
+
 Route::get('/data',  [DataController::class, 'index'])->name('data')->middleware('auth.admin');
+
+Route::get('/forgot-password', [ForgetPassController::class, 'ForgetPass'])->name('forgot.password');
+
+Route::post('/forgot-password', [ForgetPassController::class, 'ForgetPassPost'])->name('forgot.passwordpost');
+
+Route::get('/reset-password/{token}', [ForgetPassController::class, 'ResetPass'])->name('reset.pass');
+
+Route::post('/reset-password', [ForgetPassController::class, 'ResetPassPost'])->name('reset.passpost');

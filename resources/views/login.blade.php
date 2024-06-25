@@ -71,6 +71,19 @@
                     <img src="img/motor.png" alt="icon motor" class="motor-icon">
                 </div>
 
+                <!-- <div class="mt-5">
+                    @if($errors->any())
+                        <div class="col-12">
+                            @foreach($errors->all() as $error)
+                                <div class="alert alert-danger">{{ $error }}</div>
+                            @endforeach
+                        </div>
+                    @endif
+
+                    @if(session()->has('error'))
+                        <div class="alert alert-success">{{ session('success') }}</div>
+                    @endif
+                </div> -->
                 <div class="hero-side">
                     <div class="login-container">
                         <span class="title"> Login Form</br> </br> </span> 
@@ -87,7 +100,7 @@
                                 <input type="password" name="password" placeholder="password" required />
                             </div>
                             <div class="forget-pass">
-                                <a href="/forgot-password">Forgot password?</a>
+                                <a href={{ route("forgot.password") }}>Forgot password?</a>
                             </div>
                             </br>
                             <button type="submit" style="font-family: 'Poppins', sans-serif;">LOGIN</button>

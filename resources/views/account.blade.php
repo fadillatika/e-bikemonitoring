@@ -21,7 +21,6 @@
             rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap"
         />
-
         <!-- Leaflet CSS -->
         <link
             rel="stylesheet"
@@ -48,38 +47,68 @@
     @include('partials.userside')
     <div class="account-container">
         <h1>Account Information</h1>
-        <div class="account-info">
-            <!-- Motor ID -->
-            <p>Motor ID: <span id="motor-id">{{ $motorsId ?? '______' }}</span></p>
-          <!-- Username -->
-          <div class="form-group">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" value="{{ Auth::guard('admin')->user()->username }}" readonly>
+
+        @if (session('status'))
+                <div class="alert alert-success">
+                    {{ session('status') }}
+                </div>
+            @endif
+
+            @if ($errors->any())
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+            
+        <form action="{{ route('admin.updateEmail') }}" method="POST">
+          @csrf
+          <div class="account-info">
+              <!-- Motor ID -->
+              <p>Motor ID: <span id="motor-id">{{ $motorsId ?? '______' }}</span></p>
+            <!-- Username -->
+            <div class="form-group">
+              <label for="username">Username:</label>
+              <input type="text" id="username" name="username" value="{{ Auth::guard('admin')->user()->username }}" readonly>
+            </div>
+            <!-- Email -->
+            <div class="form-group">
+                <label for="current_email">Current Email:</label>
+                <input type="email" id="current_email" name="current_email" value="{{ Auth::guard('admin')->user()->email }}" readonly>
+            </div>
+
+            <!-- Email -->
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" placeholder="Enter your new email" required>
+            </div>
+
+            <!-- <div class="form-group">
+                <input type="email" id="email" name="email" value="{{ Auth::guard('admin')->user()->email }}" readonly>
+            </div> -->
+            <!-- Enter Password -->
+            <div class="form-group">
+              <label for="password">Enter Password:</label>
+              <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            </div>
+            <!-- <div class="form-group">
+              <label for="password">Enter New Password:</label>
+              <input type="password" id="password" name="password" placeholder="Enter your new password" required>
+            </div> -->
+            <!-- Reset Password -->
+            <!-- <div class="form-group">
+              <button type="button" id="reset-password-btn" class="reset-btn">Reset Password</button>
+            </div> -->
+            <!-- Save Changes Button -->
+            <div class="form-group">
+              <button type="submit" id="save-changes-btn" class="save-btn">Save Changes</button>
+            </div>
           </div>
-          <!-- Email -->
-          <div class="form-group">
-            <label for="email">Email:</label>
-            <input type="email" id="email" name="email" placeholder="Enter your email" required>
-          </div>
-          <!-- Enter Password -->
-          <div class="form-group">
-            <label for="password">Enter Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter your password" required>
-          </div>
-          <div class="form-group">
-            <label for="password">Enter New Password:</label>
-            <input type="password" id="password" name="password" placeholder="Enter your new password" required>
-          </div>
-          <!-- Reset Password -->
-          <div class="form-group">
-            <button type="button" id="reset-password-btn" class="reset-btn">Reset Password</button>
-          </div>
-          <!-- Save Changes Button -->
-          <div class="form-group">
-            <button type="submit" id="save-changes-btn" class="save-btn">Save Changes</button>
-          </div>
-        </div>
-      </div>
+        </form>
+    </div>
     <script>
         feather.replace();
     </script>

@@ -73,7 +73,7 @@
                 overflow: hidden;
             "
         >
-            <main class="content">
+            <main class="content-row">
                 <div class="header-content">
                     <h1> Electrical Bike <span>Monitoring</span></h1>
                     <img src="img/motor.png" alt="icon motor" class="motor-icon">
@@ -81,15 +81,19 @@
 
                 <div class="hero-side">
                     <div class="login-container">
-                        <span class="title"> New Password</br> </br> </span> 
-                        
-                        <form action="{{ route('login') }}" method="post">
+                        <span class="title"> New Password</br> </br> </span>
+                        <form action="{{ route('reset.passpost') }}" method="post">
+                            @csrf
+                            <input type="text" name="token" hidden value="{{ $token }}">
                             <div class="input-group">
-                                <input type="text" name="Create new password" placeholder="Create new password" required />
+                                <input type="email" name="email" placeholder="Enter your email" required />
+                            </div>
+                            <div class="input-group">
+                                <input type="password" name="password" placeholder="password" required />
                             </div>
                             
                             <div class="input-group">
-                                <input type="password" name="Confirm your password" placeholder="Confirm your password" required />
+                                <input type="password" name="password_confirmation" placeholder="password_confirmation" required />
                             </div>
 
                             </br>

@@ -10,6 +10,7 @@ use App\Models\Lock;
 use App\Events\MonitorUpdated;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
+use Carbon\Carbon;
 
 class ApiController extends Controller
 {
@@ -31,88 +32,101 @@ class ApiController extends Controller
         $motorChannels = [
             ['id' => '2538975', 'apiKey' => '88QJUVVUHZPNI4HC', 'motor_id' => 1],
         ];
-
+    
         $client = new Client();
-
+    
         foreach ($motorChannels as $channel) {
             $url = "https://api.thingspeak.com/channels/{$channel['id']}/feeds.json?api_key={$channel['apiKey']}";
-
+    
             try {
                 $response = $client->get($url);
                 $data = json_decode($response->getBody(), true);
-
+    
                 foreach ($data['feeds'] as $feed) {
-
-                    Log::info('Processing feed entry:', $feed);
-                    if(isset($feed['field1'], $feed['field2'])){
-                        $motor = Motor::with(['batteries', 'locks', 'trackings'])->find($channel['motor_id']);
-                        $previousTracking = Tracking::where('motor_id', $motor->id)
-                                                    ->latest()
-                                                    ->first();
-
-                        $tracking = new Tracking;
-                        $tracking->motor_id = $channel['motor_id'];
-                        $tracking->latitude = $feed['field1'];
-                        $tracking->longitude = $feed['field2'];
-
-                        if ($previousTracking) {
-                            $distance = $this->haversine($previousTracking->latitude, $previousTracking->longitude, $tracking->latitude, $tracking->longitude);
-                            $tracking->distance = $distance;
-                            $tracking->total_distance = $previousTracking->total_distance + $distance;
+                    if (isset($feed['field1'], $feed['field2'], $feed['created_at'])) {
+                        $timestamp = Carbon::parse($feed['created_at']);
+                        $latestTracking = Tracking::where('motor_id', $channel['motor_id'])
+                                                  ->latest()
+                                                  ->first();
+    
+                        if (!$latestTracking || $timestamp->gt($latestTracking->created_at)) {
+                            $motor = Motor::with(['batteries', 'locks', 'trackings'])->find($channel['motor_id']);
+    
+                            $tracking = new Tracking;
+                            $tracking->motor_id = $channel['motor_id'];
+                            $tracking->latitude = $feed['field1'];
+                            $tracking->longitude = $feed['field2'];
+                            $tracking->created_at = $timestamp;
+    
+                            if ($latestTracking) {
+                                $distance = $this->haversine($latestTracking->latitude, $latestTracking->longitude, $tracking->latitude, $tracking->longitude);
+                                $tracking->distance = $distance;
+                                $tracking->total_distance = $latestTracking->total_distance + $distance;
+                            } else {
+                                $tracking->distance = 0;
+                                $tracking->total_distance = 0;
+                            }
+    
+                            $tracking->save();
+                            Log::info('Saved tracking entry:', $tracking->toArray());
+    
+                            $this->updateLockTripDistance($motor, $tracking);
+    
+                            // panggil event (real-time)
+                            event(new MonitorUpdated($motor));
                         } else {
-                            $tracking->distance = 0;
-                            $tracking->total_distance = 0;
+                            Log::info('No new GPS data available.');
                         }
-
-                        $tracking->save();
-                        Log::info('Saved tracking entry:', $tracking->toArray());
-
-                        $this->updateLockTripDistance($motor, $tracking);
-
-                        // panggil event (real-time)
-                        event(new MonitorUpdated($motor));
                     } else {
                         Log::warning('Incomplete GPS Data:', $feed);
                     }
                 }   
-
+    
             } catch (\Exception $e) {
                 Log::error("Error fetching data from ThingSpeak: " . $e->getMessage());
             }
         }
-    }
+    }    
 
     public function fetchTSBattery()
     {
         $motorChannels = [
             ['id' => '2538975', 'apiKey' => '88QJUVVUHZPNI4HC', 'motor_id' => 1],
         ];
-
+    
         $client = new Client();
-
+    
         foreach ($motorChannels as $channel) {
             $url = "https://api.thingspeak.com/channels/{$channel['id']}/feeds.json?api_key={$channel['apiKey']}";
-
+    
             try {
                 $response = $client->get($url);
                 $data = json_decode($response->getBody(), true);
-
+    
                 Log::info('Battery Data from ThingSpeak:', $data);
-
+    
                 foreach ($data['feeds'] as $feed) {
-                    if (isset($feed['field4'], $feed['field5'], $feed['field6'])) {
-                        Log::info('Valid Battery Feed:', $feed);
-
-                        $battery = new Battery;
-                        $battery->motor_id = $channel['motor_id'];
-                        $battery->percentage = $feed['field6'];
-                        $battery->voltage = $feed['field4'];
-                        $battery->current = $feed['field5'];
-                        $battery->kilometers = 0;
-                        $battery->save();
-
-                        $motor = Motor::with(['batteries', 'locks', 'trackings'])->find($channel['motor_id']);
-                        event(new MonitorUpdated($motor));
+                    if (isset($feed['field4'], $feed['field5'], $feed['field6'], $feed['created_at'])) {
+                        $timestamp = Carbon::parse($feed['created_at']);
+                        $latestBattery = Battery::where('motor_id', $channel['motor_id'])
+                                                ->latest()
+                                                ->first();
+    
+                        if (!$latestBattery || $timestamp->gt($latestBattery->created_at)) {
+                            $battery = new Battery;
+                            $battery->motor_id = $channel['motor_id'];
+                            $battery->percentage = $feed['field6'];
+                            $battery->voltage = $feed['field4'];
+                            $battery->current = $feed['field5'];
+                            $battery->kilometers = 0;
+                            $battery->created_at = $timestamp;
+                            $battery->save();
+    
+                            $motor = Motor::with(['batteries', 'locks', 'trackings'])->find($channel['motor_id']);
+                            event(new MonitorUpdated($motor));
+                        } else {
+                            Log::info('No new Battery data available.');
+                        }
                     } else {
                         Log::warning('Incomplete Battery Data:', $feed);
                     }
@@ -121,46 +135,53 @@ class ApiController extends Controller
                 Log::error("Error fetching data from ThingSpeak: " . $e->getMessage());
             }
         }
-
+    
         return response()->json(['message' => 'Battery data fetched and stored.']);
-    }
+    }    
 
     public function fetchTSLock()
     {
         $motorChannels = [
             ['id' => '2538975', 'apiKey' => '88QJUVVUHZPNI4HC', 'motor_id' => 1],
         ];
-
+    
         $client = new Client();
-
+    
         foreach ($motorChannels as $channel) {
             $url = "https://api.thingspeak.com/channels/{$channel['id']}/feeds.json?api_key={$channel['apiKey']}";
-
+    
             try {
                 $response = $client->get($url);
                 $data = json_decode($response->getBody(), true);
-
+    
                 Log::info('Lock Data from ThingSpeak:', $data);
-
+    
                 foreach ($data['feeds'] as $feed) {
-
-                    if (isset($feed['field3'])) {
-                        Log::info('Valid Lock Feed:', $feed);
-
-                        $lock = new Lock;
-                        $lock->motor_id = $channel['motor_id'];
-                        $lock->status = $feed['field3'];
-                        $lock->save();
+                    if (isset($feed['field3'], $feed['created_at'])) {
+                        $timestamp = Carbon::parse($feed['created_at']);
+                        $latestLock = Lock::where('motor_id', $channel['motor_id'])
+                                          ->latest()
+                                          ->first();
+    
+                        if (!$latestLock || $timestamp->gt($latestLock->created_at)) {
+                            $lock = new Lock;
+                            $lock->motor_id = $channel['motor_id'];
+                            $lock->status = $feed['field3'];
+                            $lock->created_at = $timestamp;
+                            $lock->save();
+                        } else {
+                            Log::info('No new Lock data available.');
+                        }
                     } else {
                         Log::warning('Incomplete Lock Data:', $feed);
                     }
                 }
-
+    
             } catch (\Exception $e) {
-                    Log::error("Error fetching data from ThingSpeak: " . $e->getMessage());
+                Log::error("Error fetching data from ThingSpeak: " . $e->getMessage());
             }
         }
-    }
+    }    
 
     private function haversine($lat1, $lon1, $lat2, $lon2)
     {
