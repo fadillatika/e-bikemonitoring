@@ -36,7 +36,7 @@
             crossorigin="anonymous"
         />
 
-        <link rel="stylesheet" href="login.css" />
+        <link rel="stylesheet" href="css/login.css" />
 
         <title>E-bike Monitoring!</title>
     </head>
@@ -117,6 +117,6 @@
         </script>
 
         <!-- Java script -->
-        <script src="login.js"></script>
+        <script src="js/script.js"></script>
     </body>
 </html>

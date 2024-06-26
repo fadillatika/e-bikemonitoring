@@ -57,7 +57,7 @@ class ForgetPassController extends Controller
 
     function ResetPassPost(Request $request){
         $request->validate([
-            "email" => "required|email|exists:users",
+            "email" => "required|email|exists:admins",
             "password" => "required|string|min:6|confirmed",
             "password_confirmation" => "required"
         ]);
@@ -72,8 +72,8 @@ class ForgetPassController extends Controller
             return redirect()->to(route("reset.pass"))->with("error", "invalid");
         }
 
-        Admin::where("emai", $request->email)
-            ->updated(["password" => Hash::make($request->password)]);
+        Admin::where("email", $request->email)
+            ->update(["password" => Hash::make($request->password)]);
 
         DB::table("password_resets")->where(["email" => $request->email])->delete();
 
