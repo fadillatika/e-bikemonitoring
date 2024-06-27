@@ -71,24 +71,24 @@
                     <img src="img/motor.png" alt="icon motor" class="motor-icon">
                 </div>
 
-                <!-- <div class="mt-5">
-                    @if($errors->any())
-                        <div class="col-12">
-                            @foreach($errors->all() as $error)
-                                <div class="alert alert-danger">{{ $error }}</div>
-                            @endforeach
-                        </div>
-                    @endif
-
-                    @if(session()->has('error'))
-                        <div class="alert alert-success">{{ session('success') }}</div>
-                    @endif
-                </div> -->
                 <div class="hero-side">
                     <div class="login-container">
-                        <span class="title"> Login Form</br> </br> </span> 
+                        <span class="title"> Login Form</br></span> 
                          <span class="note"> Please login first by entering your 
-                            motorcycle ID and use the password provided by the admin.</span> </br></br>
+                            motorcycle ID and use the password provided by the admin.</span> </br>
+                            <div class="mt-5">
+                                @if($errors->any())
+                                    <div class="col-12">
+                                        @foreach($errors->all() as $error)
+                                            <div class="alert alert-danger">{{ $error }}</div>
+                                        @endforeach
+                                    </div>
+                                @endif
+            
+                                @if(session()->has('error'))
+                                    <div class="alert alert-success">{{ session('success') }}</div>
+                                @endif
+                            </div>
                         <form action="{{ route('login') }}" method="post">
                             @csrf
                             <div class="input-group">

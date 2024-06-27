@@ -41,7 +41,7 @@
         />
 
         <link rel="stylesheet" href="css/forgot-password.css" />
-        <link rel="stylesheet" href="css/login.css" />
+        <!-- <link rel="stylesheet" href="css/login.css" /> -->
 
         <title>E-bike Monitoring!</title>
     </head>
@@ -86,21 +86,30 @@
 
                 <div class="hero-side">
                     <div class="login-container">
-                        <span class="title"> Forgot Password </br> </br> </span> 
-                         <span class="note"> We will send a link to your email, use that link to reset password.</span> </br></br>
+                        <span class="title"> Forgot Password </br></span> 
+                        <span class="note"> We will send a link to your email, use that link to reset password.</span>
+                        
+                        @if(session()->has('success'))
+                        <div class="alert alert-success">
+                            {{ session('success') }}
+                        </div>
+                        @endif
+                
+                        @if(session()->has('error'))
+                        <div class="alert alert-error">
+                            {{ session('error') }}
+                        </div>
+                        @endif
+                
                         <form action="{{ route('forgot.passwordpost') }}" method="post">
                             @csrf
                             <div class="input-group">
                                 <input type="email" name="email" placeholder="Enter your email" required />
                             </div>
-
-                            </br>
                             <button type="submit">SUBMIT</button>
                         </form>
-                    </div>            
-                </div>
-
-              
+                    </div>
+                </div>                
 
             <footer class="site-footer">
                 <div class="footer-container">

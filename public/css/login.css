@@ -194,7 +194,7 @@ body {
 
 .alert.alert-danger {
     color: red;
-    font-weight: bold;
+    font-size: 11px;
 }
 
 .hero-side .login-container .title {
@@ -206,7 +206,6 @@ body {
 
 .hero-side .login-container .note {
     color: #ffffff;
-    font-weight: bolder;
     font-size: 13px;
     font-family: "Poppins", sans-serif;
 }

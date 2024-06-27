@@ -22,6 +22,10 @@
             href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap"
         />
 
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
         <script src="https://unpkg.com/feather-icons"></script>
 
         <!-- More Icons -->
@@ -36,7 +40,7 @@
             crossorigin="anonymous"
         />
 
-        <link rel="stylesheet" href="css/login.css" />
+        <link rel="stylesheet" href="{{ asset('css/login.css') }}" />
 
         <title>E-bike Monitoring!</title>
     </head>
@@ -64,7 +68,7 @@
                 min-height: 115vh;
                 display: flex;
                 align-items: center;
-                background-image: url('img/bg1.png');
+                background-image: url('{{ asset("img/bg.png") }}');
                 background-repeat: no-repeat;
                 background-size: cover;
                 background-position: center;
@@ -76,7 +80,7 @@
             <main class="content-row">
                 <div class="header-content">
                     <h1> Electrical Bike <span>Monitoring</span></h1>
-                    <img src="img/motor.png" alt="icon motor" class="motor-icon">
+                    <img src="{{ asset('img/motor.png') }}" alt="icon motor" class="motor-icon">
                 </div>
 
                 <div class="hero-side">
@@ -89,11 +93,11 @@
                                 <input type="email" name="email" placeholder="Enter your email" required />
                             </div>
                             <div class="input-group">
-                                <input type="password" name="password" placeholder="password" required />
+                                <input type="password" name="password" placeholder="new password" required />
                             </div>
                             
                             <div class="input-group">
-                                <input type="password" name="password_confirmation" placeholder="password_confirmation" required />
+                                <input type="password" name="password_confirmation" placeholder="password confirmation" required />
                             </div>
 
                             </br>
