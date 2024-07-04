@@ -7,7 +7,6 @@ use App\Models\Motor;
 use App\Models\Tracking;
 use App\Models\Battery;
 use App\Models\Lock;
-use App\Events\MonitorUpdated;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
@@ -45,12 +44,14 @@ class ApiController extends Controller
                 foreach ($data['feeds'] as $feed) {
                     if (isset($feed['field1'], $feed['field2'], $feed['created_at'])) {
                         $timestamp = Carbon::parse($feed['created_at']);
-                        $latestTracking = Tracking::where('motor_id', $channel['motor_id'])
-                            ->latest()
+                        $existingTracking = Tracking::where('motor_id', $channel['motor_id'])
+                            ->where('created_at', $timestamp)
                             ->first();
 
-                        if (!$latestTracking || $timestamp->gt($latestTracking->created_at)) {
-                            $motor = Motor::with(['batteries', 'locks', 'trackings'])->find($channel['motor_id']);
+                        if (!$existingTracking) {
+                            $latestTracking = Tracking::where('motor_id', $channel['motor_id'])
+                                ->latest()
+                                ->first();
 
                             $tracking = new Tracking;
                             $tracking->motor_id = $channel['motor_id'];
@@ -69,13 +70,8 @@ class ApiController extends Controller
 
                             $tracking->save();
                             Log::info('Saved tracking entry:', $tracking->toArray());
-
-                            $this->updateLockTripDistance($motor, $tracking);
-
-                            // panggil event (real-time)
-                            // event(new MonitorUpdated($motor));
                         } else {
-                            Log::info('No new GPS data available.');
+                            Log::info('Data already exists for timestamp: ' . $timestamp);
                         }
                     } else {
                         Log::warning('Incomplete GPS Data:', $feed);
@@ -86,6 +82,7 @@ class ApiController extends Controller
             }
         }
     }
+
 
     public function fetchTSBattery()
     {
@@ -102,16 +99,14 @@ class ApiController extends Controller
                 $response = $client->get($url);
                 $data = json_decode($response->getBody(), true);
 
-                Log::info('Battery Data from ThingSpeak:', $data);
-
                 foreach ($data['feeds'] as $feed) {
                     if (isset($feed['field4'], $feed['field5'], $feed['field6'], $feed['created_at'])) {
                         $timestamp = Carbon::parse($feed['created_at']);
-                        $latestBattery = Battery::where('motor_id', $channel['motor_id'])
-                            ->latest()
+                        $existingBattery = Battery::where('motor_id', $channel['motor_id'])
+                            ->where('created_at', $timestamp)
                             ->first();
 
-                        if (!$latestBattery || $timestamp->gt($latestBattery->created_at)) {
+                        if (!$existingBattery) {
                             $battery = new Battery;
                             $battery->motor_id = $channel['motor_id'];
                             $battery->percentage = $feed['field6'];
@@ -120,11 +115,8 @@ class ApiController extends Controller
                             $battery->kilometers = 0;
                             $battery->created_at = $timestamp;
                             $battery->save();
-
-                            $motor = Motor::with(['batteries', 'locks', 'trackings'])->find($channel['motor_id']);
-                            // event(new MonitorUpdated($motor));
                         } else {
-                            Log::info('No new Battery data available.');
+                            Log::info('Battery data already exists for timestamp: ' . $timestamp);
                         }
                     } else {
                         Log::warning('Incomplete Battery Data:', $feed);
@@ -153,23 +145,21 @@ class ApiController extends Controller
                 $response = $client->get($url);
                 $data = json_decode($response->getBody(), true);
 
-                Log::info('Lock Data from ThingSpeak:', $data);
-
                 foreach ($data['feeds'] as $feed) {
                     if (isset($feed['field3'], $feed['created_at'])) {
                         $timestamp = Carbon::parse($feed['created_at']);
-                        $latestLock = Lock::where('motor_id', $channel['motor_id'])
-                            ->latest()
+                        $existingLock = Lock::where('motor_id', $channel['motor_id'])
+                            ->where('created_at', $timestamp)
                             ->first();
 
-                        if (!$latestLock || $timestamp->gt($latestLock->created_at)) {
+                        if (!$existingLock) {
                             $lock = new Lock;
                             $lock->motor_id = $channel['motor_id'];
                             $lock->status = $feed['field3'];
                             $lock->created_at = $timestamp;
                             $lock->save();
                         } else {
-                            Log::info('No new Lock data available.');
+                            Log::info('Lock data already exists for timestamp: ' . $timestamp);
                         }
                     } else {
                         Log::warning('Incomplete Lock Data:', $feed);
