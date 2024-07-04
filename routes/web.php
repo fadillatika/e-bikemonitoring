@@ -46,9 +46,9 @@ Route::get('/about', function () {
 //     ]);
 // })->name('data');
 
-Route::get('/monitor', [MotorController::class, 'index'])->name('monitor');
+// Route::get('/monitor', [MotorController::class, 'index'])->name('monitor');
 
-Route::get('/stream', [MotorController::class, 'stream']);
+// Route::get('/stream', [MotorController::class, 'stream']);
 
 Route::get('/monitoruser', [MotoruserController::class, 'index'])->name('monitoruser')->middleware('auth.admin');
 
@@ -66,7 +66,7 @@ Route::get('/downloadbatteries', [DownloadController::class, 'downloadBatteryDat
 
 Route::get('/user',  [SearchuserController::class, 'search'])->name('user.search')->middleware('auth.admin');
 
-Route::get('/account',  [AccountController::class, 'account'])->name('account')->middleware('auth.admin');
+// Route::get('/account',  [AccountController::class, 'account'])->name('account')->middleware('auth.admin');
 
 Route::post('/admin/update-email', [AdminController::class, 'updateEmail'])->name('admin.updateEmail');
 

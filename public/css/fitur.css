@@ -393,11 +393,11 @@ body {
 /* Map & Track Styles */
 .map-track-section2 {
     display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 1270px;
     margin-right: 185px;
     justify-content: space-between;
-    padding: 20px;
-    gap: 20px;
 }
 
 .map-container2 {
@@ -413,6 +413,46 @@ body {
     border-radius: 8px;
     margin-left: auto;
     margin-right: auto;
+}
+
+.control-buttons {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 2px;
+    justify-content: center;
+}
+
+.control-buttons button {
+    border-radius: 8px;
+    padding: 8px 16px;
+
+}
+
+.btn-success {
+    background-color: #fff; 
+    color: #000; 
+}
+
+.btn-danger {
+    background-color: #dc3545; 
+    color: #000; 
+}
+
+.btn-warning {
+    background-color: #ffc107; 
+    color: #000; 
+}
+
+.btn-success:hover {
+    background-color: #a2a2a2; 
+}
+
+.btn-danger:hover {
+    background-color: #c82333; 
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
 }
 
 @media (max-width: 1600px){
@@ -493,25 +533,31 @@ body {
     .battery-status {
         padding: 10px;
     }
+
     .battery-display {
         margin-left: 30px;
     }
+
     .battery-content {
         margin-top: -60px;
     }
+
     .battery-container {
         width: 50px;
         height: 100px;
         margin-left: 40px;
     }
+
     .battery-head {
         left: 15px;
         width: 20px;
         height: 10px;
     }
+
     .card2 {
         width: 320px;
     }
+    
     .card3 {
         width: 1340px;
     }

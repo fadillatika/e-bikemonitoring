@@ -12,7 +12,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule): void
     {
-        $schedule->command('fetch:tsdata')->everyMinute();
+        // $schedule->command('fetch:tsdata')->everyMinute();
+        $schedule->command('generate:dummy-battery-data')->everyMinute();
     }
 
     /**
