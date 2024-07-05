@@ -83,7 +83,6 @@ class ApiController extends Controller
         }
     }
 
-
     public function fetchTSBattery()
     {
         $motorChannels = [
@@ -183,7 +182,7 @@ class ApiController extends Controller
 
         $distance = $earth_radius * $c;
 
-        return $distance; // jarak dalam kilometer
+        return $distance;
     }
 
     private function updateLockTripDistance($motor, $tracking)
@@ -250,8 +249,6 @@ class ApiController extends Controller
                 $activeLock->save();
             }
         }
-
-        // event(new MonitorUpdated($motor));
 
         return response()->json($activeLock ?? $lock, 201);
     }

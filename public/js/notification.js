@@ -45,30 +45,18 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let initialMarker, updatedMarker, finishMarker;
 
-    function showNotification(message) {
-        alert(message);
-    }
-
     function fetchAndUpdateData() {
-        fetch(/api/dataterakhir)
+        fetch(`/api/dataterakhir`)
             .then(response => response.json())
             .then(data => {
                 if (data.battery) {
                     updateBatteryDisplay(data.battery.percentage, data.battery.kilometers);
-                    if (data.battery.percentage <= 20) {
-                        showNotification('Baterai hampir habis!');
-                    } else if (data.battery.percentage == 100) {
-                        showNotification('Baterai sudah penuh!');
-                    }
                 } else {
                     toggleBatteryData(false, 'N/A', 'N/A');
                 }
 
                 if (data.lock) {
                     updateLockStatus(data.lock.status);
-                    if (data.lock.status == 1) {
-                        showNotification('Lock status: Unlocked!');
-                    }
                 } else {
                     toggleLockData(false);
                 }
@@ -168,7 +156,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    async function updateTracking(tracking, battery, lock) {
+    function getAddress(latitude, longitude) {
+        return fetch (`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
+        .then(response => response.json())
+        .then(data => data.display_name || 'Unknown Location')
+        .catch(error => {
+            console.error('Error getting address:', error);
+            return 'Unknown location';
+        });
+    }
+
+     async function updateTracking(tracking, battery, lock) {
         const { latitude, longitude, distance = 0, total_distance = 0 } = tracking;
         const { percentage = 'N/A' } = battery || {};
         const { status = false } = lock || {};
@@ -212,35 +210,45 @@ document.addEventListener("DOMContentLoaded", function () {
             intervalId = setInterval(fetchAndUpdateData, 5000);
             tracking = true;
             localStorage.setItem("tracking", JSON.stringify(tracking));
-            startStopButton.textContent = "Stop";
+            startStopButton.textContent = "Stop Tracking";
+            startStopButton.classList.add("tracking");
+            startStopButton.classList.remove("not-tracking");
+            resetButton.style.display = "none";
         }
     }
 
     function stopTracking() {
         if (tracking) {
             clearInterval(intervalId);
+            intervalId = null;
             tracking = false;
             localStorage.setItem("tracking", JSON.stringify(tracking));
-            startStopButton.textContent = "Start";
+            startStopButton.textContent = "Start Tracking";
+            startStopButton.classList.remove("tracking");
+            startStopButton.classList.add("not-tracking");
+            resetButton.style.display = "block";
         }
     }
 
     function resetTracking() {
-        polyline.setLatLngs([]);
-        if (initialMarker) map.removeLayer(initialMarker);
-        if (updatedMarker) map.removeLayer(updatedMarker);
-        if (finishMarker) map.removeLayer(finishMarker);
-        initialMarker = null;
-        updatedMarker = null;
-        finishMarker = null;
-        document.getElementById("totalDistance").textContent = "0 km";
-        localStorage.removeItem("tracking");
-    }
-
-    async function getAddress(lat, lon) {
-        const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}`);
-        const data = await response.json();
-        return data.display_name;
+        if (!tracking) {
+            polyline.setLatLngs([]);
+            if (initialMarker) {
+                map.removeLayer(initialMarker);
+                initialMarker = null;
+            }
+            if (updatedMarker) {
+                map.removeLayer(updatedMarker);
+                updatedMarker = null;
+            }
+            if (finishMarker) {
+                map.removeLayer(finishMarker);
+                finishMarker = null;
+            }
+            document.getElementById("totalDistance").textContent = "Total Distance: 0.00 km";
+            resetButton.style.display = "none";
+            localStorage.removeItem("tracking");
+        }
     }
 
     startStopButton.addEventListener("click", function () {
@@ -255,6 +263,16 @@ document.addEventListener("DOMContentLoaded", function () {
         resetTracking();
     });
 
-    feather.replace();
+    function getAddress(latitude, longitude) {
+        return fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
+            .then(response => response.json())
+            .then(data => data.display_name || 'Unknown Location')
+            .catch(error => {
+                console.error('Error getting address:', error);
+                return 'Unknown location';
+            });
+    }
+
     fetchAndUpdateData();
+    setInterval(fetchAndUpdateData, 30000);
 });
