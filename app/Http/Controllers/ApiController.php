@@ -43,6 +43,15 @@ class ApiController extends Controller
 
                 foreach ($data['feeds'] as $feed) {
                     if (isset($feed['field1'], $feed['field2'], $feed['created_at'])) {
+                        $latitude = floatval($feed['field1']);
+                        $longitude = floatval($feed['field2']);
+
+                        // Periksa apakah nilai latitude dan longitude adalah 0.0000000
+                        if ($latitude == 0.0000000 && $longitude == 0.0000000) {
+                            Log::warning('GPS data is 0.0000000, skipping this entry.');
+                            continue;
+                        }
+
                         $timestamp = Carbon::parse($feed['created_at']);
                         $existingTracking = Tracking::where('motor_id', $channel['motor_id'])
                             ->where('created_at', $timestamp)
@@ -55,14 +64,23 @@ class ApiController extends Controller
 
                             $tracking = new Tracking;
                             $tracking->motor_id = $channel['motor_id'];
-                            $tracking->latitude = $feed['field1'];
-                            $tracking->longitude = $feed['field2'];
+                            $tracking->latitude = $latitude;
+                            $tracking->longitude = $longitude;
                             $tracking->created_at = $timestamp;
 
                             if ($latestTracking) {
                                 $distance = $this->haversine($latestTracking->latitude, $latestTracking->longitude, $tracking->latitude, $tracking->longitude);
-                                $tracking->distance = $distance;
-                                $tracking->total_distance = $latestTracking->total_distance + $distance;
+
+                                // Validasi jarak sebelum disimpan
+                                if ($distance <= PHP_FLOAT_MAX) {
+                                    $tracking->distance = $distance;
+                                    $tracking->total_distance = $latestTracking->total_distance + $distance;
+                                } else {
+                                    Log::error('Jarak yang dihitung melebihi batas yang diizinkan.');
+                                    // Tindakan penanganan kesalahan lainnya, seperti memberi tahu pengguna atau mengatur nilai default.
+                                    $tracking->distance = 0;
+                                    $tracking->total_distance = $latestTracking->total_distance;
+                                }
                             } else {
                                 $tracking->distance = 0;
                                 $tracking->total_distance = 0;
@@ -70,6 +88,10 @@ class ApiController extends Controller
 
                             $tracking->save();
                             Log::info('Saved tracking entry:', $tracking->toArray());
+
+                            // Update trip distance
+                            $motor = Motor::find($channel['motor_id']);
+                            $this->updateLockTripDistance($motor, $tracking);
                         } else {
                             Log::info('Data already exists for timestamp: ' . $timestamp);
                         }
@@ -155,6 +177,7 @@ class ApiController extends Controller
                             $lock = new Lock;
                             $lock->motor_id = $channel['motor_id'];
                             $lock->status = $feed['field3'];
+                            $lock->trip_distance = 0; // Set trip_distance to 0 when creating a new lock entry
                             $lock->created_at = $timestamp;
                             $lock->save();
                         } else {
@@ -169,6 +192,7 @@ class ApiController extends Controller
             }
         }
     }
+
 
     private function haversine($lat1, $lon1, $lat2, $lon2)
     {
