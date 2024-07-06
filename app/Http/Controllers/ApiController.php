@@ -169,6 +169,14 @@ class ApiController extends Controller
                 foreach ($data['feeds'] as $feed) {
                     if (isset($feed['field3'], $feed['created_at'])) {
                         $timestamp = Carbon::parse($feed['created_at']);
+
+                        $status = (int) $feed['field3'];
+
+                        if (!in_array($status, [0, 1])) {
+                            Log::warning('invalid status value:', ['status' => $status]);
+                            continue;
+                        }
+
                         $existingLock = Lock::where('motor_id', $channel['motor_id'])
                             ->where('created_at', $timestamp)
                             ->first();
@@ -176,7 +184,7 @@ class ApiController extends Controller
                         if (!$existingLock) {
                             $lock = new Lock;
                             $lock->motor_id = $channel['motor_id'];
-                            $lock->status = $feed['field3'];
+                            $lock->status = $status;
                             $lock->trip_distance = 0; // Set trip_distance to 0 when creating a new lock entry
                             $lock->created_at = $timestamp;
                             $lock->save();
