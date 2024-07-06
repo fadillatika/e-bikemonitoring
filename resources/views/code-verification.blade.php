@@ -1,66 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="{{ asset('css/custom.css') }}" />
-        <!-- Google Fonts -->
-        <link
-            href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap"
-            rel="stylesheet"
-        />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap"
-            rel="stylesheet"
-        />
-        <link
-            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
-            rel="stylesheet"
-        />
-        <link
-            rel="stylesheet"
-            href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap"
-        />
 
-        <script src="https://unpkg.com/feather-icons"></script>
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ asset('css/custom.css') }}" />
 
-        <!-- More Icons -->
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
-        />
-        <link
-            rel="stylesheet"
-            href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css"
-            integrity="sha384-wESLQ85D6gbsF459vf1CiZ2+rr+CsxRY0RpiF1tLlQpDnAgg6rwdsUF1+Ics2bni"
-            crossorigin="anonymous"
-        />
+    <!-- PWA  -->
+    <meta name="theme-color" content="#6777ef" />
+    <link rel="apple-touch-icon" href="{{ asset('ebike-02.png') }}">
+    <link rel="manifest" href="{{ asset('/manifest.json') }}">
 
-        <link rel="stylesheet" href="forgot-password.css" />
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Ubuntu:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap" />
 
-        <title>E-bike Monitoring!</title>
-    </head>
+    <script src="https://unpkg.com/feather-icons"></script>
 
-    <body>
-        <!-- Navbar start -->
-        <nav class="navbar">
-            <a class="navbar-logo" href="/home">
-                <img src="img/logo.png" alt="Logo" width="135">
-            </a>
-            <div class="navbar-nav">
-                <a href="/about"><i data-feather="users"></i>  About</a>
-                <a href="/info" id="info"><i data-feather="info"></i>  Information</a>
-            </div>
-            <div class="navbar-extra">
-                <a href="/login" id="login"><i data-feather="log-in"></i>  Login</a>
-                <a href="#" id="hamburger-menu"><i data-feather="menu"></i></a>
-            </div>
-        </nav>
-        <!-- Hero Section -->
-        <section
-            class="hero"
-            id="home"
-            style="
+    <!-- More Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <link rel="stylesheet"
+        href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css"
+        integrity="sha384-wESLQ85D6gbsF459vf1CiZ2+rr+CsxRY0RpiF1tLlQpDnAgg6rwdsUF1+Ics2bni" crossorigin="anonymous" />
+
+    <link rel="stylesheet" href="forgot-password.css" />
+
+    <title>E-bike Monitoring!</title>
+</head>
+
+<body>
+    <!-- Navbar start -->
+    <nav class="navbar">
+        <a class="navbar-logo" href="/home">
+            <img src="img/logo.png" alt="Logo" width="135">
+        </a>
+        <div class="navbar-nav">
+            <a href="/about"><i data-feather="users"></i> About</a>
+            <a href="/info" id="info"><i data-feather="info"></i> Information</a>
+        </div>
+        <div class="navbar-extra">
+            <a href="/login" id="login"><i data-feather="log-in"></i> Login</a>
+            <a href="#" id="hamburger-menu"><i data-feather="menu"></i></a>
+        </div>
+    </nav>
+    <!-- Hero Section -->
+    <section class="hero" id="home" style="
                 min-height: 115vh;
                 display: flex;
                 align-items: center;
@@ -71,43 +57,59 @@
                 position: relative;
                 text-align: center;
                 overflow: hidden;
-            "
-        >
-            <main class="content">
-                <div class="header-content">
-                    <h1> Electrical Bike <span>Monitoring</span></h1>
-                    <img src="img/motor.png" alt="icon motor" class="motor-icon">
+            ">
+        <main class="content">
+            <div class="header-content">
+                <h1> Electrical Bike <span>Monitoring</span></h1>
+                <img src="img/motor.png" alt="icon motor" class="motor-icon">
+            </div>
+
+            <div class="hero-side">
+                <div class="login-container">
+                    <span class="title">Code Verification </br> </br> </span>
+                    <form action="{{ route('login') }}" method="post">
+                        <div class="input-group">
+                            <input type="text" name="Enter code" placeholder="Enter code" required />
+                        </div>
+
+                        </br>
+                        <button type="submit">SUBMIT</button>
+                    </form>
                 </div>
+            </div>
 
-                <div class="hero-side">
-                    <div class="login-container">
-                        <span class="title">Code Verification </br> </br> </span> 
-                        <form action="{{ route('login') }}" method="post">
-                            <div class="input-group">
-                                <input type="text" name="Enter code" placeholder="Enter code" required />
-                            </div>
 
-                            </br>
-                            <button type="submit">SUBMIT</button>
-                        </form>
-                    </div>            
-                </div>
-
-              
 
             <footer class="site-footer">
                 <div class="footer-container">
                     <p>&copy; 2024 Telkom University.</p>
                 </div>
             </footer>
-            </main>
-        </section>
+        </main>
+    </section>
 
-        <script>
-            feather.replace();
-        </script>
+    <script src="{{ asset('/sw.js') }}"></script>
+    <script>
+        if ("serviceWorker" in navigator) {
+            navigator.serviceWorker.register("/sw.js").then(
+                (registration) => {
+                    console.log("Service worker registration succeeded:", registration);
+                },
+                (error) => {
+                    console.error(`Service worker registration failed: ${error}`);
+                },
+            );
+        } else {
+            console.error("Service workers are not supported.");
+        }
+    </script>
 
-        <!-- Java script -->
-        <script src="login.js"></script>
-    </body>
+    <script>
+        feather.replace();
+    </script>
+
+    <!-- Java script -->
+    <script src="login.js"></script>
+</body>
+
 </html>
