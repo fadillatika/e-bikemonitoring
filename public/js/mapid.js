@@ -152,15 +152,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    async function getAddress(latitude, longitude) {
-        try{
-        const response = await fetch (`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
-        const data = await response.json();
-        return data.display_name || 'Unknown Location';
-        } catch (error) {
+    function getAddress(latitude, longitude) {
+        return fetch (`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
+        .then(response => response.json())
+        .then(data => data.display_name || 'Unknown Location')
+        .catch(error => {
             console.error('Error getting address:', error);
             return 'Unknown location';
-        }
+        });
     }
 
     async function updateTracking(tracking, battery, lock) {

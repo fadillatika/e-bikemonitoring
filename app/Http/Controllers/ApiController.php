@@ -132,7 +132,6 @@ class ApiController extends Controller
                             $battery->motor_id = $channel['motor_id'];
                             $battery->percentage = $feed['field6'];
                             $battery->voltage = $feed['field4'];
-                            $battery->current = $feed['field5'];
                             $battery->kilometers = 0;
                             $battery->created_at = $timestamp;
                             $battery->save();
