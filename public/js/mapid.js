@@ -45,29 +45,29 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let initialMarker, updatedMarker, finishMarker;
 
-    function fetchAndUpdateData() {
-        fetch(`/api/dataterakhir`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.battery) {
-                    updateBatteryDisplay(data.battery.percentage, data.battery.kilometers);
-                } else {
-                    toggleBatteryData(false, 'N/A', 'N/A');
-                }
+    async function fetchAndUpdateData() {
+        try {
+            const response = await fetch(`/api/dataterakhir`);
+            const data = await response.json();
 
-                if (data.lock) {
-                    updateLockStatus(data.lock.status);
-                } else {
-                    toggleLockData(false);
-                }
+            if (data.battery) {
+                updateBatteryDisplay(data.battery.percentage, data.battery.kilometers);
+            } else {
+                toggleBatteryData(false, 'N/A', 'N/A');
+            }
 
-                if (data.tracking) {
-                    updateTracking(data.tracking, data.battery, data.lock);
-                }
-            })
-            .catch(error => {
-                console.error('Error fetching latest data:', error);
-            });
+            if (data.lock) {
+                updateLockStatus(data.lock.status);
+            } else {
+                toggleLockData(false);
+            }
+
+            if (data.tracking) {
+                await updateTracking(data.tracking, data.battery, data.lock);
+            }
+        } catch (error) {
+            console.error('Error fetching latest data:', error);
+        }
     }
 
     function updateBatteryDisplay(percentage, kilometers) {
@@ -141,10 +141,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function toggleLockData(isAvailable) {
-        const lockStatusText = document.querySelector("#lockStatusText");
-        const lockIcon = document.querySelector("#lockIcon");
-        const lockButton = document.querySelector("#lockButton");
-
         if (!isAvailable) {
             lockStatusText.textContent = '-';
             lockIcon.setAttribute('data-feather', 'lock');
@@ -156,17 +152,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function getAddress(latitude, longitude) {
-        return fetch (`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
-        .then(response => response.json())
-        .then(data => data.display_name || 'Unknown Location')
-        .catch(error => {
+    async function getAddress(latitude, longitude) {
+        try{
+        const response = await fetch (`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+        const data = await response.json();
+        return data.display_name || 'Unknown Location';
+        } catch (error) {
             console.error('Error getting address:', error);
             return 'Unknown location';
-        });
+        }
     }
 
-     async function updateTracking(tracking, battery, lock) {
+    async function updateTracking(tracking, battery, lock) {
         const { latitude, longitude, distance = 0, total_distance = 0 } = tracking;
         const { percentage = 'N/A' } = battery || {};
         const { status = false } = lock || {};
@@ -207,7 +204,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function startTracking() {
         if (!tracking) {
-            intervalId = setInterval(fetchAndUpdateData, 5000);
+            intervalId = setInterval(fetchAndUpdateData, 10000);
             tracking = true;
             localStorage.setItem("tracking", JSON.stringify(tracking));
             startStopButton.textContent = "Stop Tracking";
@@ -262,16 +259,6 @@ document.addEventListener("DOMContentLoaded", function () {
     resetButton.addEventListener("click", function () {
         resetTracking();
     });
-
-    function getAddress(latitude, longitude) {
-        return fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
-            .then(response => response.json())
-            .then(data => data.display_name || 'Unknown Location')
-            .catch(error => {
-                console.error('Error getting address:', error);
-                return 'Unknown location';
-            });
-    }
 
     fetchAndUpdateData();
     setInterval(fetchAndUpdateData, 30000);

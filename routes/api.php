@@ -33,6 +33,6 @@ Route::get('/dataterakhir', [GetLastDataController::class, 'index']);
 
 // Route::get('/latest-lock', [GetLastDataController::class, 'lock']);
 
-Route::get('/toggle-lock', [GetLastDataController::class, 'lock']);
+// Route::get('/toggle-lock', [GetLastDataController::class, 'lock']);
 
 // Route::post('/auth/token', [AuthController::class, 'generateToken'])->middleware('throttle:5,1');
