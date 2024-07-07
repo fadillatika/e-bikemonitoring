@@ -121,7 +121,7 @@ class ApiController extends Controller
                 $data = json_decode($response->getBody(), true);
 
                 foreach ($data['feeds'] as $feed) {
-                    if (isset($feed['field4'], $feed['field5'], $feed['field6'], $feed['created_at'])) {
+                    if (isset($feed['field4'], $feed['field6'], $feed['created_at'])) {
                         $timestamp = Carbon::parse($feed['created_at']);
                         $existingBattery = Battery::where('motor_id', $channel['motor_id'])
                             ->where('created_at', $timestamp)
