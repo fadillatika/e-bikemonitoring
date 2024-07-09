@@ -7,138 +7,118 @@ use Illuminate\Support\Facades\Response;
 use App\Models\Motor;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class DownloadController extends Controller
 {
-    public function downloadData(Request $request)
-    {
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $motorId = $request->input('motor_id');
-
-        if (!$motorId) {
-            return redirect()->back()->withErrors(['message' => 'Motor ID not found.']);
-        }
-
-        $query = Motor::with(['batteries', 'locks', 'trackings'])->where('id', $motorId);
-
-        if ($startDate && $endDate) {
-            $query->whereHas('trackings', function ($q) use ($startDate, $endDate) {
-                $q->whereBetween('created_at', [$startDate, $endDate]);
-            });
-        }
-
-        $motor = $query->first();
-
-        if (!$motor) {
-            return redirect()->back()->withErrors(['message' => 'Motor data not found.']);
-        }
-
-        $csvData = "ID E-bike,Date,Percentage,Battery-Kilometers,kiloWatt,Location,Status\n";
-
-        $batteries = $motor->batteries;
-        $locks = $motor->locks;
-        $trackings = $motor->trackings->take($batteries->count());
-
-        $motor = $this->convertLocationToJson($motor);
-
-        foreach ($batteries as $index => $battery) {
-            $tracking = $trackings[$index] ?? null;
-            $lock = $locks->sortByDesc('created_at')->first();
-            $dateToShow = $tracking ? $tracking->created_at : 'Data tidak ditemukan';
-            $location = $tracking ? $tracking->location_name : 'Lokasi tidak ditemukan';
-            $status = $lock ? ($lock->status ? 'On' : 'Off') : 'Status lock tidak ditemukan';
-
-            $csvData .= "\"{$motor->motors_id}\",\"{$dateToShow}\",\"{$battery->percentage}%\",\"{$battery->kilometers} km\",\"{$battery->kW} kW\",\"{$location}\",\"{$status}\"\n";
-        }
-
-        $filename = $startDate && $endDate ? "motor_data_{$startDate}_to_{$endDate}.csv" : "motor_data_all.csv";
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"$filename\"",
-        ];
-
-        return Response::make(rtrim($csvData, "\n"), 200, $headers);
-    }
-
     public function downloadBatteryData(Request $request)
     {
-        $motorId = $request->input('motor_id');
+        try {
+            $motorId = $request->input('motor_id');
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
 
-        if (!$motorId) {
-            return redirect()->back()->withErrors(['message' => 'Motor ID not found.']);
+            Log::info('Download request received', [
+                'motor_id' => $motorId,
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]);
+
+            if (!$motorId) {
+                Log::error('Motor ID not provided');
+                return redirect()->back()->withErrors(['message' => 'Motor ID not found.']);
+            }
+
+            $motor = Motor::where('motors_id', $motorId)
+                ->with(['batteries' => function ($query) use ($startDate, $endDate) {
+                    if ($startDate) {
+                        $query->where('updated_at', '>=', $startDate);
+                    }
+                    if ($endDate) {
+                        $query->where('updated_at', '>=', $endDate);
+                    }
+                }])->first();
+
+            if (!$motor) {
+                Log::error('Motor data not found', ['motor_id' => $motorId]);
+                return redirect()->back()->withErrors(['message' => 'Motor data not found.']);
+            }
+
+            $csvData = "ID E-bike,Date,Voltage,Percentage,Battery-Kilometers\n";
+
+            foreach ($motor->batteries as $battery) {
+                $csvData .= "\"{$motor->motors_id}\",\"{$battery->updated_at}\",\"{$battery->voltage} V\",\"{$battery->percentage}%\",\"{$battery->kilometers} km\"\n";
+            }
+
+            $filename = "battery_data_motor_{$motorId}.csv";
+            $headers = [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => "attachment; filename=\"$filename\"",
+            ];
+
+            Log::info('CSV data prepared for download', ['filename' => $filename]);
+
+            return Response::make(rtrim($csvData, "\n"), 200, $headers);
+        } catch (\Exception $e) {
+            Log::error('Error in downloadBatteryData', ['error' => $e->getMessage()]);
+            return redirect()->back()->withErrors(['message' => 'An error occurred while processing the request.']);
         }
-
-        $motor = Motor::with('batteries')->find($motorId);
-
-        if (!$motor) {
-            return redirect()->back()->withErrors(['message' => 'Motor data not found.']);
-        }
-
-        $csvData = "ID E-bike,Percentage,Battery-Kilometers,kiloWatt\n";
-
-        foreach ($motor->batteries as $battery) {
-            $csvData .= "\"{$motor->motors_id}\",\"{$battery->percentage}%\",\"{$battery->kilometers} km\",\"{$battery->kW} kW\"\n";
-        }
-
-        $filename = "battery_data_motor_{$motorId}.csv";
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"$filename\"",
-        ];
-
-        return Response::make(rtrim($csvData, "\n"), 200, $headers);
     }
 
     public function downloadTrackingData(Request $request)
     {
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $motorId = $request->input('motor_id');
+        try {
+            $motorId = $request->input('motor_id');
+            $startDate = $request->input('start_date');
+            $endDate = $request->input('end_date');
 
-        if (!$motorId) {
-            return redirect()->back()->withErrors(['message' => 'Motor ID not found.']);
+            Log::info('Download request received', [
+                'motor_id' => $motorId,
+                'start_date' => $startDate,
+                'end_date' => $endDate
+            ]);
+
+            if (!$motorId) {
+                Log::error('Motor ID not provided');
+                return redirect()->back()->withErrors(['message' => 'Motor ID not found.']);
+            }
+
+            $motor = Motor::where('motors_id', $motorId)
+                ->with(['trackings', 'locks' => function ($query) use ($startDate, $endDate) {
+                    if ($startDate) {
+                        $query->where('updated_at', '>=', $startDate);
+                    }
+                    if ($endDate) {
+                        $query->where('updated_at', '>=', $endDate);
+                    }
+                }])->first();
+
+            if (!$motor) {
+                Log::error('Motor data not found', ['motor_id' => $motorId]);
+                return redirect()->back()->withErrors(['message' => 'Motor data not found.']);
+            }
+
+            $csvData = "ID E-bike,Date,Location Name,Status\n";
+
+            foreach ($motor->trackings as $tracking) {
+                $locationName = $this->getLocationName($tracking->latitude, $tracking->longitude);
+                $lockStatus = $motor->locks->isNotEmpty() ? ($motor->locks->first()->status ? 'Unlocked' : 'Locked') : 'No locks found';
+                $csvData .= "\"{$motor->motors_id}\",\"{$tracking->updated_at}\",\"{$locationName}\",\"{$lockStatus}\"\n";
+            }
+
+            $filename = "tracking_data_motor_{$motorId}.csv";
+            $headers = [
+                'Content-Type' => 'text/csv',
+                'Content-Disposition' => "attachment; filename=\"$filename\"",
+            ];
+
+            Log::info('CSV data prepared for download', ['filename' => $filename]);
+
+            return Response::make(rtrim($csvData, "\n"), 200, $headers);
+        } catch (\Exception $e) {
+            Log::error('Error in downloadBatteryData', ['error' => $e->getMessage()]);
+            return redirect()->back()->withErrors(['message' => 'An error occurred while processing the request.']);
         }
-
-        $motor = Motor::with(['trackings', 'locks'])->find($motorId);
-
-        if (!$motor) {
-            return redirect()->back()->withErrors(['message' => 'Motor data not found.']);
-        }
-
-        $csvData = "ID E-bike,Date,Location,Status\n";
-
-        $trackingsQuery = $motor->trackings();
-
-        if ($startDate && $endDate) {
-            $trackingsQuery->whereBetween('created_at', [$startDate, $endDate]);
-        }
-
-        $trackings = $trackingsQuery->get();
-
-        foreach ($trackings as $tracking) {
-            $location = $this->getLocationName($tracking->latitude, $tracking->longitude);
-            $lock = $motor->locks->sortByDesc('created_at')->first();
-            $status = $lock ? ($lock->status ? 'On' : 'Off') : 'Status lock tidak ditemukan';
-            $csvData .= "\"{$motor->motors_id}\",\"{$tracking->created_at}\",\"{$location}\",\"{$status}\"\n";
-        }
-
-        $filename = $startDate && $endDate ? "tracking_data_motor_{$motorId}_{$startDate}_to_{$endDate}.csv" : "tracking_data_motor_{$motorId}.csv";
-        $headers = [
-            'Content-Type' => 'text/csv',
-            'Content-Disposition' => "attachment; filename=\"$filename\"",
-        ];
-
-        return Response::make(rtrim($csvData, "\n"), 200, $headers);
-    }
-
-    public function convertLocationToJson($motor)
-    {
-        $motor->trackings->each(function ($tracking) {
-            $tracking->location_name = $this->getLocationName($tracking->latitude, $tracking->longitude);
-        });
-
-        return $motor;
     }
 
     protected function getLocationName($latitude, $longitude)

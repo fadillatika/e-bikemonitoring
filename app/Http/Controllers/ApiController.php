@@ -46,13 +46,12 @@ class ApiController extends Controller
                         $latitude = floatval($feed['field1']);
                         $longitude = floatval($feed['field2']);
 
-                        // Periksa apakah nilai latitude dan longitude adalah 0.0000000
                         if ($latitude == 0.0000000 && $longitude == 0.0000000) {
                             Log::warning('GPS data is 0.0000000, skipping this entry.');
                             continue;
                         }
 
-                        $timestamp = Carbon::parse($feed['created_at']);
+                        $timestamp = Carbon::parse($feed['created_at'])->setTimezone('Asia/Jakarta');
                         $existingTracking = Tracking::where('motor_id', $channel['motor_id'])
                             ->where('created_at', $timestamp)
                             ->first();
@@ -122,7 +121,7 @@ class ApiController extends Controller
 
                 foreach ($data['feeds'] as $feed) {
                     if (isset($feed['field4'], $feed['field6'], $feed['created_at'])) {
-                        $timestamp = Carbon::parse($feed['created_at']);
+                        $timestamp = Carbon::parse($feed['created_at'])->setTimezone('Asia/Jakarta');
                         $existingBattery = Battery::where('motor_id', $channel['motor_id'])
                             ->where('created_at', $timestamp)
                             ->first();
@@ -167,7 +166,7 @@ class ApiController extends Controller
 
                 foreach ($data['feeds'] as $feed) {
                     if (isset($feed['field3'], $feed['created_at'])) {
-                        $timestamp = Carbon::parse($feed['created_at']);
+                        $timestamp = Carbon::parse($feed['created_at'])->setTimezone('Asia/Jakarta');
 
                         $status = (int) $feed['field3'];
 

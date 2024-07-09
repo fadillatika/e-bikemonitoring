@@ -344,11 +344,12 @@ body {
     width: 100%; /* Ubah dari 180vw menjadi 100% */
     text-align: center;
     padding: 10px 0;
-    background-color: #0b0b0b;
-    color: #666;
-    border-top: 1px solid #0b0b0b;
+    background-color: var(--bg);
+    color: #fff;
+    border-top: 1px solid var(--bg);
     z-index: 1000;
     bottom: 0;
+    font-size: 14px;
 }
 
 .container {

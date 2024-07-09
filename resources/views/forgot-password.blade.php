@@ -94,7 +94,7 @@
 
             <footer class="site-footer">
                 <div class="footer-container">
-                    <p>&copy; 2024 Telkom University.</p>
+                    <p>Copyright &copy;2024; Designed by Telkom University</p>
                 </div>
             </footer>
         </main>

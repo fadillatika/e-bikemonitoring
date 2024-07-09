@@ -2,19 +2,30 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Motor;
 use App\Models\Battery;
 use App\Models\Lock;
 use App\Models\Tracking;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class GetLastDataController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $battery = $this->battery();
-        $lock = $this->lock();
-        $tracking = $this->tracking();
+        $motorsId = $request->input('motors_id');
+
+        $motor = Motor::where('motors_id', $motorsId)->first();
+
+        if (!$motor) {
+            return response()->json([
+                'error' => 'Motor tidak ditemukan'
+            ], 404);
+        }
+
+        $battery = $this->battery($motor);
+        $lock = $this->lock($motor);
+        $tracking = $this->tracking($motor);
+
         return response()->json([
             'battery' => $battery,
             'lock' => $lock,
@@ -22,35 +33,24 @@ class GetLastDataController extends Controller
         ]);
     }
 
-    public function battery()
+    public function battery($motor)
     {
-        return Cache::remember('latest_battery', 60, function () {
-            $latestBattery = Battery::orderBy('created_at', 'desc')->first();
-            return $latestBattery ? [
-                'percentage' => $latestBattery->percentage,
-                'kilometers' => $latestBattery->kilometers
-            ] : null;
-        });
+        return $motor->batteries()
+            ->orderBy('created_at', 'desc')
+            ->first();
     }
-    public function lock()
+
+    public function lock($motor)
     {
-        return Cache::remember('latest_lock', 60, function () {
-            $latestLock = Lock::orderBy('created_at', 'desc')->first();
-            return $latestLock ? [
-                'status' => $latestLock->status
-            ] : null;
-        });
+        return $motor->locks()
+            ->orderBy('created_at', 'desc')
+            ->first();
     }
-    public function tracking()
+
+    public function tracking($motor)
     {
-        return Cache::remember('latest_lock', 60, function () {
-            $latestTracking = Tracking::orderBy('created_at', 'desc')->first();
-            return $latestTracking ? [
-                'latitude' => $latestTracking->latitude,
-                'longitude' => $latestTracking->longitude,
-                'distance' => $latestTracking->distance,
-                'total_distance' => $latestTracking->total_distance
-            ] : null;
-        });
+        return $motor->trackings()
+            ->orderBy('created_at', 'desc')
+            ->first();
     }
 }

@@ -104,9 +104,13 @@
             <div class="card2 speedometer">
                 <h2>Motor ID</h2>
                 <div id="boxID" class="box">
+                    @if($motors->isEmpty())
+                    <h2>Data not found for this motor.</h2>
+                    @else
                     @foreach ($motors as $motor)
                     <h2>{{ $motor->motors_id }}</h2>
                     @endforeach
+                    @endif
                 </div>
             </div>
             <!-- Battery -->
@@ -140,74 +144,6 @@
                 @if($latestBatteryData){{ $latestBatteryData->percentage }}@else{{ 'N/A' }}@endif
                 <!--saat data yang diterima bukan berupa angka -->
             </div>
-            <!-- <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    const batteryPercentageElement = document.querySelector(".battery-percentage");
-
-                    function fetchDataAndUpdateBattery() {
-                        fetch(`/api/dataterakhir`)
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.battery) {
-                                    updateBatteryDisplay(data.battery.percentage, data.battery.kilometers);
-                                } else {
-                                    toggleBatteryData(false, 'N/A', 'N/A');
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error fetching latest battery data:', error);
-                            })
-                    }
-
-                    function updateBatteryDisplay(percentage, kilometers) {
-                        const batteryDisplays = document.querySelectorAll(".battery-display");
-                        const batteryErrors = document.querySelectorAll(".battery-error");
-
-                        batteryDisplays.forEach((display, index) => {
-                            if (!isNaN(percentage) && percentage !== 'N/A') {
-                                display.style.display = "block";
-                                updateBatteryIndicator(display.querySelector(".battery-indicator"), percentage);
-                                if (batteryErrors[index]) batteryErrors[index].style.display = "none";
-                            } else {
-                                display.style.display = "none";
-                                if (batteryErrors[index]) batteryErrors[index].style.display = "block";
-                            }
-                        });
-
-                        if (batteryPercentageElement) {
-                            batteryPercentageElement.textContent = percentage !== 'N/A' ? `${percentage}%` : '-';
-                        }
-                    }
-
-                    function updateBatteryIndicator(indicator, percentage) {
-                        indicator.style.height = percentage + "%";
-                        if (percentage <= 20) {
-                            indicator.style.background = "linear-gradient(to right, red, orange)";
-                        } else if (percentage <= 49) {
-                            indicator.style.background = "linear-gradient(to right, orange, yellow)";
-                        } else {
-                            indicator.style.background = "linear-gradient(to right, green, lime)";
-                        }
-                    }
-
-                    function toggleBatteryData(isAvailable, percentage, kilometers) {
-                        const batteryDisplays = document.querySelectorAll(".battery-display");
-                        const batteryErrors = document.querySelectorAll(".battery-error");
-
-                        batteryDisplays.forEach((display, index) => {
-                            display.style.display = isAvailable ? "block" : "none";
-                            if (!isAvailable && batteryErrors[index]) batteryErrors[index].style.display = "block";
-                        });
-
-                        if (batteryPercentageElement) {
-                            batteryPercentageElement.textContent = isAvailable ? `${percentage}%` : '-';
-                        }
-                    }
-
-                    fetchDataAndUpdateBattery();
-                    setInterval(fetchDataAndUpdateBattery, 30000);
-                })
-            </script> -->
             <!-- Distance -->
             <div class="card2 Time">
                 <h2>Distance Estimate</h2>
@@ -245,7 +181,6 @@
                 </button>
             </div>
             @else
-            <h2>Wheel Lock Status</h2>
             <h3 style="margin-top: 40px; font-size: 2.5em; font-weight: bold;">-</h3>
             @endif
         </div>

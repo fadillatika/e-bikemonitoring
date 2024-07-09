@@ -6,38 +6,41 @@ use Illuminate\Http\Request;
 use App\Models\Motor;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
 
 class SearchController extends Controller
 {
     public function search(Request $request)
     {
         $query = $request->input('q');
+        Log::info('Search query: ' . $query);
         $dataNotFound = false;
         $latestBatteryData = null;
         $latestLock = null;
         if (!empty($query)) {
             $motors = Motor::where('motors_id', 'like', "%{$query}%")
-                ->with(['batteries' => function($q) {
+                ->with(['batteries' => function ($q) {
                     $q->orderBy('created_at', 'desc');
-                }, 'locks'=>function($q){
+                }, 'locks' => function ($q) {
                     $q->orderBy('created_at', 'desc');
-                }, 'trackings'=>function($q){
+                }, 'trackings' => function ($q) {
                     $q->orderBy('created_at', 'desc'); // urutkan dari yang paling awal
                 }])->get();
-    
+
             if ($motors->isEmpty()) {
                 $dataNotFound = true;
             } else {
+                Log::info('Motor found' . $motors->first()->motors_id);
                 $latestBatteryData = $motors->first()->batteries->first();
                 $latestLock = $motors->first()->locks->first();
                 $motors = $this->location($motors);
             }
-    
+
             $locationsForMap = $motors->map(function ($motor) {
                 return $motor->trackings->map(function ($tracking) use ($motor) {
                     return [
-                        'lat' => $tracking->latitude, 
-                        'lng' => $tracking->longitude, 
+                        'lat' => $tracking->latitude,
+                        'lng' => $tracking->longitude,
                         'name' => $tracking->location_name,
                         'motorName' => $motor->motors_id
                     ];
@@ -48,9 +51,13 @@ class SearchController extends Controller
             $motors = collect();
             $locationsForMap = collect();
         }
-    
+
+        Log::info('Motors found: ' . $motors->count());
+        Log::info('Latest Battery Data: ' . json_encode($latestBatteryData));
+        Log::info('Latest Lock Data: ' . json_encode($latestLock));
+
         return view('search', compact('motors', 'locationsForMap', 'latestBatteryData', 'dataNotFound', 'latestLock'));
-    }    
+    }
 
     public function location($motors)
     {

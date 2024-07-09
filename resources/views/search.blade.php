@@ -75,9 +75,13 @@
             <div class="card2 speedometer">
                 <h2>Motor ID</h2>
                 <div id="boxID" class="box">
+                    @if($motors->isEmpty())
+                    <h2>Data not found for this motor.</h2>
+                    @else
                     @foreach ($motors as $motor)
                     <h2>{{ $motor->motors_id }}</h2>
                     @endforeach
+                    @endif
                 </div>
             </div>
             <!-- Battery Status -->
@@ -126,125 +130,6 @@
             <div id="batteryKilometers" style="display: none;">
                 @if($latestBatteryData){{ $latestBatteryData->kilometers }}@else{{ 'N/A' }}@endif
             </div>
-            <!-- <script>
-                document.addEventListener("DOMContentLoaded", function () {
-                    const batteryPercentageElement = document.querySelector(".battery-percentage");
-                    const batteryKilometersElement = document.querySelector(".battery-kilometers");
-                    const lockStatusText = document.querySelector("#lockStatusText");
-                    const lockIcon = document.querySelector("#lockIcon");
-                    const lockButton = document.querySelector("#lockButton");
-
-                    function fetchDataAndUpdateBattery() {
-                        fetch(`/api/dataterakhir`)
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.battery) {
-                                    updateBatteryDisplay(data.battery.percentage, data.battery.kilometers);
-                                } else {
-                                    toggleBatteryData(false, 'N/A', 'N/A');
-                                }
-
-                                if (data.lock) {
-                                    updateLockStatus(data.lock.status);
-                                } else {
-                                    toggleLockData(false);
-                                }
-                            })
-                            .catch(error => {
-                                console.error('Error fetching latest battery data:', error);
-                            });
-                    }
-
-                    function updateBatteryDisplay(percentage, kilometers) {
-                        const batteryDisplays = document.querySelectorAll(".battery-display");
-                        const batteryErrors = document.querySelectorAll(".battery-error");
-
-                        batteryDisplays.forEach((display, index) => {
-                            if (!isNaN(percentage) && percentage !== 'N/A') {
-                                display.style.display = "block";
-                                updateBatteryIndicator(display.querySelector(".battery-indicator"), percentage);
-                                if (batteryErrors[index]) batteryErrors[index].style.display = "none";
-                            } else {
-                                display.style.display = "none";
-                                if (batteryErrors[index]) batteryErrors[index].style.display = "block";
-                            }
-                        });
-
-                        if (batteryPercentageElement) {
-                            batteryPercentageElement.textContent = percentage !== 'N/A' ? `${percentage}%` : '-';
-                        }
-
-                        if (batteryKilometersElement) {
-                            batteryKilometersElement.textContent = kilometers !== 'N/A' ? `${kilometers}km` : '-';
-                        }
-                    }
-
-                    function updateBatteryIndicator(indicator, percentage) {
-                        indicator.style.height = percentage + "%";
-                        if (percentage <= 20) {
-                            indicator.style.background = "linear-gradient(to right, red, orange)";
-                        } else if (percentage <= 49) {
-                            indicator.style.background = "linear-gradient(to right, orange, yellow)";
-                        } else {
-                            indicator.style.background = "linear-gradient(to right, green, lime)";
-                        }
-                    }
-
-                    function toggleBatteryData(isAvailable, percentage, kilometers) {
-                        const batteryDisplays = document.querySelectorAll(".battery-display");
-                        const batteryErrors = document.querySelectorAll(".battery-error");
-
-                        batteryDisplays.forEach((display, index) => {
-                            display.style.display = isAvailable ? "block" : "none";
-                            if (!isAvailable && batteryErrors[index]) batteryErrors[index].style.display = "block";
-                        });
-
-                        if (batteryPercentageElement) {
-                            batteryPercentageElement.textContent = isAvailable ? `${percentage}%` : '-';
-                        }
-                        if (batteryKilometersElement) {
-                            batteryKilometersElement.textContent = isAvailable ? `${kilometers}km` : '-';
-                        }
-                    }
-
-                    function updateLockStatus(status) {
-                        if (lockStatusText) {
-                            lockStatusText.textContent = status ? 'Unlocked' : 'Locked';
-                        }
-
-                        if (lockIcon) {
-                            lockIcon.setAttribute('data-feather', status ? 'unlock' : 'lock');
-                            feather.replace();
-                        }
-
-                        if (lockButton) {
-                            lockButton.textContent = status ? 'ON' : 'OFF';
-                            lockButton.classList.toggle('on', status);
-                            lockButton.classList.toggle('off', !status);
-                            lockButton.setAttribute('data-status', status ? 'on' : 'off');
-                        }
-                    }
-
-                    function toggleLockData(isAvailable) {
-                        const lockStatusText = document.querySelector("#lockStatusText");
-                        const lockIcon = document.querySelector("#lockIcon");
-                        const lockButton = document.querySelector("#lockButton");
-
-                        if (!isAvailable) {
-                            lockStatusText.textContent = '-';
-                            lockIcon.setAttribute('data-feather', 'lock');
-                            feather.replace();
-                            lockButton.textContent = 'OFF';
-                            lockButton.classList.add('off');
-                            lockButton.classList.remove('on');
-                            lockButton.setAttribute('data-status', 'off');
-                        }
-                    }
-
-                    fetchDataAndUpdateBattery();
-                    setInterval(fetchDataAndUpdateBattery, 30000);
-                });
-            </script> -->
             <!-- Wheel Lock -->
             <div class="card2 wheel-lock">
                 <h2>Wheel Lock Status</h2>
@@ -265,7 +150,6 @@
                 </button>
             </div>
             @else
-            <h2>Wheel Lock Status</h2>
             <h3 style="margin-top: 40px; font-size: 2.5em; font-weight: bold;">-</h3>
             @endif
         </div>

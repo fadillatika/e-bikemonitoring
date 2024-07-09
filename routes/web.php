@@ -66,7 +66,7 @@ Route::get('/downloadbatteries', [DownloadController::class, 'downloadBatteryDat
 
 Route::get('/user',  [SearchuserController::class, 'search'])->name('user.search')->middleware('auth.admin');
 
-// Route::get('/account',  [AccountController::class, 'account'])->name('account')->middleware('auth.admin');
+Route::get('/account',  [AccountController::class, 'account'])->name('account')->middleware('auth.admin');
 
 Route::post('/admin/update-email', [AdminController::class, 'updateEmail'])->name('admin.updateEmail');
 

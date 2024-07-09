@@ -46,9 +46,12 @@ document.addEventListener("DOMContentLoaded", function () {
     let initialMarker, updatedMarker, finishMarker;
 
     async function fetchAndUpdateData() {
+        const motorID = document.getElementById("boxID").textContent.trim();
         try {
-            const response = await fetch(`/api/dataterakhir`);
+            const response = await fetch(`/api/dataterakhir?motors_id=${motorID}`)
             const data = await response.json();
+
+            console.log(data);
 
             if (data.battery) {
                 updateBatteryDisplay(data.battery.percentage, data.battery.kilometers);

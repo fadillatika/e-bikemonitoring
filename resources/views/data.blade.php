@@ -42,7 +42,6 @@
                     <label class="download-label" for="end_date">End Date:</label>
                     <input class="download-input" type="date" id="end_date" name="end_date">
 
-                    <input type="hidden" name="motor_id" value="{{ session('motor_id') }}">
                     <button class="download-button" type="submit">Download Tracking Data</button>
                 </form>
 
@@ -63,10 +62,15 @@
                         </thead>
                         <tbody>
                             @foreach ($motor as $motorItem)
+                            @php
+                            $prevTracking = null;
+                            @endphp
                             @foreach ($motorItem->trackings as $tracking)
+                            @if (!$prevTracking || $tracking->latitude != $prevTracking->latitude ||
+                            $tracking->longitude != $prevTracking->longitude)
                             <tr>
                                 <td>{{ $motorItem->motors_id }}</td>
-                                <td>{{ $tracking->created_at }}</td>
+                                <td>{{ $tracking->updated_at }}</td>
                                 <td>{{ $tracking->latitude }}</td>
                                 <td>{{ $tracking->longitude }}</td>
                                 <td>{{ $tracking->location_name }}</td>
@@ -79,8 +83,11 @@
                                     No locks found
                                     @endif
                                 </td>
-
                             </tr>
+                            @endif
+                            @php
+                            $prevTracking = $tracking;
+                            @endphp
                             @endforeach
                             @endforeach
                         </tbody>
@@ -98,7 +105,6 @@
                     <label class="download-label" for="end_date">End Date:</label>
                     <input class="download-input" type="date" id="end_date" name="end_date">
 
-                    <input type="hidden" name="motor_id" value="{{ session('motor_id') }}">
                     <button class="download-button" type="submit">Download Battery Data</button>
                 </form>
 
@@ -111,30 +117,30 @@
                                 <th>Date</th>
                                 <th>Voltage</th>
                                 <th>Percentage <br>Motor Battery</th>
-                                <th>Percentage <br>Monitoring Battery</th>
                                 <th>Distance Estimate</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($motor as $motorItem)
-                            @foreach ($motorItem->batteries as $battery)
+                            @foreach ($motorItem->batteries as $key => $battery)
+                            @if ($key == 0 || $battery->percentage != $motorItem->batteries[$key - 1]->percentage)
                             <tr>
                                 <td>{{ $motorItem->motors_id }}</td>
-                                <td>{{ $battery->created_at }}</td>
+                                <td>{{ $battery->updated_at }}</td>
                                 <td>{{ $battery->voltage }}</td>
                                 <td>{{ $battery->percentage }}%</td>
-                                <td>{{ $battery->percentage }}%</td>
-                                <td>{{ $battery->voltage }} km</td>
+                                <td>{{ $battery->kilometers }} km</td>
                             </tr>
+                            @endif
                             @endforeach
                             @endforeach
                         </tbody>
+
                     </table>
                 </div>
             </div>
         </div>
     </div>
-    <!-- <script src="js/dash.js"></script> -->
     <script src="js/dashboard.js"></script>
 </body>
 
