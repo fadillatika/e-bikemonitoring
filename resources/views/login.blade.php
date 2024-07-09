@@ -56,7 +56,7 @@
                 <div class="login-container">
                     <span class="title"> Login Form</br></span>
                     <span class="note"> Please login first by entering your
-                        motorcycle ID and use the password provided by the admin.</span> </br>
+                        e-Bike ID and password.</span> </br>
                     <div class="mt-5">
                         @if($errors->any())
                         <div class="col-12">
