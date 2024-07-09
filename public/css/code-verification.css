@@ -306,10 +306,11 @@ body {
     text-align: center;
     padding: 10px 0;
     background-color: var(--bg);
-    color: #666;
+    color: #fff;
     border-top: 1px solid var(--bg);
     z-index: 1000;
     bottom: -0.1cm;
+    font-size: 11px;
 } 
 
 .container {
