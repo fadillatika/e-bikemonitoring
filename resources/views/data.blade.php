@@ -57,7 +57,6 @@
                                 <th>Location</th>
                                 <th>Distance (km)</th>
                                 <th>Total Distance (km)</th>
-                                <th>Status</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -76,13 +75,6 @@
                                 <td>{{ $tracking->location_name }}</td>
                                 <td>{{ $tracking->distance }}</td>
                                 <td>{{ $tracking->total_distance }}</td>
-                                <td>
-                                    @if ($motorItem->locks->isNotEmpty())
-                                    {{ $motorItem->locks->first()->status ? 'Locked' : 'Unlocked' }}
-                                    @else
-                                    No locks found
-                                    @endif
-                                </td>
                             </tr>
                             @endif
                             @php

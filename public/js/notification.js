@@ -69,7 +69,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             if (data.tracking) {
                 await updateTracking(data.tracking, data.battery, data.lock);
-                checkLocationChange(data.tracking);
+                checkLocationChange(data.tracking, data.lock.status);
             }
         } catch (error) {
             console.error('Error fetching latest data:', error);
@@ -86,6 +86,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
+    let lastLockStatus = null;
     function checkLockStatus(status) {
         const previousStatus = localStorage.getItem('lockStatus');
         if (previousStatus !== null && previousStatus !== status.toString()) {
@@ -96,40 +97,40 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     let lastNotifiedDistance = 0;
-    async function checkLocationChange(trackingData) {
+
+    async function checkLocationChange(trackingData, lockStatus) {
         const motorID = document.getElementById("boxID").textContent.trim();
-    try {
-        const response = await fetch(`/api/dataterakhir?motors_id=${motorID}`);
-        
-        if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-        
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-            throw new TypeError('Expected JSON response from server');
-        }
-
-        const responseData = await response.json();
-
-        const lastDistance = responseData.last_distance;
-
-        if (lastDistance !== null && typeof lastDistance !== 'undefined') {
-            const distance = parseFloat(lastDistance);
-
-            if (!isNaN(distance) && distance >= 1 && distance > lastNotifiedDistance) {
-                showNotification("Perubahan Lokasi", `Lokasi berubah sejauh ${distance.toFixed(2)} km.`);
-                lastNotifiedDistance = distance;
-            }
-        } else {
-            throw new Error('Invalid or missing distance data in response');
-        }
-
-    } catch (error) {
-        console.error('Error fetching last distance or processing location change:', error);
-    }
-    }
+        try {
+            const response = await fetch(`/api/dataterakhir?motors_id=${motorID}`);
             
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+            
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                throw new TypeError('Expected JSON response from server');
+            }
+    
+            const responseData = await response.json();
+    
+            const lastDistance = responseData.last_distance;
+    
+            if (lastDistance !== null && typeof lastDistance !== 'undefined') {
+                const distance = parseFloat(lastDistance);
+    
+                if (!isNaN(distance) && distance >= 1 && distance > lastNotifiedDistance && !lockStatus) {
+                    showNotification("Perubahan Lokasi", `Lokasi berubah sejauh ${distance.toFixed(2)} km.`);
+                    lastNotifiedDistance = distance;
+                }
+            } else {
+                throw new Error('Invalid or missing distance data in response');
+            }
+    
+        } catch (error) {
+            console.error('Error fetching last distance or processing location change:', error);
+        }
+    }       
 
     function updateBatteryDisplay(percentage, kilometers) {
         const batteryDisplays = document.querySelectorAll(".battery-display");
