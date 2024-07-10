@@ -41,7 +41,8 @@
 
     <div class="image-container">
         <a href="https://bit.ly/e-Bikemonitoring">
-            <img src="{{ asset('img/apk.png') }}" alt="qrcode" class="small-image" />
+            <img src="{{ asset('img/apk.png') }}" alt="apk" class="small-image1" />
+            <img src="{{ asset('img/bg.png') }}" alt="qrcode" class="small-image" />
         </a>
     </div>
 

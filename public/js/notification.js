@@ -259,7 +259,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 <b>Lock Status:</b> ${status ? 'Unlocked' : 'Locked'}`);
             }
 
-            document.getElementById("totalDistance").textContent = total_distance.toFixed(2) + " km";
+            const totalDistance = parseFloat(total_distance);
+            if (!isNaN(totalDistance)) {
+                document.getElementById("totalDistance").textContent = totalDistance.toFixed(2) + " km";
+            } else {
+                document.getElementById("totalDistance").textContent = "Total Distance: N/A";
+            }
         }
     }
 

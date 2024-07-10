@@ -47,18 +47,33 @@
         </div>
     </nav>
 
-    <div class="image-container">
-        <a href="https://bit.ly/e-Bikemonitoring">
-            <img src="{{ asset('img/apk.png') }}" alt="qrcode" class="small-image" />
-        </a>
-    </div>
+    <section class="hero" id="home" style="
+                min-height: 115vh;
+                display: flex;
+                align-items: center;
+                background-image: url('img/bg.png');
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: center;
+                position: relative;
+                text-align: center;
+                overflow: hidden;
+            ">
+        <main class="content-row">
 
-    <footer class="site-footer">
-        <div class="footer-container">
-            <p>Copyright &copy;2024; Designed by Telkom University</p>
-        </div>
-    </footer>
-    </main>
+            <div class="image-container">
+                <a href="https://bit.ly/e-Bikemonitoring">
+                    <img src="{{ asset('img/apk.png') }}" alt="qrcode" class="small-imagea" />
+                </a>
+            </div>
+
+        </main>
+
+        <footer class="site-footer">
+            <div class="footer-container">
+                <p>Copyright &copy;2024; Designed by Telkom University</p>
+            </div>
+        </footer>
     </section>
     <script>
         feather.replace();
