@@ -28,11 +28,17 @@ Route::get('/data', function () {
     ]);
 })->name('data')->middleware('auth.admin');
 
-Route::get('/list', function () {
-    return view('list', [
-        "title" => "List"
+Route::get('/informatiion', function () {
+    return view('informatiion', [
+        "title" => "Information",
     ]);
-})->name('data');
+})->name('informatiion')->middleware('auth.admin');
+
+// Route::get('/list', function () {
+//     return view('list', [
+//         "title" => "List"
+//     ]);
+// })->name('data');
 
 Route::get('/about', function () {
     return view('about', [
@@ -40,11 +46,11 @@ Route::get('/about', function () {
     ]);
 })->name('about');
 
-// Route::get('/data', function () {
-//     return view('data', [
-//         "title" => "Data",
-//     ]);
-// })->name('data');
+Route::get('/information', function () {
+    return view('information', [
+        "title" => "Information",
+    ]);
+})->name('information');
 
 // Route::get('/monitor', [MotorController::class, 'index'])->name('monitor');
 

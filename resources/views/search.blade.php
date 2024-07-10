@@ -40,18 +40,26 @@
         <div class="sidebar-menu">
             <ul>
                 <li>
-                    <a href="/login" id="login">
-                        <div class="menu-item">
-                            <i data-feather="log-in"></i>
-                            <span style="font-weight: bold">Login</span>
-                        </div>
-                    </a>
-                </li>
-                <li>
                     <a href="/about" id="about">
                         <div class="menu-item">
                             <i data-feather="users"></i>
                             <span style="font-weight: bold">About</span>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="/information" id="information">
+                        <div class="menu-item">
+                            <i data-feather="info"></i>
+                            <span style="font-weight: bold">Information</br></span>
+                        </div>
+                    </a>
+                </li>
+                <li>
+                    <a href="/login" id="login">
+                        <div class="menu-item">
+                            <i data-feather="log-in"></i>
+                            <span style="font-weight: bold">Login</span>
                         </div>
                     </a>
                 </li>

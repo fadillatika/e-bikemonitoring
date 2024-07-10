@@ -25,7 +25,8 @@
         href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/fontawesome.min.css"
         integrity="sha384-wESLQ85D6gbsF459vf1CiZ2+rr+CsxRY0RpiF1tLlQpDnAgg6rwdsUF1+Ics2bni" crossorigin="anonymous" />
 
-    <link rel="stylesheet" href="{{ asset('css/login.css') }}" />
+    <link rel="stylesheet" href="css/forgot-password.css" />
+    <!-- <link rel="stylesheet" href="css/login.css" /> -->
 
     <title>E-bike Monitoring!</title>
 </head>
@@ -38,61 +39,27 @@
         </a>
         <div class="navbar-nav">
             <a href="/about"><i data-feather="users"></i> About</a>
-            <a href="/info" id="information"><i data-feather="info"></i> Information</a>
+            <a href="/information"><i data-feather="info"></i> Information</a>
+            <a href="/login" id="login"><i data-feather="log-in"></i> Login</a>
         </div>
         <div class="navbar-extra">
-            <a href="/login" id="login"><i data-feather="log-in"></i> Login</a>
             <a href="#" id="hamburger-menu"><i data-feather="menu"></i></a>
         </div>
     </nav>
-    <!-- Hero Section -->
-    <section class="hero" id="home" style="
-                min-height: 115vh;
-                display: flex;
-                align-items: center;
-                background-image: url('{{ asset(" img/bg.png") }}'); background-repeat: no-repeat; background-size:
-        cover; background-position: center; position: relative; text-align: center; overflow: hidden; "
-        >
-            <main class=" content-row">
-        <div class="header-content">
-            <h1> Electrical Bike <span>Monitoring</span></h1>
-            <img src="{{ asset('img/motor.png') }}" alt="icon motor" class="motor-icon">
+
+    <div class="image-container">
+        <a href="https://bit.ly/e-Bikemonitoring">
+            <img src="{{ asset('img/apk.png') }}" alt="qrcode" class="small-image" />
+        </a>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <p>Copyright &copy;2024; Designed by Telkom University</p>
         </div>
-
-        <div class="hero-side">
-            <div class="login-container">
-                <span class="title"> New Password</br> </br> </span>
-                <form action="{{ route('reset.passpost') }}" method="post">
-                    @csrf
-                    <input type="text" name="token" hidden value="{{ $token }}">
-                    <div class="input-group">
-                        <input type="email" name="email" placeholder="Enter your email" required />
-                    </div>
-                    <div class="input-group">
-                        <input type="password" name="password" placeholder="new password" required />
-                    </div>
-
-                    <div class="input-group">
-                        <input type="password" name="password_confirmation" placeholder="password confirmation"
-                            required />
-                    </div>
-
-                    </br>
-                    <button type="submit">CHANGED</button>
-                </form>
-            </div>
-        </div>
-
-
-
-        <footer class="site-footer">
-            <div class="footer-container">
-                <p>Copyright &copy;2024; Designed by Telkom University</p>
-            </div>
-        </footer>
-        </main>
+    </footer>
+    </main>
     </section>
-
     <script>
         feather.replace();
     </script>

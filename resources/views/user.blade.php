@@ -72,6 +72,14 @@
                         </div>
                     </a>
                 </li>
+                <li>
+                    <a href="/informatiion" id="information">
+                        <div class="menu-item">
+                            <i data-feather="info"></i>
+                            <span style="font-weight: bold">Information</br></span>
+                        </div>
+                    </a>
+                </li>
                 <li style="text-align: center;">
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline-block;">
                         @csrf
