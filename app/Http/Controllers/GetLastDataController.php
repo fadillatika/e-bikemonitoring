@@ -25,11 +25,13 @@ class GetLastDataController extends Controller
         $battery = $this->battery($motor);
         $lock = $this->lock($motor);
         $tracking = $this->tracking($motor);
+        $lastDistance = $this->lastDistance($motor);
 
         return response()->json([
             'battery' => $battery,
             'lock' => $lock,
-            'tracking' => $tracking
+            'tracking' => $tracking,
+            'last_distance' => $lastDistance,
         ]);
     }
 
@@ -52,5 +54,12 @@ class GetLastDataController extends Controller
         return $motor->trackings()
             ->orderBy('created_at', 'desc')
             ->first();
+    }
+
+    public function lastDistance($motor)
+    {
+        return $motor->trackings()
+            ->orderBy('created_at', 'desc')
+            ->value('distance');
     }
 }

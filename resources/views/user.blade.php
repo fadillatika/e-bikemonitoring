@@ -202,7 +202,7 @@
 
     <!-- Java script -->
     <script src="js/fiturjs.js"></script>
-    <script src="js/mapid.js"></script>
+    <script src="js/notification.js"></script>
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/laravel-echo/dist/echo.iife.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" crossorigin=""></script>

@@ -76,7 +76,7 @@ class ApiController extends Controller
                                     $tracking->total_distance = $latestTracking->total_distance + $distance;
                                 } else {
                                     Log::error('Jarak yang dihitung melebihi batas yang diizinkan.');
-                                    // Tindakan penanganan kesalahan lainnya, seperti memberi tahu pengguna atau mengatur nilai default.
+
                                     $tracking->distance = 0;
                                     $tracking->total_distance = $latestTracking->total_distance;
                                 }
@@ -122,14 +122,18 @@ class ApiController extends Controller
                 foreach ($data['feeds'] as $feed) {
                     if (isset($feed['field4'], $feed['field6'], $feed['created_at'])) {
                         $timestamp = Carbon::parse($feed['created_at'])->setTimezone('Asia/Jakarta');
-                        $existingBattery = Battery::where('motor_id', $channel['motor_id'])
-                            ->where('created_at', $timestamp)
-                            ->first();
+                        $percentage = (float) $feed['field6'];
+
+                        if ($percentage >= 0 && $percentage <= 100) {
+                            $existingBattery = Battery::where('motor_id', $channel['motor_id'])
+                                ->where('created_at', $timestamp)
+                                ->first();
+                        }
 
                         if (!$existingBattery) {
                             $battery = new Battery;
                             $battery->motor_id = $channel['motor_id'];
-                            $battery->percentage = $feed['field6'];
+                            $battery->percentage = $percentage;
                             $battery->voltage = $feed['field4'];
                             $battery->kilometers = 0;
                             $battery->created_at = $timestamp;
@@ -183,7 +187,7 @@ class ApiController extends Controller
                             $lock = new Lock;
                             $lock->motor_id = $channel['motor_id'];
                             $lock->status = $status;
-                            $lock->trip_distance = 0; // Set trip_distance to 0 when creating a new lock entry
+                            $lock->trip_distance = 0;
                             $lock->created_at = $timestamp;
                             $lock->save();
                         } else {

@@ -5,6 +5,7 @@ use App\Http\Controllers\MotorController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\GetLastDataController;
+use App\Http\Controllers\AuthController;
 use App\Models\Motor;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -35,4 +36,4 @@ Route::get('/dataterakhir', [GetLastDataController::class, 'index']);
 
 // Route::get('/toggle-lock', [GetLastDataController::class, 'lock']);
 
-// Route::post('/auth/token', [AuthController::class, 'generateToken'])->middleware('throttle:5,1');
+Route::post('/auth/token', [AuthController::class, 'generateToken'])->middleware('throttle:5,1');
