@@ -7,12 +7,14 @@ use App\Models\Battery;
 use App\Models\Lock;
 use App\Models\Tracking;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 
 class GetLastDataController extends Controller
 {
     public function index(Request $request)
     {
         $motorsId = $request->input('motors_id');
+        $selectedDate = $request->input('date');
 
         $motor = Motor::where('motors_id', $motorsId)->first();
 
@@ -22,9 +24,23 @@ class GetLastDataController extends Controller
             ], 404);
         }
 
+        $trackingQuery = $motor->trackings()->orderBy('created_at', 'desc');
+
+        if ($selectedDate) {
+            $startOfDay = Carbon::parse($selectedDate)->startOfDay();
+            $endOfDay = Carbon::parse($selectedDate)->endOfDay();
+            $trackingQuery->whereBetween('created_at', [$startOfDay, $endOfDay]);
+        } else {
+            // Filter untuk hari ini
+            $startOfDay = Carbon::now()->startOfDay();
+            $endOfDay = Carbon::now()->endOfDay();
+            $trackingQuery->whereBetween('created_at', [$startOfDay, $endOfDay]);
+        }
+
+        $tracking = $trackingQuery->get();
+
         $battery = $this->battery($motor);
         $lock = $this->lock($motor);
-        $tracking = $this->tracking($motor);
         $lastDistance = $this->lastDistance($motor);
 
         return response()->json([
@@ -49,17 +65,16 @@ class GetLastDataController extends Controller
             ->first();
     }
 
-    public function tracking($motor)
-    {
-        return $motor->trackings()
-            ->orderBy('created_at', 'desc')
-            ->first();
-    }
-
     public function lastDistance($motor)
     {
         return $motor->trackings()
             ->orderBy('created_at', 'desc')
             ->value('distance');
+    }
+
+    public function checkData()
+    {
+        $count = Tracking::count();
+        return response()->json(['isEmpty' => $count === 0]);
     }
 }

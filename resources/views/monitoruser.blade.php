@@ -56,18 +56,10 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/data" id="data">
-                        <div class="menu-item">
-                            <i data-feather="folder"></i>
-                            <span style="font-weight: bold">Data</span>
-                        </div>
-                    </a>
-                </li>
-                <li>
                     <a href="/informatiion" id="information">
                         <div class="menu-item">
-                            <i data-feather="info"></i>
-                            <span style="font-weight: bold">Information</br></span>
+                            <i data-feather="arrow-down-circle"></i>
+                            <span style="font-weight: bold">Get The App</br></span>
                         </div>
                     </a>
                 </li>

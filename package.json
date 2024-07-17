@@ -25,9 +25,11 @@
         "axios": "^1.6.8",
         "laravel": "^0.0.1",
         "leaflet": "^1.9.4",
+        "leaflet-routing-machine": "^3.2.12",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "socket.io-client": "^4.7.5",
+        "swiper": "^11.1.4",
         "vue": "^3.4.27"
     }
 }

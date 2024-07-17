@@ -24,8 +24,8 @@
             <li>
                 <a href="/information" id="information">
                     <div class="menu-item">
-                        <i data-feather="info"></i>
-                        <span style="font-weight: bold">Information</br></span>
+                        <i data-feather="arrow-down-circle"></i>
+                        <span style="font-weight: bold">Get The App</br></span>
                     </div>
                 </a>
             </li>

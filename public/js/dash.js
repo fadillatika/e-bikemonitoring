@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var map = L.map('myMap').setView([-6.2, 106.8], 12);
+    var map = L.map('myMap').setView([0, 0], 18);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
@@ -61,6 +61,9 @@ document.addEventListener('DOMContentLoaded', function() {
                                     endMarker.getPopup().setContent(`<b>Motor ID:</b> ${motorId}<br><b>Location:</b> ${data.display_name}<br><b>Total Distance:</b> ${totalDistanceKilometers.toFixed(2)} kilometers`).openPopup();
                                 });
                             });
+
+                            // Zoom langsung ke titik ikon terakhir
+                            map.setView([endPoint[0], endPoint[1]], 18);
                         }
                     })(motorId); // IIFE untuk mengisolasi scope setiap motorId
                 }

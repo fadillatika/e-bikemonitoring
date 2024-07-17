@@ -5,46 +5,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const lockIcon = document.querySelector("#lockIcon");
     const lockButton = document.querySelector("#lockButton");
 
-    const map = L.map('myMap2').setView([0, 0], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 18
-    }).addTo(map);
-
-    let polyline = L.polyline([], {color: 'blue'}).addTo(map);
-    let startStopButton = document.getElementById("startStopButton");
-    let resetButton = document.getElementById("resetButton");
-    let tracking = JSON.parse(localStorage.getItem("tracking")) || false;
-    let intervalId = null;
-
-    var redIcon = new L.Icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-    });
-
-    var blueIcon = new L.Icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-blue.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-    });
-
-    var greenIcon = new L.Icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-        shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-    });
-
-    let initialMarker, updatedMarker, finishMarker;
-
     async function fetchAndUpdateData() {
         const motorID = document.getElementById("boxID").textContent.trim();
         try {
@@ -67,10 +27,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 toggleLockData(false);
             }
 
-            if (data.tracking) {
-                await updateTracking(data.tracking, data.battery, data.lock);
-                checkLocationChange(data.tracking, data.lock.status);
-            }
         } catch (error) {
             console.error('Error fetching latest data:', error);
         }
@@ -98,39 +54,39 @@ document.addEventListener("DOMContentLoaded", function () {
 
     let lastNotifiedDistance = 0;
 
-    async function checkLocationChange(trackingData, lockStatus) {
-        const motorID = document.getElementById("boxID").textContent.trim();
-        try {
-            const response = await fetch(`/api/dataterakhir?motors_id=${motorID}`);
+    // async function checkLocationChange(trackingData, lockStatus) {
+    //     const motorID = document.getElementById("boxID").textContent.trim();
+    //     try {
+    //         const response = await fetch(`/api/dataterakhir?motors_id=${motorID}`);
             
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+    //         if (!response.ok) {
+    //             throw new Error(`HTTP error! Status: ${response.status}`);
+    //         }
             
-            const contentType = response.headers.get('content-type');
-            if (!contentType || !contentType.includes('application/json')) {
-                throw new TypeError('Expected JSON response from server');
-            }
+    //         const contentType = response.headers.get('content-type');
+    //         if (!contentType || !contentType.includes('application/json')) {
+    //             throw new TypeError('Expected JSON response from server');
+    //         }
     
-            const responseData = await response.json();
+    //         const responseData = await response.json();
     
-            const lastDistance = responseData.last_distance;
+    //         const lastDistance = responseData.last_distance;
     
-            if (lastDistance !== null && typeof lastDistance !== 'undefined') {
-                const distance = parseFloat(lastDistance);
+    //         if (lastDistance !== null && typeof lastDistance !== 'undefined') {
+    //             const distance = parseFloat(lastDistance);
     
-                if (!isNaN(distance) && distance >= 1 && distance > lastNotifiedDistance && !lockStatus) {
-                    showNotification("Perubahan Lokasi", `Lokasi berubah sejauh ${distance.toFixed(2)} km.`);
-                    lastNotifiedDistance = distance;
-                }
-            } else {
-                throw new Error('Invalid or missing distance data in response');
-            }
+    //             if (!isNaN(distance) && distance >= 1 && distance > lastNotifiedDistance && !lockStatus) {
+    //                 showNotification("Perubahan Lokasi", `Lokasi berubah sejauh ${distance.toFixed(2)} km.`);
+    //                 lastNotifiedDistance = distance;
+    //             }
+    //         } else {
+    //             throw new Error('Invalid or missing distance data in response');
+    //         }
     
-        } catch (error) {
-            console.error('Error fetching last distance or processing location change:', error);
-        }
-    }       
+    //     } catch (error) {
+    //         console.error('Error fetching last distance or processing location change:', error);
+    //     }
+    // }       
 
     function updateBatteryDisplay(percentage, kilometers) {
         const batteryDisplays = document.querySelectorAll(".battery-display");
@@ -202,18 +158,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function toggleLockData(isAvailable) {
-        if (!isAvailable) {
-            lockStatusText.textContent = '-';
-            lockIcon.setAttribute('data-feather', 'lock');
-            feather.replace();
-            lockButton.textContent = 'OFF';
-            lockButton.classList.add('off');
-            lockButton.classList.remove('on');
-            lockButton.setAttribute('data-status', 'off');
-        }
-    }
-
     function getAddress(latitude, longitude) {
         return fetch (`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
         .then(response => response.json())
@@ -223,108 +167,6 @@ document.addEventListener("DOMContentLoaded", function () {
             return 'Unknown location';
         });
     }
-
-    async function updateTracking(tracking, battery, lock) {
-        const { latitude, longitude, distance = 0, total_distance = 0 } = tracking;
-        const { percentage = 'N/A' } = battery || {};
-        const { status = false } = lock || {};
-
-        if (latitude !== undefined && longitude !== undefined) {
-            const latLng = [latitude, longitude];
-            const address = await getAddress(latitude, longitude);
-
-            if (!initialMarker) {
-                initialMarker = L.marker(latLng, {icon: redIcon}).addTo(map);
-                initialMarker.bindPopup(`<b>Location:</b> ${address}<br>
-                    <b>Battery:</b> ${percentage !== 'N/A' ? percentage + '%' : 'N/A'}<br>
-                    <b>Lock Status:</b> ${status ? 'Unlocked' : 'Locked'}`);
-            }
-
-            if (updatedMarker) {
-                map.removeLayer(updatedMarker);
-            }
-
-            updatedMarker = L.marker(latLng, {icon: blueIcon}).addTo(map);
-            updatedMarker.bindPopup(`<b>Location:</b> ${address}<br>
-                <b>Battery:</b> ${percentage !== 'N/A' ? percentage + '%' : 'N/A'}<br>
-                <b>Lock Status:</b> ${status ? 'Unlocked' : 'Locked'}`);    
-
-            polyline.addLatLng(latLng);
-            map.fitBounds(polyline.getBounds());
-
-            if (!tracking) { 
-                finishMarker = L.marker(latLng, {icon: greenIcon}).addTo(map);
-                finishMarker.bindPopup(`<b>Location:</b> ${address}<br>
-                <b>Battery:</b> ${percentage !== 'N/A' ? percentage + '%' : 'N/A'}<br>
-                <b>Lock Status:</b> ${status ? 'Unlocked' : 'Locked'}`);
-            }
-
-            const totalDistance = parseFloat(total_distance);
-            if (!isNaN(totalDistance)) {
-                document.getElementById("totalDistance").textContent = totalDistance.toFixed(2) + " km";
-            } else {
-                document.getElementById("totalDistance").textContent = "Total Distance: N/A";
-            }
-        }
-    }
-
-    function startTracking() {
-        if (!tracking) {
-            intervalId = setInterval(fetchAndUpdateData, 10000);
-            tracking = true;
-            localStorage.setItem("tracking", JSON.stringify(tracking));
-            startStopButton.textContent = "Stop Tracking";
-            startStopButton.classList.add("tracking");
-            startStopButton.classList.remove("not-tracking");
-            resetButton.style.display = "none";
-        }
-    }
-
-    function stopTracking() {
-        if (tracking) {
-            clearInterval(intervalId);
-            intervalId = null;
-            tracking = false;
-            localStorage.setItem("tracking", JSON.stringify(tracking));
-            startStopButton.textContent = "Start Tracking";
-            startStopButton.classList.remove("tracking");
-            startStopButton.classList.add("not-tracking");
-            resetButton.style.display = "block";
-        }
-    }
-
-    function resetTracking() {
-        if (!tracking) {
-            polyline.setLatLngs([]);
-            if (initialMarker) {
-                map.removeLayer(initialMarker);
-                initialMarker = null;
-            }
-            if (updatedMarker) {
-                map.removeLayer(updatedMarker);
-                updatedMarker = null;
-            }
-            if (finishMarker) {
-                map.removeLayer(finishMarker);
-                finishMarker = null;
-            }
-            document.getElementById("totalDistance").textContent = "Total Distance: 0.00 km";
-            resetButton.style.display = "none";
-            localStorage.removeItem("tracking");
-        }
-    }
-
-    startStopButton.addEventListener("click", function () {
-        if (tracking) {
-            stopTracking();
-        } else {
-            startTracking();
-        }
-    });
-
-    resetButton.addEventListener("click", function () {
-        resetTracking();
-    });
 
     askNotificationPermission();
     fetchAndUpdateData();

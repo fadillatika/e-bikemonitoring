@@ -88,7 +88,6 @@ class ApiController extends Controller
                             $tracking->save();
                             Log::info('Saved tracking entry:', $tracking->toArray());
 
-                            // Update trip distance
                             $motor = Motor::find($channel['motor_id']);
                             $this->updateLockTripDistance($motor, $tracking);
                         } else {
@@ -123,23 +122,38 @@ class ApiController extends Controller
                     if (isset($feed['field4'], $feed['field6'], $feed['created_at'])) {
                         $timestamp = Carbon::parse($feed['created_at'])->setTimezone('Asia/Jakarta');
                         $percentage = (float) $feed['field6'];
+                        $voltage = (float) $feed['field4'];
 
                         if ($percentage >= 0 && $percentage <= 100) {
                             $existingBattery = Battery::where('motor_id', $channel['motor_id'])
                                 ->where('created_at', $timestamp)
                                 ->first();
-                        }
 
-                        if (!$existingBattery) {
-                            $battery = new Battery;
-                            $battery->motor_id = $channel['motor_id'];
-                            $battery->percentage = $percentage;
-                            $battery->voltage = $feed['field4'];
-                            $battery->kilometers = 0;
-                            $battery->created_at = $timestamp;
-                            $battery->save();
-                        } else {
-                            Log::info('Battery data already exists for timestamp: ' . $timestamp);
+                            if (!$existingBattery) {
+                                // Send data to Flask API for prediction
+                                $flaskResponse = $client->post('http://127.0.0.1:5000/predict', [
+                                    'json' => [
+                                        'percentage' => $percentage,
+                                        'voltage' => $voltage,
+                                        'time' => 600 // ganti dengan nilai waktu yang sesuai
+                                    ]
+                                ]);
+
+                                $predictionResult = json_decode($flaskResponse->getBody(), true);
+                                $predictedDistance = $predictionResult['predicted_distance'] ?? 0;
+
+                                // Save the data to the database
+                                $battery = new Battery;
+                                $battery->motor_id = $channel['motor_id'];
+                                $battery->percentage = $percentage;
+                                $battery->voltage = $voltage;
+                                $battery->time = 600; // ganti dengan nilai waktu yang sesuai
+                                $battery->kilometers = $predictedDistance;
+                                $battery->created_at = $timestamp;
+                                $battery->save();
+                            } else {
+                                Log::info('Battery data already exists for timestamp: ' . $timestamp);
+                            }
                         }
                     } else {
                         Log::warning('Incomplete Battery Data:', $feed);

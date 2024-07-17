@@ -13,6 +13,11 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('fetch:tsdata')->everyMinute();
+        $schedule->command('app:update-battery-time')->everyMinute();
+        $schedule->command('prediction:run')->everyMinute();
+        $schedule->command('app:delete7-days-data')->weeklyOn(1, '00:00');
+
+
         // $schedule->command('generate:dummy-battery-data')->everyMinute();
     }
 

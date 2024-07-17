@@ -39,7 +39,7 @@
         </a>
         <div class="navbar-nav">
             <a href="/about"><i data-feather="users"></i> About</a>
-            <a href="/information"><i data-feather="info"></i> Information</a>
+            <a href="/information"><i data-feather="arrow-down-circle"></i> Get The App</a>
             <a href="/login" id="login"><i data-feather="log-in"></i> Login</a>
         </div>
         <div class="navbar-extra">

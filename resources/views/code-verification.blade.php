@@ -32,7 +32,7 @@
         </a>
         <div class="navbar-nav">
             <a href="/about"><i data-feather="users"></i> About</a>
-            <a href="/info" id="information"><i data-feather="info"></i> Information</a>
+            <a href="/info" id="information"><i data-feather="arrow-down-circle"></i> Get The App</a>
         </div>
         <div class="navbar-extra">
             <a href="/login" id="login"><i data-feather="log-in"></i> Login</a>

@@ -16,6 +16,9 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" crossorigin="" />
 
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+
+
     <!-- Turf -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Turf.js/6.5.0/turf.min.js"></script>
 
@@ -26,7 +29,11 @@
 
     <title>E-bike Monitoring!</title>
     <script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
-
+    <style>
+        .slider-container {
+            margin-top: 20px;
+        }
+    </style>
 </head>
 
 <body>
@@ -35,7 +42,7 @@
     </div>
     <!-- Sidebar start -->
     <aside class="sidebar">
-        <a class="sidebar-logo" href="/home">
+        <a class="sidebar-logo" href="{{ route('user.search', ['q' => session('motor_id')]) }}">
             <img src="/img/logo.png" alt="Logo" />
         </a>
         <div class="sidebar-menu">
@@ -57,26 +64,10 @@
                     </a>
                 </li>
                 <li>
-                    <a href="/about" id="about">
-                        <div class="menu-item">
-                            <i data-feather="users"></i>
-                            <span style="font-weight: bold">About</span>
-                        </div>
-                    </a>
-                </li>
-                <li>
-                    <a href="/data" id="data">
-                        <div class="menu-item">
-                            <i data-feather="folder"></i>
-                            <span style="font-weight: bold">Data</span>
-                        </div>
-                    </a>
-                </li>
-                <li>
                     <a href="/informatiion" id="information">
                         <div class="menu-item">
-                            <i data-feather="info"></i>
-                            <span style="font-weight: bold">Information</br></span>
+                            <i data-feather="arrow-down-circle"></i>
+                            <span style="font-weight: bold">Get The App</br></span>
                         </div>
                     </a>
                 </li>
@@ -182,11 +173,6 @@
                     <i id="lockIcon" data-feather="lock"></i>
                     @endif
                 </span>
-                <button id="lockButton" class="lock-button {{ $latestLock->status ? 'on' : 'off' }}"
-                    onclick="toggleLockStatus()" {{ $latestLock->status ? 'data-status="on"' : 'data-status="off"'
-                    }}>
-                    {{ $latestLock->status ? 'ON' : 'OFF' }}
-                </button>
             </div>
             @else
             <h3 style="margin-top: 40px; font-size: 2.5em; font-weight: bold;">-</h3>
@@ -195,15 +181,15 @@
     </div>
     <!-- Map & Track Section -->
     <div class="card3 map-track-section2">
-        <div class="control-buttons">
-            <button id="startStopButton" class="btn btn-success">Start Tracking</button>
-            <button id="resetButton" class="btn btn-warning" style="display:none;">Reset</button>
-        </div>
         <!-- Placeholder for Map -->
+        <div id="dateSelector">
+            <label for="datePicker">Select Date:</label>
+            <input type="date" id="datePicker">
+        </div>
         <div class="map-container2" id="myMap2"></div>
-        <script id="locationsForMap" type="application/json">@json($locationsForMap)</script>
         <div id="totalDistance" style="display:none;"></div>
     </div>
+
     <script>
         feather.replace();
     </script>
@@ -211,6 +197,7 @@
     <!-- Java script -->
     <script src="js/fiturjs.js"></script>
     <script src="js/notification.js"></script>
+    <script src="js/mappping.js"></script>
     <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/laravel-echo/dist/echo.iife.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" crossorigin=""></script>

@@ -76,7 +76,7 @@ Route::get('/account',  [AccountController::class, 'account'])->name('account')-
 
 Route::post('/admin/update-email', [AdminController::class, 'updateEmail'])->name('admin.updateEmail');
 
-Route::get('/data',  [DataController::class, 'index'])->name('data')->middleware('auth.admin');
+// Route::get('/data',  [DataController::class, 'index'])->name('data')->middleware('auth.admin');
 
 Route::get('/forgot-password', [ForgetPassController::class, 'ForgetPass'])->name('forgot.password');
 
