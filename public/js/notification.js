@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
     async function fetchAndUpdateData() {
         const motorID = document.getElementById("boxID").textContent.trim();
         try {
-            const response = await fetch(`/api/dataterakhir?motors_id=${motorID}`)
+            const response = await fetch(`https://e-bikemonitoring.com/api/dataterakhir?motors_id=${motorID}`)
             const data = await response.json();
 
             console.log(data);
