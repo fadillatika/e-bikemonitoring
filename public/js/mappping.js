@@ -4,32 +4,40 @@ document.addEventListener("DOMContentLoaded", function () {
         maxZoom: 18
     }).addTo(map);
 
-    async function fetchAndUpdateData() {
+    async function fetchAndUpdateHistoricalData() {
         const motorID = document.getElementById("boxID").textContent.trim();
         const selectedDate = document.getElementById('datePicker').value;
         try {
             const response = await fetch(`/api/dataterakhir?motors_id=${motorID}&date=${selectedDate}`);
             const data = await response.json();
 
+            // Menghapus layer sebelumnya dari peta
             map.eachLayer(layer => {
                 if (layer instanceof L.Polyline || layer instanceof L.CircleMarker || layer instanceof L.LayerGroup) {
                     map.removeLayer(layer);
                 }
             });
+
+            // Memuat ulang tileLayer
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18
             }).addTo(map);
 
-            if (data.tracking && data.tracking.length > 0) {
-                updateTracking(data.tracking);
+            // Mengambil hanya 100 data terakhir
+            const last100Data = data.tracking.slice(-100);
+
+            if (last100Data.length > 0) {
+                updateTracking(last100Data);
             } else {
-                alert('The history data is not available.');
+                alert('Data historis tidak tersedia.');
             }
         } catch (error) {
-            console.error('Error fetching latest data:', error);
+            console.error('Error fetching historical data:', error);
         }
     }
 
+
+    // Fungsi untuk memperbarui data tracking pada peta
     async function updateTracking(trackingData) {
         const polylineCoords = [];
         const markers = [];
@@ -41,7 +49,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 const latLng = [latitude, longitude];
                 const address = await getAddress(latitude, longitude);
 
-                L.circleMarker(latLng, { color: 'blue', radius: 5 }).addTo(map)
+                L.circleMarker(latLng, { color: 'green', radius: 5 }).addTo(map)
                     .bindPopup(address);
 
                 polylineCoords.push(latLng);
@@ -50,7 +58,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         if (polylineCoords.length > 0) {
-            const polyline = L.polyline(polylineCoords, { color: 'blue' }).addTo(map);
+            const polyline = L.polyline(polylineCoords, { color: 'green' }).addTo(map);
             map.fitBounds(polyline.getBounds());
         }
 
@@ -58,20 +66,33 @@ document.addEventListener("DOMContentLoaded", function () {
         document.getElementById("totalDistance").textContent = totalDistance.toFixed(2) + " km";
     }
 
-    function getAddress(latitude, longitude) {
-        return fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
-            .then(response => response.json())
-            .then(data => data.display_name || 'Unknown Location')
-            .catch(error => {
-                console.error('Error getting address:', error);
-                return 'Unknown location';
-            });
-    }
-
     document.getElementById('datePicker').addEventListener('change', function() {
-        fetchAndUpdateData();
+        fetchAndUpdateHistoricalData();
     });
 
-    fetchAndUpdateData();
+    fetchAndUpdateHistoricalData();
+
     setInterval(fetchAndUpdateData, 30000);
+
+    async function fetchAndUpdateData() {
+        const motorID = document.getElementById("boxID").textContent.trim();
+        try {
+            const response = await fetch(`/api/dataterakhir-hari-ini?motors_id=${motorID}`);
+            const data = await response.json();
+
+        } catch (error) {
+            console.error('Error fetching latest data:', error);
+        }
+    }
+
+    async function getAddress(latitude, longitude) {
+        try {
+            const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`);
+            const data = await response.json();
+            return data.display_name || 'Unknown Location';
+        } catch (error) {
+            console.error('Error getting address:', error);
+            return 'Unknown Location';
+        }
+    }
 });
