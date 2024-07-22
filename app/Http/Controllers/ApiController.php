@@ -26,6 +26,38 @@ class ApiController extends Controller
         return response()->json($motor, 201);
     }
 
+    private function isValidCoordinate($latitude, $longitude)
+    {
+        return (
+            is_numeric($latitude) && $latitude >= -90 && $latitude <= 90 &&
+            is_numeric($longitude) && $longitude >= -180 && $longitude <= 180
+        );
+    }
+
+    private function calculateDistanceUsingOSRM($lat1, $lon1, $lat2, $lon2)
+    {
+        // Validasi koordinat
+        if (!$this->isValidCoordinate($lat1, $lon1) || !$this->isValidCoordinate($lat2, $lon2)) {
+            Log::error('Invalid coordinates for OSRM calculation:', [
+                'lat1' => $lat1, 'lon1' => $lon1, 'lat2' => $lat2, 'lon2' => $lon2
+            ]);
+            return 0;
+        }
+
+        $client = new Client();
+        $url = "http://router.project-osrm.org/route/v1/driving/{$lon1},{$lat1};{$lon2},{$lat2}?overview=false";
+
+        try {
+            $response = $client->get($url);
+            $data = json_decode($response->getBody(), true);
+            $distance = $data['routes'][0]['distance'] / 1000;
+            return $distance;
+        } catch (\Exception $e) {
+            Log::error("Error fetching distance from OSRM: " . $e->getMessage());
+            return 0;
+        }
+    }
+
     public function fetchTSGPS()
     {
         $motorChannels = [
@@ -68,15 +100,13 @@ class ApiController extends Controller
                             $tracking->created_at = $timestamp;
 
                             if ($latestTracking) {
-                                $distance = $this->haversine($latestTracking->latitude, $latestTracking->longitude, $tracking->latitude, $tracking->longitude);
+                                $distance = $this->calculateDistanceUsingOSRM($latestTracking->latitude, $latestTracking->longitude, $tracking->latitude, $tracking->longitude);
 
-                                // Validasi jarak sebelum disimpan
                                 if ($distance <= PHP_FLOAT_MAX) {
                                     $tracking->distance = $distance;
                                     $tracking->total_distance = $latestTracking->total_distance + $distance;
                                 } else {
-                                    Log::error('Jarak yang dihitung melebihi batas yang diizinkan.');
-
+                                    Log::error('Calculated distance exceeds allowed limit.');
                                     $tracking->distance = 0;
                                     $tracking->total_distance = $latestTracking->total_distance;
                                 }
@@ -124,31 +154,20 @@ class ApiController extends Controller
                         $percentage = (float) $feed['field6'];
                         $voltage = (float) $feed['field4'];
 
+                        $time = Carbon::now()->diffInSeconds($timestamp);
+
                         if ($percentage >= 0 && $percentage <= 100) {
                             $existingBattery = Battery::where('motor_id', $channel['motor_id'])
                                 ->where('created_at', $timestamp)
                                 ->first();
 
                             if (!$existingBattery) {
-                                // Send data to Flask API for prediction
-                                $flaskResponse = $client->post('http://127.0.0.1:5000/predict', [
-                                    'json' => [
-                                        'percentage' => $percentage,
-                                        'voltage' => $voltage,
-                                        'time' => 600 // ganti dengan nilai waktu yang sesuai
-                                    ]
-                                ]);
-
-                                $predictionResult = json_decode($flaskResponse->getBody(), true);
-                                $predictedDistance = $predictionResult['predicted_distance'] ?? 0;
-
-                                // Save the data to the database
                                 $battery = new Battery;
                                 $battery->motor_id = $channel['motor_id'];
                                 $battery->percentage = $percentage;
                                 $battery->voltage = $voltage;
-                                $battery->time = 600; // ganti dengan nilai waktu yang sesuai
-                                $battery->kilometers = $predictedDistance;
+                                $battery->time = $time;
+                                $battery->kilometers = $this->predictKilometers($percentage, $voltage, $time);
                                 $battery->created_at = $timestamp;
                                 $battery->save();
                             } else {
@@ -165,6 +184,32 @@ class ApiController extends Controller
         }
 
         return response()->json(['message' => 'Battery data fetched and stored.']);
+    }
+
+    public function predict(Request $request)
+    {
+        $request->validate([
+            'percentage' => 'required|numeric',
+            'voltage' => 'required|numeric',
+            'time' => 'required|numeric',
+        ]);
+
+        // Mengambil nilai input dari request
+        $percentage = $request->input('percentage');
+        $voltage = $request->input('voltage');
+        $time = $request->input('time');
+
+        // Koefisien model regresi
+        $a = 0.47085727; // Koefisien untuk percentage
+        $b = 0.6319181;  // Koefisien untuk voltage
+        $c = 0.35546581;  // Koefisien untuk time
+        $d = 2.593257707617319; // Intercept
+
+        $kilometers = ($a * $percentage) + ($b * $voltage) + ($c * $time) + $d;
+
+        return response()->json([
+            'predicted_kilometers' => $kilometers,
+        ]);
     }
 
     public function fetchTSLock()
@@ -201,7 +246,6 @@ class ApiController extends Controller
                             $lock = new Lock;
                             $lock->motor_id = $channel['motor_id'];
                             $lock->status = $status;
-                            $lock->trip_distance = 0;
                             $lock->created_at = $timestamp;
                             $lock->save();
                         } else {
@@ -218,86 +262,51 @@ class ApiController extends Controller
     }
 
 
-    private function haversine($lat1, $lon1, $lat2, $lon2)
-    {
-        $earth_radius = 6371; // radius bumi dalam kilometer
+    // private function haversine($lat1, $lon1, $lat2, $lon2)
+    // {
+    //     $earth_radius = 6371; // radius bumi dalam kilometer
 
-        $dLat = deg2rad($lat2 - $lat1);
-        $dLon = deg2rad($lon2 - $lon1);
+    //     $dLat = deg2rad($lat2 - $lat1);
+    //     $dLon = deg2rad($lon2 - $lon1);
 
-        $a = sin($dLat / 2) * sin($dLat / 2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon / 2) * sin($dLon / 2);
-        $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
+    //     $a = sin($dLat / 2) * sin($dLat / 2) + cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * sin($dLon / 2) * sin($dLon / 2);
+    //     $c = 2 * atan2(sqrt($a), sqrt(1 - $a));
 
-        $distance = $earth_radius * $c;
+    //     $distance = $earth_radius * $c;
 
-        return $distance;
-    }
+    //     return $distance;
+    // }
 
-    private function updateLockTripDistance($motor, $tracking)
-    {
-        $activeLock = Lock::where('motor_id', $motor->id)
-            ->where('status', 1)
-            ->latest()
-            ->first();
+    // public function addLock(Request $request)
+    // {
+    //     $request->validate([
+    //         'motor_id' => 'required|exists:motors,id',
+    //         'status' => 'boolean',
+    //     ]);
 
-        if ($activeLock) {
-            $activeLock->trip_distance += $tracking->distance;
-            $activeLock->save();
-        }
-    }
+    //     $motor = Motor::with(['batteries', 'locks', 'trackings'])->find($request->motor_id);
+    //     if (!$motor) {
+    //         return response()->json(['error' => 'Motor not found.'], 404);
+    //     }
 
-    private function calculateTripDistance($motor, $lock, $lastTracking)
-    {
-        $tripDistance = 0;
-        $trackings = Tracking::where('motor_id', $motor->id)
-            ->where('created_at', '>=', $lock->created_at)
-            ->get();
+    //     $activeLock = Lock::where('motor_id', $motor->id)
+    //         ->orderBy('created_at', 'desc')
+    //         ->first();
 
-        foreach ($trackings as $tracking) {
-            $tripDistance += $tracking->distance;
-        }
+    //     if ($request->status) {
+    //         if (!$activeLock || !$activeLock->status) {
+    //             $lock = new Lock;
+    //             $lock->motor_id = $request->motor_id;
+    //             $lock->status = 1;
+    //             $lock->save();
+    //         }
+    //     } else {
+    //         if ($activeLock && $activeLock->status) {
+    //             $activeLock->status = 0;
+    //             $activeLock->save();
+    //         }
+    //     }
 
-        return $tripDistance;
-    }
-
-    public function addLock(Request $request)
-    {
-        $request->validate([
-            'motor_id' => 'required|exists:motors,id',
-            'status' => 'boolean',
-        ]);
-
-        $motor = Motor::with(['batteries', 'locks', 'trackings'])->find($request->motor_id);
-        if (!$motor) {
-            return response()->json(['error' => 'Motor not found.'], 404);
-        }
-
-        $activeLock = Lock::where('motor_id', $motor->id)
-            ->orderBy('created_at', 'desc')
-            ->first();
-
-        if ($request->status) {
-            if (!$activeLock || !$activeLock->status) {
-                $lock = new Lock;
-                $lock->motor_id = $request->motor_id;
-                $lock->status = 1;
-                $lock->trip_distance = 0;
-                $lock->save();
-            }
-        } else {
-            if ($activeLock && $activeLock->status) {
-                $activeLock->status = 0;
-                $lastTracking = Tracking::where('motor_id', $motor->id)
-                    ->latest()
-                    ->first();
-
-                if ($lastTracking) {
-                    $activeLock->trip_distance = $this->calculateTripDistance($motor, $activeLock, $lastTracking);
-                }
-                $activeLock->save();
-            }
-        }
-
-        return response()->json($activeLock ?? $lock, 201);
-    }
+    //     return response()->json($activeLock ?? $lock, 201);
+    // }
 }

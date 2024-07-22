@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    
+
     public function up(): void
     {
         Schema::create('batteries', function (Blueprint $table) {
@@ -14,7 +14,6 @@ return new class extends Migration
             $table->foreignId('motor_id')->constrained('motors')->onDelete('cascade');
             $table->float('percentage');
             $table->float('voltage');
-            $table->float('current');
             $table->float('kilometers');
             $table->timestamps();
         });

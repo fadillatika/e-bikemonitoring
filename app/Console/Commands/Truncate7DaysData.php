@@ -37,9 +37,15 @@ class Truncate7DaysData extends Command
 
         $cutOffDate = Carbon::now()->subDays(7);
 
-        DB::table('trackings')->where('created_at', '<', $cutOffDate)->delete();
-        DB::table('batteries')->where('created_at', '<', $cutOffDate)->delete();
-        DB::table('locks')->where('created_at', '<', $cutOffDate)->delete();
+        $this->info('Cutoff date: ' . $cutOffDate);
+
+        $deletedTrackings = DB::table('trackings')->where('created_at', '<', $cutOffDate)->delete();
+        $deletedBatteries = DB::table('batteries')->where('created_at', '<', $cutOffDate)->delete();
+        $deletedLocks = DB::table('locks')->where('created_at', '<', $cutOffDate)->delete();
+
+        $this->info('Deleted Trackings: ' . $deletedTrackings);
+        $this->info('Deleted Batteries: ' . $deletedBatteries);
+        $this->info('Deleted Locks: ' . $deletedLocks);
 
         $this->info('Old data deleted successfully.');
 

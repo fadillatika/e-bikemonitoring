@@ -29,6 +29,7 @@ Route::post('/create-token', [UserController::class, 'createUser']);
 
 // Route::get('/fetchtsgps', [ApiController::class, 'fetchTSGPS']);
 Route::get('/fetchtsbattery', [ApiController::class, 'fetchTSBattery']);
+Route::post('/predict', [ApiController::class, 'predict']);
 // Route::get('/fetchtslock', [ApiController::class, 'fetchTSLock']);
 
 Route::get('/dataterakhir', [GetLastDataController::class, 'index']);

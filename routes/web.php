@@ -6,7 +6,7 @@ use App\Http\Controllers\DownloadController;
 use App\Http\Controllers\DataController;
 use App\Http\Controllers\MotoruserController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MotorController;
+use App\Http\Controllers\TestController;
 use App\Http\Controllers\SearchController;
 use App\Http\Controllers\SearchuserController;
 use App\Http\Controllers\AdminController;
@@ -85,3 +85,5 @@ Route::post('/forgot-password', [ForgetPassController::class, 'ForgetPassPost'])
 Route::get('/reset-password/{token}', [ForgetPassController::class, 'ResetPass'])->name('reset.pass');
 
 Route::post('/reset-password', [ForgetPassController::class, 'ResetPassPost'])->name('reset.passpost');
+
+Route::get('/test-distance', [TestController::class, 'testDistance']);

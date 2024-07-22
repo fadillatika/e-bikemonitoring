@@ -23,13 +23,13 @@ document.addEventListener("DOMContentLoaded", function () {
                 maxZoom: 18
             }).addTo(map);
 
-            // Mengambil hanya 100 data terakhir
-            const last100Data = data.tracking.slice(-100);
+            // Mengambil hanya 50 data terakhir
+            const last100Data = data.tracking.slice(-50);
 
             if (last100Data.length > 0) {
                 updateTracking(last100Data);
             } else {
-                alert('Data historis tidak tersedia.');
+                alert('Road History Not Available.');
             }
         } catch (error) {
             console.error('Error fetching historical data:', error);
@@ -42,15 +42,25 @@ document.addEventListener("DOMContentLoaded", function () {
         const polylineCoords = [];
         const markers = [];
 
-        for (const tracking of trackingData) {
-            const { latitude, longitude } = tracking;
+        for (let i = 0; i < trackingData.length; i++) {
+            const tracking = trackingData[i];
+            const { latitude, longitude, created_at, total_distance } = tracking;
 
             if (latitude !== undefined && longitude !== undefined) {
                 const latLng = [latitude, longitude];
                 const address = await getAddress(latitude, longitude);
+                const date = new Date(created_at);
+                const options = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false };
+                const Time = date.toLocaleString('en-GB', options).replace(',', '');
+                const popupContent = `Address: ${address}<br> Total trip: ${total_distance} km<br> Time: ${Time} WIB`;
 
-                L.circleMarker(latLng, { color: 'green', radius: 5 }).addTo(map)
-                    .bindPopup(address);
+                if (i === 0) { 
+                    L.circleMarker(latLng, { color: 'green', radius: 5 }).addTo(map)
+                        .bindPopup(popupContent);
+                } else { 
+                    L.circleMarker(latLng, { color: 'red', radius: 5 }).addTo(map)
+                        .bindPopup(popupContent);
+                }
 
                 polylineCoords.push(latLng);
                 markers.push({ latitude, longitude, address });
