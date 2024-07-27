@@ -11,19 +11,16 @@ document.addEventListener("DOMContentLoaded", function () {
             const response = await fetch(`/api/dataterakhir?motors_id=${motorID}&date=${selectedDate}`);
             const data = await response.json();
 
-            // Menghapus layer sebelumnya dari peta
             map.eachLayer(layer => {
                 if (layer instanceof L.Polyline || layer instanceof L.CircleMarker || layer instanceof L.LayerGroup) {
                     map.removeLayer(layer);
                 }
             });
 
-            // Memuat ulang tileLayer
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18
             }).addTo(map);
 
-            // Mengambil hanya 50 data terakhir
             const last100Data = data.tracking.slice(-50);
 
             if (last100Data.length > 0) {
@@ -82,18 +79,25 @@ document.addEventListener("DOMContentLoaded", function () {
 
     fetchAndUpdateHistoricalData();
 
-    setInterval(fetchAndUpdateData, 30000);
-
     async function fetchAndUpdateData() {
         const motorID = document.getElementById("boxID").textContent.trim();
         try {
-            const response = await fetch(`/api/dataterakhir-hari-ini?motors_id=${motorID}`);
+            const response = await fetch(`/api/dataterakhir?motors_id=${motorID}`)
             const data = await response.json();
 
+            console.log(data);
+            
+            if (data && Array.isArray(data.tracking)) {
+                updateTracking(data.tracking);
+            }
         } catch (error) {
             console.error('Error fetching latest data:', error);
         }
     }
+    
+    setInterval(fetchAndUpdateData, 30000);
+
+    fetchAndUpdateData();
 
     async function getAddress(latitude, longitude) {
         try {

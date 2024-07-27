@@ -83,20 +83,15 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function updateLockStatus(status) {
+        console.log("Updating lock status:", status);
+
         if (lockStatusText) {
             lockStatusText.textContent = status ? 'Unlocked' : 'Locked';
         }
 
         if (lockIcon) {
-            lockIcon.setAttribute('data-feather', status ? 'unlock' : 'lock');
-            feather.replace();
-        }
-
-        if (lockButton) {
-            lockButton.textContent = status ? 'ON' : 'OFF';
-            lockButton.classList.toggle('on', status);
-            lockButton.classList.toggle('off', !status);
-            lockButton.setAttribute('data-status', status ? 'on' : 'off');
+            const iconLock = status ? 'fa-unlock' : 'fa-lock';
+            lockIcon.className = `fa ${iconLock}`;
         }
     }
 

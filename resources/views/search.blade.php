@@ -22,6 +22,8 @@
     <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <title>E-bike Monitoring!</title>
     <script src="https://cdn-script.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -142,19 +144,11 @@
             <div class="card2 wheel-lock">
                 <h2>Wheel Lock Status</h2>
                 <div id="lockStatus"></div>
-                @if($latestLock)
                 <h3>Status : <span id="lockStatusText">{{ $latestLock->status ? 'Unlocked' : 'Locked' }}</span></h3>
                 <span class="lock-icon">
-                    @if($latestLock->status)
-                    <i id="lockIcon" data-feather="unlock"></i>
-                    @else
-                    <i id="lockIcon" data-feather="lock"></i>
-                    @endif
+                    <i id="lockIcon" class="fa fa-lock" style="font-size: 28px;"></i>
                 </span>
             </div>
-            @else
-            <h3 style="margin-top: 40px; font-size: 2.5em; font-weight: bold;">-</h3>
-            @endif
         </div>
     </div>
     <!-- Map & Track Section -->

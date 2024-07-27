@@ -25,6 +25,8 @@
     <!-- Feather Icons -->
     <script src="https://unpkg.com/feather-icons"></script>
 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <link rel="stylesheet" href="css/fitur.css" />
 
     <title>E-bike Monitoring!</title>
@@ -164,19 +166,11 @@
             <div class="card2 wheel-lock">
                 <h2>Wheel Lock Status</h2>
                 <div id="lockStatus"></div>
-                @if($latestLock)
                 <h3>Status : <span id="lockStatusText">{{ $latestLock->status ? 'Unlocked' : 'Locked' }}</span></h3>
                 <span class="lock-icon">
-                    @if($latestLock->status)
-                    <i id="lockIcon" data-feather="unlock"></i>
-                    @else
-                    <i id="lockIcon" data-feather="lock"></i>
-                    @endif
+                    <i id="lockIcon" class="fa fa-lock fa-2x"></i>
                 </span>
             </div>
-            @else
-            <h3 style="margin-top: 40px; font-size: 2.5em; font-weight: bold;">-</h3>
-            @endif
         </div>
     </div>
     <!-- Map & Track Section -->
@@ -198,7 +192,7 @@
     <script src="js/fiturjs.js"></script>
     <script src="js/notification.js"></script>
     <script src="js/mappping.js"></script>
-    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
+    <!-- <script src="https://js.pusher.com/7.0/pusher.min.js"></script> -->
     <script src="https://cdn.jsdelivr.net/npm/laravel-echo/dist/echo.iife.js"></script>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" crossorigin=""></script>
 
