@@ -189,7 +189,7 @@ function showNotification(title, body) {
     if (Notification.permission === "granted") {
         var notification = new Notification(title, {
             body: body,
-            icon: "img/ebike-02.png"
+            // icon: "https://e-bikemonitoring.com/img/ebike-02.png"
         });
 
         notification.onclick = function(event) {
